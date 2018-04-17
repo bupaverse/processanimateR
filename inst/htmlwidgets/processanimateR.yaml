@@ -1,0 +1,17 @@
+dependencies:
+  - name: d3
+    version: 5.0.0
+    src: "htmlwidgets/lib/d3"
+    script: d3.min.js
+  - name: fakesmil
+    version: 0.3.0
+    src: "htmlwidgets/lib/fakesmil"
+    script: smil.user.js
+  - name: svg-pan-zoom
+    version: 3.5.2
+    src: "htmlwidgets/lib/svg-pan-zoom"
+    script: svg-pan-zoom.min.js
+  - name: viz
+    version: 1.8.1
+    src: htmlwidgets/lib/viz
+    script: viz.js

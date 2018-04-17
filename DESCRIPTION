@@ -1,0 +1,18 @@
+Package: processanimateR
+Type: Package
+Title: Process Map Animation
+Version: 0.1.0
+Authors@R: person("Felix","Mannhardt", email = "felix.mannhardt@sintef.no", 
+    role = c("aut","cre"))
+Description: Token replay animation for process maps created with 
+    processmapR by using SVG animations (SMIL) and the htmlwidget package.
+License: MIT + file LICENSE
+Encoding: UTF-8
+LazyData: true
+Depends: bupaR, processmapR
+Imports: 
+    rlang, magrittr, dplyr, shiny, tidyr, htmlwidgets, DiagrammeR, 
+    DiagrammeRsvg, RColorBrewer, zoo, scales, shinycssloaders
+RoxygenNote: 6.0.1
+URL: https://github.com/fmannhardt/processanimateR/
+BugReports: https://github.com/fmannhardt/processanimateR/issues
