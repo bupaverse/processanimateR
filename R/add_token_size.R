@@ -12,10 +12,12 @@
 #' @import dplyr
 #' @importFrom magrittr %>%
 #' @importFrom rlang :=
+#' @importFrom rlang !!
 #'
 #' @export
-add_token_size <- function(eventlog, attribute, size_attribute, min.size = 2, max.size = 8,
-                           na.size = 2, size_mapping = size_numeric(eventlog %>% pull(!!attr), min.size, max.size, na.size)) {
+add_token_size <- function(eventlog, attribute, size_attribute,
+                           min.size = 2, max.size = 8, na.size = 2,
+                           size_mapping = size_numeric(eventlog %>% pull(`!!`(attr)), min.size, max.size, na.size)) {
 
   attr <- rlang::sym(attribute)
   sAttr <- rlang::sym(size_attribute)

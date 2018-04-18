@@ -71,6 +71,7 @@
 #' @import processmapR
 #' @importFrom magrittr %>%
 #' @importFrom rlang :=
+#' @importFrom rlang !!
 #'
 #' @export
 animate_process <- function(eventlog,

@@ -6,7 +6,7 @@
 \usage{
 add_token_size(eventlog, attribute, size_attribute, min.size = 2,
   max.size = 8, na.size = 2, size_mapping = size_numeric(eventlog \%>\%
-  pull(!(!attr)), min.size, max.size, na.size))
+  pull(`!!`(attr)), min.size, max.size, na.size))
 }
 \arguments{
 \item{eventlog}{The source eventlog}

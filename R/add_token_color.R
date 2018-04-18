@@ -11,10 +11,11 @@
 #' @import dplyr
 #' @importFrom magrittr %>%
 #' @importFrom rlang :=
+#' @importFrom rlang !!
 #'
 #' @export
 add_token_color <- function(eventlog, attribute, color_attribute, palette = "YlOrBr", na.color = "red",
-                            color_mapping = scales::col_numeric(palette, eventlog %>% pull(!!attr), na.color = na.color)) {
+                            color_mapping = scales::col_numeric(palette, eventlog %>% pull(`!!`(attr)), na.color = na.color)) {
   attr <- rlang::sym(attribute)
   cAttr <- rlang::sym(color_attribute)
   eventlog %>%
