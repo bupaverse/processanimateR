@@ -4,9 +4,9 @@
 \alias{animate_process}
 \title{Animate cases on a process map}
 \usage{
-animate_process(eventlog, processmap = NULL, animation_mode = "absolute",
-  animation_duration = 60, token_size = NULL, token_color = NULL,
-  token_image = NULL, width = NULL, height = NULL)
+animate_process(eventlog, processmap = process_map(eventlog, render = F),
+  animation_mode = "absolute", animation_duration = 60, token_size = NULL,
+  token_color = NULL, token_image = NULL, width = NULL, height = NULL)
 }
 \arguments{
 \item{eventlog}{The event log object that should be animated}
@@ -48,7 +48,7 @@ animate_process(patients, token_size = 2)
 # Change default token color
 animate_process(patients, token_color = "red")
 
-# Change default token image
+# Change default token image (GIFs work too)
 animate_process(patients, token_image = "https://upload.wikimedia.org/wikipedia/en/5/5f/Pacman.gif")
 
 # Change token color based on a numeric attribute, here the nonsensical 'time' of an event
@@ -60,6 +60,7 @@ animate_process(add_token_color(patients, "employee", "color",
                 token_color = "color")
 
 # Change token_color based on colors in a second data frame
+library(dplyr)
 data(sepsis)
 # Extract only the lacticacid measurements
 lactic <- sepsis \%>\%

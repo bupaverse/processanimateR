@@ -29,7 +29,7 @@
 #' # Change default token color
 #' animate_process(patients, token_color = "red")
 #'
-#' # Change default token image
+#' # Change default token image (GIFs work too)
 #' animate_process(patients, token_image = "https://upload.wikimedia.org/wikipedia/en/5/5f/Pacman.gif")
 #'
 #' # Change token color based on a numeric attribute, here the nonsensical 'time' of an event
@@ -41,6 +41,7 @@
 #'                 token_color = "color")
 #'
 #' # Change token_color based on colors in a second data frame
+#' library(dplyr)
 #' data(sepsis)
 #' # Extract only the lacticacid measurements
 #' lactic <- sepsis %>%
@@ -73,7 +74,7 @@
 #'
 #' @export
 animate_process <- function(eventlog,
-                            processmap = NULL,
+                            processmap = process_map(eventlog, render = F),
                             animation_mode = "absolute",
                             animation_duration = 60,
                             token_size = NULL,
@@ -81,17 +82,15 @@ animate_process <- function(eventlog,
                             token_image = NULL,
                             width = NULL,
                             height = NULL) {
-  #make CRAN happy
-  case_start <- log_end <- start_time <- end_time <- next_end_time <- case <- case_end <- log_start <- log_duration <- NULL
-  case_duration <- from_id <- to_id <- next_start_time <- NULL
 
-  if (is.null(processmap)) {
-    # standard process map
-    processmap <- process_map(eventlog, render = F)
-  }
+  # Make CRAN happy about dplyr evaluation
+  case_start <- log_end <- start_time <- end_time <- next_end_time <- next_start_time <- NULL
+  case <- case_end <- log_start <- log_duration <- case_duration <- NULL
+  from_id <- to_id <- NULL
 
+  # Generate the DOT source
   graph <- DiagrammeR::render_graph(processmap, width = width, height = height)
-  # get the DOT source for later rendering by vis.js
+  # Get the DOT source for later rendering through vis.js
   diagram <- graph$x$diagram
 
   precedence <- generate_precedence(eventlog) %>%

@@ -5,7 +5,13 @@
 [![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/processanimater)](https://cran.r-project.org/package=processanimater)
 [![lifecycle](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
 
-Flexible token replay animation for process maps created through the [processmapR](https://github.com/gertjanssenswillen/processmapR/) package from the [bupaR](http://www.bupar.net) suite. This package uses [htmlwidgets](https://www.htmlwidgets.org/) and SVG animations ([SMIL](https://www.w3.org/standards/techs/smil#w3c_all)) to create the animation. Sizes, colors, and the image used for tokens are customizable based on trace, event attributes, or a secondary data frame if an attribute does not change according to the original event log. 
+<div class="animationframe" style="background:url(https://cdnjs.cloudflare.com/ajax/libs/galleriffic/2.0.1/css/loader.gif) center center no-repeat;">
+<iframe width="800" height="200" src="example-banner.html" frameborder="0"></iframe>
+</div>
+
+Flexible token replay animation for process maps created through the [processmapR](https://github.com/gertjanssenswillen/processmapR/) package from the [bupaR](http://www.bupar.net) suite, which uses [DiagrammeR](https://github.com/rich-iannone/DiagrammeR/) and [viz.js](https://github.com/mdaines/viz.js) library to render process maps using GraphViz. 
+ProcessanimateR adds a [htmlwidget](https://www.htmlwidgets.org/) that uses SVG animations ([SMIL](https://www.w3.org/standards/techs/smil#w3c_all)) to create the animation. 
+Sizes, colors, and the image used for tokens are customizable based on trace, event attributes, or a secondary data frame if an attribute does not change according to the original event log.
 
 ## Getting Started
 
@@ -24,6 +30,11 @@ remotes::install_github("fmannhardt/processanimateR")
 remotes::install_github("fmannhardt/processanimateR@v0.1.0")
 ```
 
+### Warnings and Limitations
+* Tokens travel through the process approximately according to the times at which (start and complete) events of the activities occur. In some cases processanimateR will add a small epsilon time to make sure that the SMIL animation works fine, since there seem to be some limitations with regard to zero duration animations. 
+* Be aware that the perceived speed in which tokens travel depends on the length of edges in the process map, which is the result of an automatic layout algorithm and does not represent any kind of real distance between activities. 
+* Parallelism is still handled poorly as to be expected from a process map. In particular overlapping start and completion times of activities may result in tokens moving unexpectedly.
+
 ### Usage
 
 There are two main functions: `animate_process` and `ianimate_process` (interactive version).
@@ -35,25 +46,56 @@ library(eventdataR)
 data(patients)
 ```
 
-A basic animation with static color and token size:
+A basic animation with static color and token size ([Show result](example-patients.html)):
 ```r
 animate_process(patients)
 ```
 
-Default token color or size can be changed as follows:
+Default token color, size, or image can be changed as follows:
 ```r
 animate_process(patients, token_size = 2)
 animate_process(patients, token_color = "red")
+animate_process(patients, token_image = "https://upload.wikimedia.org/wikipedia/en/5/5f/Pacman.gif", token_size = 15)
 ```
 
-Dynamic token color or size can be achieved as follows:
+Dynamic token colors or sizes based on event attributes can be configured:
 ```r
 animate_process(add_token_color(patients, "time", "color"), token_color = "color")
-animate_process(add_token_color(patients, "employee", "color", color_mapping = scales::col_factor("Paired", patients$employee)),
+animate_process(add_token_color(patients, "employee", "color", 
+                color_mapping = scales::col_factor("Paired", patients$employee)),
                 token_color = "color")
 ```
 
-There is also an interactive variant that starts a Shiny web-application. It expects that attributes are of an apropriate data type to choose a good color scale.
+It is also possible to use a secondary data frame to color the tokens irregardless of the event times. This can be useful if measurement are taken throughout a process, but the measurement event itself should not be included in the process map. For example, the lactic acid measurements of the `sepsis` data could be used in that way ([Show result](example-sepsis.html)): 
+```r
+library(dplyr)
+data(sepsis)
+
+# Extract only the lacticacid measurements
+lactic <- sepsis %>%
+    mutate(lacticacid = as.numeric(lacticacid)) %>%
+    filter_activity(c("LacticAcid")) %>%
+    as.data.frame() %>%
+    select("case" = case_id, "time" =  timestamp, lacticacid)
+
+# Create a numeric color scale
+cscale <- scales::col_numeric("Oranges", lactic$lacticacid , na.color = "white")
+
+# Create colors data frame for animate_process
+lacticColors <- lactic %>%
+    mutate(color = cscale(lacticacid))
+
+# Remove the measurement events from the sepsis log
+sepsisBase <- sepsis %>%
+    filter_activity(c("LacticAcid", "CRP", "Leucocytes", "Return ER",
+                      "IV Liquid", "IV Antibiotics"), reverse = T) %>%
+    filter_trace_frequency(percentage = 0.95)
+animate_process(sepsisBase, token_color = lacticColors, animation_mode = "relative",
+                animation_duration = 600)
+```
+
+
+There is also an interactive variant that starts a Shiny web-application. It expects that attributes are of an appropriate data type to choose a good color scale.
 ```r
 library(edeaR)
 library(dplyr)

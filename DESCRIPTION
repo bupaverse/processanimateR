@@ -1,7 +1,7 @@
 Package: processanimateR
 Type: Package
 Title: Process Map Animation
-Version: 0.1.0
+Version: 0.1.1
 Authors@R: person("Felix","Mannhardt", email = "felix.mannhardt@sintef.no", 
     role = c("aut","cre"))
 Description: Token replay animation for process maps created with 

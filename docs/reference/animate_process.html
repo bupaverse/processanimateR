@@ -57,7 +57,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">processanimateR</a>
-        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.1.0</span>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.1.1</span>
       </span>
     </div>
 
@@ -102,9 +102,9 @@
     <p>A function for creating a SVG animation of an event log on a process map created by processmapR.</p>
     
 
-    <pre class="usage"><span class='fu'>animate_process</span>(<span class='no'>eventlog</span>, <span class='kw'>processmap</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>animation_mode</span> <span class='kw'>=</span> <span class='st'>"absolute"</span>,
-  <span class='kw'>animation_duration</span> <span class='kw'>=</span> <span class='fl'>60</span>, <span class='kw'>token_size</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>token_color</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>token_image</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>width</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>height</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
+    <pre class="usage"><span class='fu'>animate_process</span>(<span class='no'>eventlog</span>, <span class='kw'>processmap</span> <span class='kw'>=</span> <span class='fu'>process_map</span>(<span class='no'>eventlog</span>, <span class='kw'>render</span> <span class='kw'>=</span> <span class='no'>F</span>),
+  <span class='kw'>animation_mode</span> <span class='kw'>=</span> <span class='st'>"absolute"</span>, <span class='kw'>animation_duration</span> <span class='kw'>=</span> <span class='fl'>60</span>, <span class='kw'>token_size</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>token_color</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>token_image</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>width</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>height</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -170,7 +170,7 @@ The token image is change accordingly during the animation (by default a SVG sha
 <span class='co'># Change default token color</span>
 <span class='fu'>animate_process</span>(<span class='no'>patients</span>, <span class='kw'>token_color</span> <span class='kw'>=</span> <span class='st'>"red"</span>)
 
-<span class='co'># Change default token image</span>
+<span class='co'># Change default token image (GIFs work too)</span>
 <span class='fu'>animate_process</span>(<span class='no'>patients</span>, <span class='kw'>token_image</span> <span class='kw'>=</span> <span class='st'>"https://upload.wikimedia.org/wikipedia/en/5/5f/Pacman.gif"</span>)
 
 <span class='co'># Change token color based on a numeric attribute, here the nonsensical 'time' of an event</span>
@@ -182,18 +182,19 @@ The token image is change accordingly during the animation (by default a SVG sha
                 <span class='kw'>token_color</span> <span class='kw'>=</span> <span class='st'>"color"</span>)
 
 <span class='co'># Change token_color based on colors in a second data frame</span>
+<span class='fu'>library</span>(<span class='no'>dplyr</span>)
 <span class='fu'>data</span>(<span class='no'>sepsis</span>)
 <span class='co'># Extract only the lacticacid measurements</span>
 <span class='no'>lactic</span> <span class='kw'>&lt;-</span> <span class='no'>sepsis</span> <span class='kw'>%&gt;%</span>
-    <span class='fu'>mutate</span>(<span class='kw'>lacticacid</span> <span class='kw'>=</span> <span class='fu'>as.numeric</span>(<span class='no'>lacticacid</span>)) <span class='kw'>%&gt;%</span>
+    <span class='fu'><a href='http://dplyr.tidyverse.org/reference/mutate.html'>mutate</a></span>(<span class='kw'>lacticacid</span> <span class='kw'>=</span> <span class='fu'>as.numeric</span>(<span class='no'>lacticacid</span>)) <span class='kw'>%&gt;%</span>
     <span class='fu'>filter_activity</span>(<span class='fu'>c</span>(<span class='st'>"LacticAcid"</span>)) <span class='kw'>%&gt;%</span>
     <span class='fu'>as.data.frame</span>() <span class='kw'>%&gt;%</span>
-    <span class='fu'>select</span>(<span class='st'>"case"</span> <span class='kw'>=</span> <span class='no'>case_id</span>, <span class='st'>"time"</span> <span class='kw'>=</span>  <span class='no'>timestamp</span>, <span class='no'>lacticacid</span>)
+    <span class='fu'><a href='http://dplyr.tidyverse.org/reference/select.html'>select</a></span>(<span class='st'>"case"</span> <span class='kw'>=</span> <span class='no'>case_id</span>, <span class='st'>"time"</span> <span class='kw'>=</span>  <span class='no'>timestamp</span>, <span class='no'>lacticacid</span>)
 <span class='co'># Create a numeric color scale</span>
 <span class='no'>cscale</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>scales</span><span class='kw ns'>::</span><span class='fu'><a href='http://www.rdocumentation.org/packages/scales/topics/col_numeric'>col_numeric</a></span>(<span class='st'>"Oranges"</span>, <span class='no'>lactic</span>$<span class='no'>lacticacid</span> , <span class='kw'>na.color</span> <span class='kw'>=</span> <span class='st'>"white"</span>)
 <span class='co'># Create colors data frame for animate_process</span>
 <span class='no'>lacticColors</span> <span class='kw'>&lt;-</span> <span class='no'>lactic</span> <span class='kw'>%&gt;%</span>
-    <span class='fu'>mutate</span>(<span class='kw'>color</span> <span class='kw'>=</span> <span class='fu'>cscale</span>(<span class='no'>lacticacid</span>))
+    <span class='fu'><a href='http://dplyr.tidyverse.org/reference/mutate.html'>mutate</a></span>(<span class='kw'>color</span> <span class='kw'>=</span> <span class='fu'>cscale</span>(<span class='no'>lacticacid</span>))
 <span class='no'>sepsisBase</span> <span class='kw'>&lt;-</span> <span class='no'>sepsis</span> <span class='kw'>%&gt;%</span>
     <span class='fu'>filter_activity</span>(<span class='fu'>c</span>(<span class='st'>"LacticAcid"</span>, <span class='st'>"CRP"</span>, <span class='st'>"Leucocytes"</span>, <span class='st'>"Return ER"</span>,
                       <span class='st'>"IV Liquid"</span>, <span class='st'>"IV Antibiotics"</span>), <span class='kw'>reverse</span> <span class='kw'>=</span> <span class='no'>T</span>) <span class='kw'>%&gt;%</span>
