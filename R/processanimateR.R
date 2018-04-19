@@ -94,7 +94,7 @@ animate_process <- function(eventlog,
   # get the DOT source for later rendering by vis.js
   diagram <- graph$x$diagram
 
-  precedence <- generate_precedence(eventlog) %>%
+  precedence <- attr(processmap, "base_precedence") %>%
     mutate_at(vars(start_time, end_time, next_start_time, next_end_time), as.numeric, units = "secs")
 
   cases <- precedence %>%
@@ -301,85 +301,4 @@ resource_id_ <- function(eventlog) rlang::sym(resource_id(eventlog))
 timestamp_ <- function(eventlog) rlang::sym(timestamp(eventlog))
 lifecycle_id_ <- function(eventlog) rlang::sym(lifecycle_id(eventlog))
 
-# https://github.com/gertjanssenswillen/processmapR/blob/master/R/process_map.R
-generate_precedence <- function(eventlog) {
 
-  min_order <- NULL
-  act <- NULL
-  aid <- NULL
-  case <- NULL
-  time <- NULL
-  start_time <- NULL
-  end_time <- NULL
-  node_id <- NULL
-  n.x <- NULL
-  n.y <- NULL
-  from_id <- NULL
-  tooltip <- NULL
-  label <- NULL
-  next_act <- NULL
-  to_id <- NULL
-  duration <- NULL
-  value <- NULL
-  color_level <- NULL
-  .order <- NULL
-
-  eventlog %>%
-    as.data.frame() %>%
-    droplevels %>%
-    select(act = !!activity_id_(eventlog),
-           aid = !!activity_instance_id_(eventlog),
-           case = !!case_id_(eventlog),
-           time = !!timestamp_(eventlog),
-           .order) %>%
-    group_by(act, aid, case) -> grouped_log
-
-  grouped_log %>% summarize(start_time = min(time),
-                            end_time = max(time),
-                            min_order = min(.order)) -> base_log
-
-  base_log %>%
-    group_by(case) %>%
-    arrange(start_time, min_order) -> points_temp
-
-  points_temp %>%
-    slice(c(1)) %>%
-    mutate(act = "Start",
-           end_time = start_time,
-           min_order = -Inf) -> end_points_start
-  points_temp %>%
-    slice(c(n())) %>%
-    mutate(act = "End",
-           start_time = end_time,
-           min_order = Inf) -> end_points_end
-
-  bind_rows(end_points_start, end_points_end) -> end_points
-
-  suppressWarnings(base_log  %>%
-                     bind_rows(end_points) -> base_log)
-
-  base_log %>%
-    ungroup() %>%
-    count(act) %>%
-    mutate(node_id = 1:n()) -> base_nodes
-
-  suppressWarnings(base_log %>%
-                     ungroup() %>%
-                     mutate(act = ordered(act, levels = c("Start",
-                                                          as.character(sort(activity_labels(eventlog))),
-                                                          "End"))) %>%
-                     group_by(case) %>%
-                     arrange(start_time, min_order) %>%
-                     mutate(next_act = lead(act),
-                            next_start_time = lead(start_time),
-                            next_end_time = lead(end_time)) %>%
-                     full_join(base_nodes, by = c("act" = "act")) %>%
-                     rename(from_id = node_id) %>%
-                     full_join(base_nodes, by = c("next_act" = "act")) %>%
-                     rename(to_id = node_id) %>%
-                     select(-n.x, -n.y) %>%
-                     ungroup() -> base_precedence)
-
-  return(base_precedence)
-
-}
