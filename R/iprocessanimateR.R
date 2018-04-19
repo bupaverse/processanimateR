@@ -6,11 +6,10 @@
 #' @param max.time Maximum animation time selectable
 #' @param default.time Default animation time selectable
 #'
-#' @examples
+#' @examples{
 #' \dontrun{
 #' library(eventdataR)
 #' library(edeaR)
-#' library(processanimateR)
 #' library(dplyr)
 #' ianimate_process(sepsis %>%
 #'  filter_trace_frequency(percentage = 0.2) %>%
@@ -19,6 +18,7 @@
 #'  # the token size option currently only support numeric attributes
 #'  mutate_at(c("lacticacid", "leucocytes", "crp", "age"), as.numeric) %>%
 #'  mutate_at(c("disfuncorg", "sirscriteria2ormore", "infectionsuspected"), as.logical))
+#' }
 #' }
 #'
 #' @author Felix Mannhardt <felix.mannhardt@sintef.no> (SINTEF Technology and Society)

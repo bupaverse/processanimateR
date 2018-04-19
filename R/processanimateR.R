@@ -15,10 +15,9 @@
 #' @param width The width of the htmlwidget.
 #' @param height The height of the htmlwidget.
 #'
-#' @examples
-#' \dontrun{
+#' @examples{
+#' # Load example event log
 #' library(eventdataR)
-#' data(patients)
 #'
 #' # Animate the process with default options (absolute time and 60s)
 #' animate_process(patients)
@@ -29,6 +28,7 @@
 #' # Change default token color
 #' animate_process(patients, token_color = "red")
 #'
+#' \donttest{
 #' # Change default token image (GIFs work too)
 #' animate_process(patients, token_image = "https://upload.wikimedia.org/wikipedia/en/5/5f/Pacman.gif")
 #'
@@ -40,9 +40,11 @@
 #'                 color_mapping = scales::col_factor("Set3", patients$employee)),
 #'                 token_color = "color")
 #'
-#' # Change token_color based on colors in a second data frame
+#' # Next example requires the 'dplyr' and 'edeaR' packages
 #' library(dplyr)
-#' data(sepsis)
+#' library(edeaR)
+#'
+#' # Change token_color based on colors in a second data frame
 #' # Extract only the lacticacid measurements
 #' lactic <- sepsis %>%
 #'     mutate(lacticacid = as.numeric(lacticacid)) %>%
@@ -56,12 +58,12 @@
 #'     mutate(color = cscale(lacticacid))
 #' sepsisBase <- sepsis %>%
 #'     filter_activity(c("LacticAcid", "CRP", "Leucocytes", "Return ER",
-#'                       "IV Liquid", "IV Antibiotics"), reverse = T) %>%
+#'                       "IV Liquid", "IV Antibiotics"), reverse = TRUE) %>%
 #'     filter_trace_frequency(percentage = 0.95)
 #' animate_process(sepsisBase, token_color = lacticColors, animation_mode = "relative",
 #'                 animation_duration = 600)
 #' }
-#'
+#' }
 #'
 #' @author Felix Mannhardt <felix.mannhardt@sintef.no> (SINTEF Technology and Society)
 #' @seealso processmapR:process_map

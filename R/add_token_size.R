@@ -7,7 +7,19 @@
 #' @param min.size The minimum size
 #' @param max.size The maximum size
 #' @param na.size The size for NA values
-#' @param size_mapping A function that takes the attribute and returns a size between min.size and max.size, the default is a linear transformation.
+#' @param size_mapping A function that takes the attribute and returns a size between min.size and max.size, the default is a linear transformation that only works for numeric attributes..
+#'
+#' @examples{
+#'   # Load example event log
+#'   library(eventdataR)
+#'
+#'   # Generate random numeric attribute
+#'   patients$test <- rnorm(nrow(patients), 5)
+#'
+#'   # Add token size based on a numeric attribute
+#'   add_token_size(patients, "test", "size")
+#'
+#' }
 #'
 #' @import dplyr
 #' @importFrom magrittr %>%

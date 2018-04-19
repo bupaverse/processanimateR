@@ -20,10 +20,10 @@ ianimate_process(eventlog, min.time = 30, max.time = 600,
 Creates an interactive Shiny dashbord that allows to configure the animation produced by processanimateR.
 }
 \examples{
+{
 \dontrun{
 library(eventdataR)
 library(edeaR)
-library(processanimateR)
 library(dplyr)
 ianimate_process(sepsis \%>\%
  filter_trace_frequency(percentage = 0.2) \%>\%
@@ -32,6 +32,7 @@ ianimate_process(sepsis \%>\%
  # the token size option currently only support numeric attributes
  mutate_at(c("lacticacid", "leucocytes", "crp", "age"), as.numeric) \%>\%
  mutate_at(c("disfuncorg", "sirscriteria2ormore", "infectionsuspected"), as.logical))
+}
 }
 
 }

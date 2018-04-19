@@ -24,3 +24,17 @@ add_token_color(eventlog, attribute, color_attribute, palette = "YlOrBr",
 \description{
 Adds a color attribute to an event log that can be used in combination with the \code{token_color} parameter of \code{\link{animate_process}}
 }
+\examples{
+{
+  # Load example event log
+  library(eventdataR)
+
+  # Add token color based on a numeric attribute
+  add_token_color(patients, "time", "color")
+
+  # Add token color based on a factor attribute
+  add_token_color(patients, "employee", "color",
+                color_mapping = scales::col_factor("Set3", patients$employee))
+}
+
+}

@@ -8,6 +8,18 @@
 #' @param na.color The color for NA values
 #' @param color_mapping A function that takes the attribute and returns a color, the default is using scales::col_numeric.
 #'
+#' @examples{
+#'   # Load example event log
+#'   library(eventdataR)
+#'
+#'   # Add token color based on a numeric attribute
+#'   add_token_color(patients, "time", "color")
+#'
+#'   # Add token color based on a factor attribute
+#'   add_token_color(patients, "employee", "color",
+#'                 color_mapping = scales::col_factor("Set3", patients$employee))
+#' }
+#'
 #' @import dplyr
 #' @importFrom magrittr %>%
 #' @importFrom rlang :=

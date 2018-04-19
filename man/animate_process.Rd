@@ -35,9 +35,9 @@ The token image is change accordingly during the animation (by default a SVG sha
 A function for creating a SVG animation of an event log on a process map created by processmapR.
 }
 \examples{
-\dontrun{
+{
+# Load example event log
 library(eventdataR)
-data(patients)
 
 # Animate the process with default options (absolute time and 60s)
 animate_process(patients)
@@ -48,6 +48,7 @@ animate_process(patients, token_size = 2)
 # Change default token color
 animate_process(patients, token_color = "red")
 
+\donttest{
 # Change default token image (GIFs work too)
 animate_process(patients, token_image = "https://upload.wikimedia.org/wikipedia/en/5/5f/Pacman.gif")
 
@@ -59,9 +60,11 @@ animate_process(add_token_color(patients, "employee", "color",
                 color_mapping = scales::col_factor("Set3", patients$employee)),
                 token_color = "color")
 
-# Change token_color based on colors in a second data frame
+# Next example requires the 'dplyr' and 'edeaR' packages
 library(dplyr)
-data(sepsis)
+library(edeaR)
+
+# Change token_color based on colors in a second data frame
 # Extract only the lacticacid measurements
 lactic <- sepsis \%>\%
     mutate(lacticacid = as.numeric(lacticacid)) \%>\%
@@ -75,12 +78,12 @@ lacticColors <- lactic \%>\%
     mutate(color = cscale(lacticacid))
 sepsisBase <- sepsis \%>\%
     filter_activity(c("LacticAcid", "CRP", "Leucocytes", "Return ER",
-                      "IV Liquid", "IV Antibiotics"), reverse = T) \%>\%
+                      "IV Liquid", "IV Antibiotics"), reverse = TRUE) \%>\%
     filter_trace_frequency(percentage = 0.95)
 animate_process(sepsisBase, token_color = lacticColors, animation_mode = "relative",
                 animation_duration = 600)
 }
-
+}
 
 }
 \seealso{

@@ -21,8 +21,22 @@ add_token_size(eventlog, attribute, size_attribute, min.size = 2,
 
 \item{na.size}{The size for NA values}
 
-\item{size_mapping}{A function that takes the attribute and returns a size between min.size and max.size, the default is a linear transformation.}
+\item{size_mapping}{A function that takes the attribute and returns a size between min.size and max.size, the default is a linear transformation that only works for numeric attributes..}
 }
 \description{
 Adds a size attribute to an event log that can be used in combination with the token_size parameter of \code{\link{animate_process}}
+}
+\examples{
+{
+  # Load example event log
+  library(eventdataR)
+
+  # Generate random numeric attribute
+  patients$test <- rnorm(nrow(patients), 5)
+
+  # Add token size based on a numeric attribute
+  add_token_size(patients, "test", "size")
+
+}
+
 }
