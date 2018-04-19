@@ -2,11 +2,11 @@
 
 > Flexible token replay animation for process maps
 
-[![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/processanimater)](https://cran.r-project.org/package=processanimater)
+[![CRAN\_Status\_Badge](https://www.r-pkg.org/badges/version/processanimater)](https://cran.r-project.org/package=processanimater)
 [![lifecycle](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
 [![Travis-CI Build Status](https://travis-ci.org/fmannhardt/processanimateR.svg?branch=master)](https://travis-ci.org/fmannhardt/processanimateR)
 
-![processanimateR example](inst/processanimateR-banner.png)
+[![processanimateR example](inst/processanimateR-banner.png)](https://fmannhardt.github.io/processanimateR/index.html)
 
 Flexible token replay animation for process maps created through the [processmapR](https://github.com/gertjanssenswillen/processmapR/) package from the [bupaR](http://www.bupar.net) suite, which uses [DiagrammeR](https://github.com/rich-iannone/DiagrammeR/) and [viz.js](https://github.com/mdaines/viz.js) library to render process maps using GraphViz. 
 ProcessanimateR adds a [htmlwidget](https://www.htmlwidgets.org/) that uses SVG animations ([SMIL](https://www.w3.org/standards/techs/smil#w3c_all)) to create the animation. 
@@ -45,7 +45,7 @@ library(eventdataR)
 data(patients)
 ```
 
-A basic animation with static color and token size ([Show result](example-patients.html)):
+A basic animation with static color and token size:
 ```r
 animate_process(patients)
 ```
@@ -65,7 +65,7 @@ animate_process(add_token_color(patients, "employee", "color",
                 token_color = "color")
 ```
 
-It is also possible to use a secondary data frame to color the tokens irregardless of the event times. This can be useful if measurement are taken throughout a process, but the measurement event itself should not be included in the process map. For example, the lactic acid measurements of the `sepsis` data could be used in that way ([Show result](example-sepsis.html)): 
+It is also possible to use a secondary data frame to color the tokens irregardless of the event times. This can be useful if measurement are taken throughout a process, but the measurement event itself should not be included in the process map. For example, the lactic acid measurements of the `sepsis` data could be used in that way: 
 ```r
 library(dplyr)
 data(sepsis)

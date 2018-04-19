@@ -132,10 +132,12 @@
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><span class='co'># NOT RUN {</span>
+    <pre class="examples"># NOT RUN {
+{
+# }
+<span class='co'># NOT RUN {</span>
 <span class='fu'>library</span>(<span class='no'>eventdataR</span>)
 <span class='fu'>library</span>(<span class='no'>edeaR</span>)
-<span class='fu'>library</span>(<span class='no'>processanimateR</span>)
 <span class='fu'>library</span>(<span class='no'>dplyr</span>)
 <span class='fu'>ianimate_process</span>(<span class='no'>sepsis</span> <span class='kw'>%&gt;%</span>
  <span class='fu'><a href='http://www.rdocumentation.org/packages/edeaR/topics/filter_trace_frequency'>filter_trace_frequency</a></span>(<span class='kw'>percentage</span> <span class='kw'>=</span> <span class='fl'>0.2</span>) <span class='kw'>%&gt;%</span>
@@ -144,8 +146,11 @@
  <span class='co'># the token size option currently only support numeric attributes</span>
  <span class='fu'><a href='http://dplyr.tidyverse.org/reference/summarise_all.html'>mutate_at</a></span>(<span class='fu'>c</span>(<span class='st'>"lacticacid"</span>, <span class='st'>"leucocytes"</span>, <span class='st'>"crp"</span>, <span class='st'>"age"</span>), <span class='no'>as.numeric</span>) <span class='kw'>%&gt;%</span>
  <span class='fu'><a href='http://dplyr.tidyverse.org/reference/summarise_all.html'>mutate_at</a></span>(<span class='fu'>c</span>(<span class='st'>"disfuncorg"</span>, <span class='st'>"sirscriteria2ormore"</span>, <span class='st'>"infectionsuspected"</span>), <span class='no'>as.logical</span>))
-<span class='co'># }</span><div class='input'>
-</div></pre>
+<span class='co'># }</span># NOT RUN {
+}
+
+# }
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

@@ -104,7 +104,7 @@
 
     <pre class="usage"><span class='fu'>add_token_size</span>(<span class='no'>eventlog</span>, <span class='no'>attribute</span>, <span class='no'>size_attribute</span>, <span class='kw'>min.size</span> <span class='kw'>=</span> <span class='fl'>2</span>,
   <span class='kw'>max.size</span> <span class='kw'>=</span> <span class='fl'>8</span>, <span class='kw'>na.size</span> <span class='kw'>=</span> <span class='fl'>2</span>, <span class='kw'>size_mapping</span> <span class='kw'>=</span> <span class='fu'>size_numeric</span>(<span class='no'>eventlog</span> <span class='kw'>%&gt;%</span>
-  <span class='fu'>pull</span>(!(!<span class='no'>attr</span>)), <span class='no'>min.size</span>, <span class='no'>max.size</span>, <span class='no'>na.size</span>))</pre>
+  <span class='fu'>pull</span>(<span class='fu'>`!!`</span>(<span class='no'>attr</span>)), <span class='no'>min.size</span>, <span class='no'>max.size</span>, <span class='no'>na.size</span>))</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -135,17 +135,34 @@
     </tr>
     <tr>
       <th>size_mapping</th>
-      <td><p>A function that takes the attribute and returns a size between min.size and max.size, the default is a linear transformation.</p></td>
+      <td><p>A function that takes the attribute and returns a size between min.size and max.size, the default is a linear transformation that only works for numeric attributes..</p></td>
     </tr>
     </table>
     
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><span class='co'># NOT RUN {</span>
+{
+  <span class='co'># Load example event log</span>
+  <span class='fu'>library</span>(<span class='no'>eventdataR</span>)
+
+  <span class='co'># Generate random numeric attribute</span>
+  <span class='no'>patients</span>$<span class='no'>test</span> <span class='kw'>&lt;-</span> <span class='fu'>rnorm</span>(<span class='fu'>nrow</span>(<span class='no'>patients</span>), <span class='fl'>5</span>)
+
+  <span class='co'># Add token size based on a numeric attribute</span>
+  <span class='fu'>add_token_size</span>(<span class='no'>patients</span>, <span class='st'>"test"</span>, <span class='st'>"size"</span>)
+
+}
+
+<span class='co'># }</span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
-                </ul>
+            
+      <li><a href="#examples">Examples</a></li>
+    </ul>
 
   </div>
 </div>

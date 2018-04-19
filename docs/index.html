@@ -5,13 +5,13 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Process Map Animation • processanimateR</title>
+<title>Process Map Token Replay Animation • processanimateR</title>
 <!-- jquery --><script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script><!-- Font Awesome icons --><link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3" crossorigin="anonymous"></script><!-- pkgdown --><link href="pkgdown.css" rel="stylesheet">
-<script src="jquery.sticky-kit.min.js"></script><script src="pkgdown.js"></script><meta property="og:title" content="Process Map Animation">
+<script src="jquery.sticky-kit.min.js"></script><script src="pkgdown.js"></script><meta property="og:title" content="Process Map Token Replay Animation">
 <meta property="og:description" content="Token replay animation for process maps created with 
-    processmapR by using SVG animations (SMIL) and the htmlwidget package.">
+  'processmapR' by using SVG animations ('SMIL') and the 'htmlwidget' package.">
 <meta name="twitter:card" content="summary">
 <!-- mathjax --><script src="https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
@@ -70,9 +70,9 @@
 <blockquote>
 <p>Flexible token replay animation for process maps</p>
 </blockquote>
-<p><a href="https://cran.r-project.org/package=processanimater"><img src="http://www.r-pkg.org/badges/version/processanimater" alt="CRAN_Status_Badge"></a> <a href="https://www.tidyverse.org/lifecycle/#experimental"><img src="https://img.shields.io/badge/lifecycle-experimental-orange.svg" alt="lifecycle"></a></p>
+<p><a href="https://cran.r-project.org/package=processanimater"><img src="https://www.r-pkg.org/badges/version/processanimater" alt="CRAN_Status_Badge"></a> <a href="https://www.tidyverse.org/lifecycle/#experimental"><img src="https://img.shields.io/badge/lifecycle-experimental-orange.svg" alt="lifecycle"></a> <a href="https://travis-ci.org/fmannhardt/processanimateR"><img src="https://travis-ci.org/fmannhardt/processanimateR.svg?branch=master" alt="Travis-CI Build Status"></a></p>
 <div class="animationframe" style="background:url(https://cdnjs.cloudflare.com/ajax/libs/galleriffic/2.0.1/css/loader.gif) center center no-repeat;">
-<iframe width="800" height="200" src="example-banner.html" frameborder="0"></iframe>
+<iframe width="800" height="200" src="example/example-banner.html" frameborder="0"></iframe>
 </div>
 <p>Flexible token replay animation for process maps created through the <a href="https://github.com/gertjanssenswillen/processmapR/">processmapR</a> package from the <a href="http://www.bupar.net">bupaR</a> suite, which uses <a href="https://github.com/rich-iannone/DiagrammeR/">DiagrammeR</a> and <a href="https://github.com/mdaines/viz.js">viz.js</a> library to render process maps using GraphViz. ProcessanimateR adds a <a href="https://www.htmlwidgets.org/">htmlwidget</a> that uses SVG animations (<a href="https://www.w3.org/standards/techs/smil#w3c_all">SMIL</a>) to create the animation. Sizes, colors, and the image used for tokens are customizable based on trace, event attributes, or a secondary data frame if an attribute does not change according to the original event log.</p>
 <div id="getting-started" class="section level2">
@@ -108,7 +108,7 @@ remotes<span class="op">::</span><span class="kw"><a href="http://www.rdocumenta
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(processanimateR)
 <span class="kw">library</span>(eventdataR)
 <span class="kw">data</span>(patients)</code></pre></div>
-<p>A basic animation with static color and token size (<a href="example-patients.html">Show result</a>):</p>
+<p>A basic animation with static color and token size (<a href="example/example-patients.html">Show result</a>):</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="reference/animate_process.html">animate_process</a></span>(patients)</code></pre></div>
 <p>Default token color, size, or image can be changed as follows:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="reference/animate_process.html">animate_process</a></span>(patients, <span class="dt">token_size =</span> <span class="dv">2</span>)
@@ -119,7 +119,7 @@ remotes<span class="op">::</span><span class="kw"><a href="http://www.rdocumenta
 <span class="kw"><a href="reference/animate_process.html">animate_process</a></span>(<span class="kw"><a href="reference/add_token_color.html">add_token_color</a></span>(patients, <span class="st">"employee"</span>, <span class="st">"color"</span>, 
                 <span class="dt">color_mapping =</span> scales<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/scales/topics/col_numeric">col_factor</a></span>(<span class="st">"Paired"</span>, patients<span class="op">$</span>employee)),
                 <span class="dt">token_color =</span> <span class="st">"color"</span>)</code></pre></div>
-<p>It is also possible to use a secondary data frame to color the tokens irregardless of the event times. This can be useful if measurement are taken throughout a process, but the measurement event itself should not be included in the process map. For example, the lactic acid measurements of the <code>sepsis</code> data could be used in that way (<a href="example-sepsis.html">Show result</a>):</p>
+<p>It is also possible to use a secondary data frame to color the tokens irregardless of the event times. This can be useful if measurement are taken throughout a process, but the measurement event itself should not be included in the process map. For example, the lactic acid measurements of the <code>sepsis</code> data could be used in that way (<a href="example/example-sepsis.html">Show result</a>):</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(dplyr)
 <span class="kw">data</span>(sepsis)
 
