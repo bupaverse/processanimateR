@@ -70,7 +70,7 @@
 <blockquote>
 <p>Flexible token replay animation for process maps</p>
 </blockquote>
-<p><a href="https://cran.r-project.org/package=processanimater"><img src="https://www.r-pkg.org/badges/version/processanimater" alt="CRAN_Status_Badge"></a> <a href="https://www.tidyverse.org/lifecycle/#experimental"><img src="https://img.shields.io/badge/lifecycle-experimental-orange.svg" alt="lifecycle"></a> <a href="https://travis-ci.org/fmannhardt/processanimateR"><img src="https://travis-ci.org/fmannhardt/processanimateR.svg?branch=master" alt="Travis-CI Build Status"></a></p>
+<p><a href="https://cran.r-project.org/package=processanimateR"><img src="https://www.r-pkg.org/badges/version/processanimateR" alt="CRAN_Status_Badge"></a> <a href="https://www.tidyverse.org/lifecycle/#experimental"><img src="https://img.shields.io/badge/lifecycle-experimental-orange.svg" alt="lifecycle"></a> <a href="https://travis-ci.org/fmannhardt/processanimateR"><img src="https://travis-ci.org/fmannhardt/processanimateR.svg?branch=master" alt="Travis-CI Build Status"></a></p>
 <div class="animationframe" style="background:url(https://cdnjs.cloudflare.com/ajax/libs/galleriffic/2.0.1/css/loader.gif) center center no-repeat;">
 <iframe width="800" height="200" src="example/example-banner.html" frameborder="0"></iframe>
 </div>
@@ -108,7 +108,7 @@ remotes<span class="op">::</span><span class="kw"><a href="http://www.rdocumenta
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(processanimateR)
 <span class="kw">library</span>(eventdataR)
 <span class="kw">data</span>(patients)</code></pre></div>
-<p>A basic animation with static color and token size (<a href="example/example-patients.html">Show result</a>):</p>
+<p>A basic animation with static color and token size:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="reference/animate_process.html">animate_process</a></span>(patients)</code></pre></div>
 <p>Default token color, size, or image can be changed as follows:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="reference/animate_process.html">animate_process</a></span>(patients, <span class="dt">token_size =</span> <span class="dv">2</span>)
@@ -119,7 +119,7 @@ remotes<span class="op">::</span><span class="kw"><a href="http://www.rdocumenta
 <span class="kw"><a href="reference/animate_process.html">animate_process</a></span>(<span class="kw"><a href="reference/add_token_color.html">add_token_color</a></span>(patients, <span class="st">"employee"</span>, <span class="st">"color"</span>, 
                 <span class="dt">color_mapping =</span> scales<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/scales/topics/col_numeric">col_factor</a></span>(<span class="st">"Paired"</span>, patients<span class="op">$</span>employee)),
                 <span class="dt">token_color =</span> <span class="st">"color"</span>)</code></pre></div>
-<p>It is also possible to use a secondary data frame to color the tokens irregardless of the event times. This can be useful if measurement are taken throughout a process, but the measurement event itself should not be included in the process map. For example, the lactic acid measurements of the <code>sepsis</code> data could be used in that way (<a href="example/example-sepsis.html">Show result</a>):</p>
+<p>It is also possible to use a secondary data frame to color the tokens irregardless of the event times. This can be useful if measurement are taken throughout a process, but the measurement event itself should not be included in the process map. For example, the lactic acid measurements of the <code>sepsis</code> data could be used in that way:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(dplyr)
 <span class="kw">data</span>(sepsis)
 
@@ -199,6 +199,8 @@ sepsisBase &lt;-<span class="st"> </span>sepsis <span class="op">%&gt;%</span>
     <div class="links">
 <h2>Links</h2>
 <ul class="list-unstyled">
+<li>Download from CRAN at <br><a href="https://cloud.r-project.org/package=processanimateR">https://​cloud.r-project.org/​package=processanimateR</a>
+</li>
 <li>Browse source code at <br><a href="https://github.com/fmannhardt/processanimateR/">https://​github.com/​fmannhardt/​processanimateR/​</a>
 </li>
 <li>Report a bug at <br><a href="https://github.com/fmannhardt/processanimateR/issues">https://​github.com/​fmannhardt/​processanimateR/​issues</a>
