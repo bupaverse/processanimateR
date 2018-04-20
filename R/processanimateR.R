@@ -15,7 +15,7 @@
 #' @param width The width of the htmlwidget.
 #' @param height The height of the htmlwidget.
 #'
-#' @examples{
+#' @examples
 #' # Load example event log
 #' library(eventdataR)
 #'
@@ -63,7 +63,7 @@
 #' animate_process(sepsisBase, token_color = lacticColors, animation_mode = "relative",
 #'                 animation_duration = 600)
 #' }
-#' }
+#'
 #'
 #' @author Felix Mannhardt <felix.mannhardt@sintef.no> (SINTEF Technology and Society)
 #' @seealso processmapR:process_map
@@ -289,18 +289,7 @@ transform_time <- function(data, col, cases, animation_mode, animation_factor) {
 
 }
 
-#
-# Some functions copied from processmapR that were not exported (MIT)
-# TODO ask upstream package to export a utility method
-
 # Utility functions
 # https://github.com/gertjanssenswillen/processmapR/blob/master/R/utils.R
-
 case_id_ <- function(eventlog) rlang::sym(case_id(eventlog))
-activity_id_ <- function(eventlog) rlang::sym(activity_id(eventlog))
-activity_instance_id_ <- function(eventlog) rlang::sym(activity_instance_id(eventlog))
-resource_id_ <- function(eventlog) rlang::sym(resource_id(eventlog))
 timestamp_ <- function(eventlog) rlang::sym(timestamp(eventlog))
-lifecycle_id_ <- function(eventlog) rlang::sym(lifecycle_id(eventlog))
-
-
