@@ -16,7 +16,7 @@ Sizes, colors, and the image used for tokens are customizable based on trace, ev
 
 ### Installing
 
-ProcessanimateR is not yet available on CRAN. Please use the remotes package or similar means to install it directly from source.
+ProcessanimateR can be installed from CRAN or directly from source by using the remotes package:
 
 ```r
 # install the remotes package
@@ -26,7 +26,7 @@ source("https://install-github.me/r-lib/remotes")
 remotes::install_github("fmannhardt/processanimateR")
 
 # or install a specific tag
-remotes::install_github("fmannhardt/processanimateR@v0.1.0")
+remotes::install_github("fmannhardt/processanimateR@v0.1.1")
 ```
 
 ### Warnings and Limitations
