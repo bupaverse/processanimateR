@@ -6,6 +6,7 @@ addons:
   apt:
     packages:
       - libv8-3.14-dev
+r: devel
 r_packages:
  - DiagrammeRsvg
 cache: packages
