@@ -9,7 +9,3 @@ addons:
 r_packages:
  - DiagrammeRsvg
 cache: packages
-r:
-  - oldrel
-  - release
-  - devel
