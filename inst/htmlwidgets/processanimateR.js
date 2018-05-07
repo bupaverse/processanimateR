@@ -202,32 +202,6 @@ HTMLWidgets.widget({
 
         var svgPan = svgPanZoom(svg);
 
-        function getNumberFromKeyEvent(event) {
-          if (event.keyCode >= 96 && event.keyCode <= 105) {
-              return event.keyCode - 96;
-          } else if (event.keyCode >= 48 && event.keyCode <= 57) {
-              return event.keyCode - 48;
-          }
-          return null;
-        }
-
-        document.addEventListener('keypress', function(event) {
-          if (svg.offsetParent !== null) {
-            if (event.code === "Space") {
-              if (svg.animationsPaused()) {
-                svg.unpauseAnimations();
-              } else {
-                svg.pauseAnimations();
-              }
-            } else {
-              var num = getNumberFromKeyEvent(event);
-              if (num !== null) {
-                svg.setCurrentTime((duration / 10) * num);
-              }
-            }
-          }
-        });
-
         var slider = d3.sliderHorizontal()
           .min(0)
           .max(duration)
@@ -261,17 +235,52 @@ HTMLWidgets.widget({
 
         controlButton.on("click", function() {
           if (svg.animationsPaused()) {
-            svg.unpauseAnimations();
-            controlButton
-              .transition()
-              .duration(500)
-              .attr("d", play);
+            unpauseAnimation();
           } else {
-            svg.pauseAnimations();
-            controlButton
-              .transition()
-              .duration(500)
-              .attr("d", pause);
+            pauseAnimation();
+          }
+        });
+
+        function unpauseAnimation() {
+          svg.unpauseAnimations();
+          controlButton
+            .transition()
+            .duration(500)
+            .attr("d", pause);
+        }
+
+        function pauseAnimation() {
+          svg.pauseAnimations();
+          controlButton
+            .transition()
+            .duration(500)
+            .attr("d", play);
+        }
+
+        document.addEventListener('keypress', function(event) {
+
+          function getNumberFromKeyEvent(event) {
+            if (event.keyCode >= 96 && event.keyCode <= 105) {
+                return event.keyCode - 96;
+            } else if (event.keyCode >= 48 && event.keyCode <= 57) {
+                return event.keyCode - 48;
+            }
+            return null;
+          }
+
+          if (svg.offsetParent !== null) {
+            if (event.code === "Space") {
+              if (svg.animationsPaused()) {
+                unpauseAnimation();
+              } else {
+                pauseAnimation();
+              }
+            } else {
+              var num = getNumberFromKeyEvent(event);
+              if (num !== null) {
+                svg.setCurrentTime((duration / 10) * num);
+              }
+            }
           }
         });
 
