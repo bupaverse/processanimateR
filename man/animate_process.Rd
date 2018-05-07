@@ -27,15 +27,12 @@ The token color is change accordingly during the animation (default color is ora
 \item{token_image}{The event attribute (character) or alternatively a data frame with three columns (case, time, image) matching the case identifier of the supplied event log.
 The token image is change accordingly during the animation (by default a SVG shape is used).}
 
-\item{width}{The width of the htmlwidget.}
-
-\item{height}{The height of the htmlwidget.}
+\item{width, height}{Fixed size for widget (in css units). The default is NULL, which results in intelligent automatic sizing based on the widget's container.}
 }
 \description{
 A function for creating a SVG animation of an event log on a process map created by processmapR.
 }
 \examples{
-{
 # Load example event log
 library(eventdataR)
 
@@ -83,7 +80,7 @@ sepsisBase <- sepsis \%>\%
 animate_process(sepsisBase, token_color = lacticColors, animation_mode = "relative",
                 animation_duration = 600)
 }
-}
+
 
 }
 \seealso{

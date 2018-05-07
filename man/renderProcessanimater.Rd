@@ -7,12 +7,12 @@
 renderProcessanimater(expr, env = parent.frame(), quoted = FALSE)
 }
 \arguments{
-\item{expr}{The expression generating a process animation (animate_process)}
+\item{expr}{The expression generating a process animation (animate_process).}
 
-\item{env}{The environment in which to evaluate expr}
+\item{env}{The environment in which to evaluate expr.}
 
 \item{quoted}{Is expr a quoted expression (with quote())? This is useful if you want to save an expression in a variable.}
 }
 \description{
-Renders a SVG process animation suitable to be used by processanimaterOutput
+Renders a SVG process animation suitable to be used by processanimaterOutput.
 }

@@ -12,8 +12,7 @@
 #'  The token color is change accordingly during the animation (default color is orange). You may use \code{\link{add_token_color}} to add a suitable attribute to the event log.
 #' @param token_image The event attribute (character) or alternatively a data frame with three columns (case, time, image) matching the case identifier of the supplied event log.
 #'  The token image is change accordingly during the animation (by default a SVG shape is used).
-#' @param width The width of the htmlwidget.
-#' @param height The height of the htmlwidget.
+#' @param width,height Fixed size for widget (in css units). The default is NULL, which results in intelligent automatic sizing based on the widget's container.
 #'
 #' @examples
 #' # Load example event log
@@ -142,7 +141,7 @@ animate_process <- function(eventlog,
     shape = "circle", #TODO make configureable
     start_activity = start_activity,
     end_activity = end_activity,
-    settings = settings
+    duration = animation_duration
   )
 
   htmlwidgets::createWidget(name = "processanimateR", x = x,
@@ -155,13 +154,13 @@ animate_process <- function(eventlog,
 }
 
 #' @title Create a process animation output element
-#' @description Renders a renderProcessanimater within an application page
-#' @param outputId output variable to read the animation from
-#' @param width The desired width of the SVG
-#' @param height The desired height of the SVG
+#' @description Renders a renderProcessanimater within an application page.
+#' @param outputId Output variable to read the animation from
+#' @param width,height Must be a valid CSS unit (like 100%, 400px, auto) or a number,
+#'  which will be coerced to a string and have px appended.
 #'
 #' @export
-processanimaterOutput <- function(outputId, width = NULL, height = NULL) {
+processanimaterOutput <- function(outputId, width = "100%", height = "400px") {
   htmlwidgets::shinyWidgetOutput(outputId = outputId,
                                  name = "processanimateR",
                                  inline = F,
@@ -170,9 +169,9 @@ processanimaterOutput <- function(outputId, width = NULL, height = NULL) {
 }
 
 #' @title Renders process animation output
-#' @description Renders a SVG process animation suitable to be used by processanimaterOutput
-#' @param expr The expression generating a process animation (animate_process)
-#' @param env The environment in which to evaluate expr
+#' @description Renders a SVG process animation suitable to be used by processanimaterOutput.
+#' @param expr The expression generating a process animation (animate_process).
+#' @param env The environment in which to evaluate expr.
 #' @param quoted Is expr a quoted expression (with quote())? This is useful if you want to save an expression in a variable.
 #'
 #' @export

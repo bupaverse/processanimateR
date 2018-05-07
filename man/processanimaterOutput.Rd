@@ -4,15 +4,14 @@
 \alias{processanimaterOutput}
 \title{Create a process animation output element}
 \usage{
-processanimaterOutput(outputId, width = NULL, height = NULL)
+processanimaterOutput(outputId, width = "100\%", height = "400px")
 }
 \arguments{
-\item{outputId}{output variable to read the animation from}
+\item{outputId}{Output variable to read the animation from}
 
-\item{width}{The desired width of the SVG}
-
-\item{height}{The desired height of the SVG}
+\item{width, height}{Must be a valid CSS unit (like 100%, 400px, auto) or a number,
+which will be coerced to a string and have px appended.}
 }
 \description{
-Renders a renderProcessanimater within an application page
+Renders a renderProcessanimater within an application page.
 }

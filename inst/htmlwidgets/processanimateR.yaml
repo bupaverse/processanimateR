@@ -13,5 +13,9 @@ dependencies:
     script: svg-pan-zoom.min.js
   - name: viz
     version: 1.8.1
-    src: htmlwidgets/lib/viz
+    src: "htmlwidgets/lib/viz"
     script: viz.js
+  - name: d3-simple-slider
+    version: 0.2.1
+    src: "htmlwidgets/lib/d3-simple-slider"
+    script: d3-simple-slider.js

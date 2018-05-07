@@ -6,13 +6,17 @@ HTMLWidgets.widget({
 
   factory: function(el, width, height) {
 
+    var smargin = {top:25, right:30, bottom:0, left:50},
+      swidth = width - smargin.left - smargin.right,
+      sheight = 75 - smargin.top - smargin.bottom;
+
     return {
       renderValue: function(x) {
 
         el.innerHTML = Viz(x.diagram,format="svg");
-        var svg = document.getElementsByTagName('svg')[0];
+        var svg = el.querySelector("svg");
 
-    		var edges = document.querySelectorAll('.edge');
+    		var edges = svg.querySelectorAll('.edge');
     		for(var i = 0; i < edges.length; i++) {
     			var id = edges[i].id;
     			var paths = edges[i].getElementsByTagName("path");
@@ -21,7 +25,7 @@ HTMLWidgets.widget({
     			}
     		}
 
-        var graph = d3.select("#graph0");
+        var graph = d3.select(svg).select("#graph0");
 
         var tokens = HTMLWidgets.dataframeToD3(x.tokens);
         var sizes = HTMLWidgets.dataframeToD3(x.sizes);
@@ -30,8 +34,9 @@ HTMLWidgets.widget({
         var hasImages = images.some(function (x) { return x !== null; });
         var shape = hasImages ? "image" : x.shape;
         var cases = Array.isArray(x.cases) ? x.cases: [x.cases];
-        var startNode = document.querySelector("#a_node"+x.start_activity+" > a > ellipse");
-        var endNode = document.querySelector("#a_node"+x.end_activity+" > a > ellipse");
+        var startNode = svg.querySelector("#a_node"+x.start_activity+" > a > ellipse");
+        var endNode = svg.querySelector("#a_node"+x.end_activity+" > a > ellipse");
+        var duration = x.duration;
 
         var circles;
         if (hasImages) {
@@ -96,7 +101,7 @@ HTMLWidgets.widget({
       					})
                 .attr("fill", "freeze")
       					.attr("from", function(d) {
-                    var edge = document.querySelector("#edge" + d.edge_id + "-path");
+                    var edge = svg.querySelector("#edge" + d.edge_id + "-path");
                     var point = edge.getPointAtLength(edge.getTotalLength()-0.1);
                     return point.x + "," + point.y;
       					})
@@ -104,7 +109,7 @@ HTMLWidgets.widget({
       					    if (d.to_id === x.end_activity) {
                       return endNode.cx.animVal.value + "," + endNode.cy.animVal.value;
       					    } else {
-      					      var edge = document.querySelector("#edge" + caseTokens[i+1].edge_id + "-path");
+      					      var edge = svg.querySelector("#edge" + caseTokens[i+1].edge_id + "-path");
                       var point = edge.getPointAtLength(0.1);
                       return point.x + "," + point.y;
       					    }
@@ -187,32 +192,111 @@ HTMLWidgets.widget({
         // is re re-add the whole structure to the DOM
         el.innerHTML = el.innerHTML;
 
-        svg = document.getElementsByTagName('svg')[0];
-        svg.setAttribute("width", width);
-        svg.setAttribute("height", height);
+        svg = el.querySelector("svg");
+        if (width > 0) {
+          svg.setAttribute("width", width);
+        }
+        if (height > 0) {
+          svg.setAttribute("height", height - sheight - smargin.top - smargin.bottom);
+        }
 
         var svgPan = svgPanZoom(svg);
 
+        function getNumberFromKeyEvent(event) {
+          if (event.keyCode >= 96 && event.keyCode <= 105) {
+              return event.keyCode - 96;
+          } else if (event.keyCode >= 48 && event.keyCode <= 57) {
+              return event.keyCode - 48;
+          }
+          return null;
+        }
+
         document.addEventListener('keypress', function(event) {
-          if (event.code === "Space") {
-            if (svg.animationsPaused()) {
-              svg.unpauseAnimations();
+          if (svg.offsetParent !== null) {
+            if (event.code === "Space") {
+              if (svg.animationsPaused()) {
+                svg.unpauseAnimations();
+              } else {
+                svg.pauseAnimations();
+              }
             } else {
-              svg.pauseAnimations();
+              var num = getNumberFromKeyEvent(event);
+              if (num !== null) {
+                svg.setCurrentTime((duration / 10) * num);
+              }
             }
           }
         });
+
+        var slider = d3.sliderHorizontal()
+          .min(0)
+          .max(duration)
+          .step(0.01)
+          .ticks(25)
+          .width(swidth)
+          .displayValue(true)
+          .on('onchange', function(val) {
+            svg.setCurrentTime(val);
+          });
+
+        var controlSvg = d3.select(el).append("svg")
+          .attr("width", swidth + smargin.left + smargin.right)
+          .attr("height", sheight + smargin.top + smargin.bottom);
+
+        controlSvg.append("g")
+          .attr("transform", "translate("+smargin.left+",30)")
+          .call(slider);
+
+        var buttonsSvg = controlSvg.append("g")
+          .attr("transform", "translate(0,15)");
+
+        // Inspired by https://gist.github.com/guilhermesimoes/fbe967d45ceeb350b765
+        var play = "M11,10 L18,13.74 18,22.28 11,26 M18,13.74 L26,18 26,18 18,22.28",
+            pause = "M11,10 L17,10 17,26 11,26 M20,10 L26,10 26,26 20,26";
+
+        var controlButton = buttonsSvg
+          .append("g").attr("style", "pointer-events: bounding-box")
+          .append("path")
+          .attr("d", pause);
+
+        controlButton.on("click", function() {
+          if (svg.animationsPaused()) {
+            svg.unpauseAnimations();
+            controlButton
+              .transition()
+              .duration(500)
+              .attr("d", play);
+          } else {
+            svg.pauseAnimations();
+            controlButton
+              .transition()
+              .duration(500)
+              .attr("d", pause);
+          }
+        });
+
+        (function(){
+            var time = svg.getCurrentTime();
+            if (time <= duration) {
+              slider.value(time);
+            }
+            setTimeout(arguments.callee, 60);
+        })();
 
       },
 
       resize: function(width, height) {
 
-        var svg = document.getElementsByTagName('svg')[0];
+        var svg = el.querySelector("svg");
         svg.setAttribute("width", width);
-        svg.setAttribute("height", height);
+        svg.setAttribute("height", height - sheight - smargin.top - smargin.bottom);
         var svgPan = svgPanZoom(svg);
         svgPan.resize();
-        svgPan.fit();
+        try {
+          svgPan.fit();
+        } catch (err) {
+          // might cause an error if initial height was 0
+        }
         svgPan.center();
 
       },
