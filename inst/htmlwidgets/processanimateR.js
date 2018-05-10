@@ -286,8 +286,8 @@ HTMLWidgets.widget({
 
         (function(){
             var time = svg.getCurrentTime();
-            if (time <= duration) {
-              slider.value(time);
+            if (time > 0 && time <= duration && !svg.animationsPaused()) {
+              slider.silentValue(time);
             }
             setTimeout(arguments.callee, 60);
         })();

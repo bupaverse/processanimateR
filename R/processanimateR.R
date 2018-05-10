@@ -126,8 +126,8 @@ animate_process <- function(eventlog,
   images <- transform_time(images, "image", cases, animation_mode, animation_factor)
 
   tokens <- generate_tokens(cases, precedence, processmap, animation_mode, animation_factor)
-  start_activity <- tokens %>% slice(1) %>% pull(from_id)
-  end_activity <- tokens %>% slice(n()) %>% pull(to_id)
+  start_activity <- processmap$nodes_df %>% filter(label == "Start") %>% pull(id)
+  end_activity <- processmap$nodes_df %>% filter(label == "End") %>% pull(id)
   cases <- tokens %>% distinct(case) %>% pull(case)
 
   settings <- list()
