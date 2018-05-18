@@ -19,6 +19,7 @@ function slider() {
   var marks = null;
   var tickFormat = null;
   var ticks = null;
+  var displayFormat = null;
 
   var listeners = d3Dispatch.dispatch("onchange", "start", "end", "drag");
 
@@ -51,6 +52,7 @@ function slider() {
       .clamp(true)(value);
 
     tickFormat = tickFormat || scale.tickFormat();
+    displayFormat = displayFormat || scale.tickFormat();
 
     var axis = selection.selectAll(".axis").data([null]);
 
@@ -125,7 +127,7 @@ function slider() {
         .attr("font-size", 10)
         .attr("y", 27)
         .attr("dy", ".71em")
-        .text(tickFormat(value));
+        .text(displayFormat(value));
     }
 
     context.select(".track").attr("x2", scale.range()[1]);
@@ -260,7 +262,7 @@ function slider() {
     handleSelection.attr("transform", "translate(" + scale(newValue) + ",0)");
 
     if (displayValue) {
-      textSelection.text(tickFormat(newValue));
+      textSelection.text(displayFormat(newValue));
     }
   }
 
@@ -291,6 +293,12 @@ function slider() {
   slider.tickFormat = function(_) {
     if (!arguments.length) return tickFormat;
     tickFormat = _;
+    return slider;
+  };
+
+  slider.displayFormat = function(_) {
+    if (!arguments.length) return displayFormat;
+    displayFormat = _;
     return slider;
   };
 

@@ -19,3 +19,7 @@ dependencies:
     version: 0.2.1
     src: "htmlwidgets/lib/d3-simple-slider"
     script: d3-simple-slider.js
+  - name: momentjs
+    version: 0.2.22.1
+    src: "htmlwidgets/lib/momentjs"
+    script: moment.min.js

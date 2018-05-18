@@ -189,7 +189,7 @@ HTMLWidgets.widget({
         });
 
         // Workaround for starting the SVG animation at time 0 in Chrome
-        // is re re-add the whole structure to the DOM
+        // Whole SVG is re-add to the DOM after creation
         el.innerHTML = el.innerHTML;
 
         svg = el.querySelector("svg");
@@ -202,95 +202,126 @@ HTMLWidgets.widget({
 
         var svgPan = svgPanZoom(svg);
 
-        var slider = d3.sliderHorizontal()
-          .min(0)
-          .max(duration)
-          .step(0.01)
-          .ticks(25)
-          .width(swidth)
-          .displayValue(true)
-          .on('onchange', function(val) {
-            svg.setCurrentTime(val);
+        if (x.show_timeline &&
+            // Polyfill fakesmile does not support pausing/unpausing for IE
+            typeof SVGSVGElement.prototype.animationsPaused === "function") {
+
+          if (x.mode === "relative") {
+            animMin = x.timeline_start;
+            animMax = x.timeline_end;
+          } else {
+            animMin = new Date(x.timeline_start);
+            animMax = new Date(x.timeline_end);
+          }
+
+          var slider = d3.sliderHorizontal()
+            .min(animMin)
+            .max(animMax)
+            .ticks(10)
+            .width(swidth)
+            .displayValue(true)
+            .on('onchange', function(val) {
+              svg.setCurrentTime((val - x.timeline_start) / x.factor);
+            });
+
+          //TODO formatter
+          if (x.mode === "relative") {
+            slider.tickFormat(function(val){
+              return moment.duration(val, 'milliseconds').humanize();
+            });
+            slider.displayFormat(function(val){
+              return moment.duration(val, 'milliseconds').humanize();
+            });
+          } else {
+            slider.displayFormat(d3.timeFormat("%x %X"));
+          }
+
+          var controlSvg = d3.select(el).append("svg")
+            .attr("width", swidth + smargin.left + smargin.right)
+            .attr("height", sheight + smargin.top + smargin.bottom);
+
+          controlSvg.append("g")
+            .attr("transform", "translate("+smargin.left+",30)")
+            .call(slider);
+
+          var buttonsSvg = controlSvg.append("g")
+            .attr("transform", "translate(0,15)");
+
+          // Inspired by https://gist.github.com/guilhermesimoes/fbe967d45ceeb350b765
+          var play = "M11,10 L18,13.74 18,22.28 11,26 M18,13.74 L26,18 26,18 18,22.28",
+              pause = "M11,10 L17,10 17,26 11,26 M20,10 L26,10 26,26 20,26";
+
+          var controlButton = buttonsSvg
+            .append("g").attr("style", "pointer-events: bounding-box")
+            .append("path")
+            .attr("d", pause);
+
+          controlButton.on("click", function() {
+            if (svg.animationsPaused()) {
+              unpauseAnimation();
+            } else {
+              pauseAnimation();
+            }
           });
 
-        var controlSvg = d3.select(el).append("svg")
-          .attr("width", swidth + smargin.left + smargin.right)
-          .attr("height", sheight + smargin.top + smargin.bottom);
+          unpauseAnimation = function() {
+            svg.unpauseAnimations();
+            controlButton
+              .transition()
+              .duration(500)
+              .attr("d", pause);
+          };
 
-        controlSvg.append("g")
-          .attr("transform", "translate("+smargin.left+",30)")
-          .call(slider);
+          pauseAnimation = function() {
+            svg.pauseAnimations();
+            controlButton
+              .transition()
+              .duration(500)
+              .attr("d", play);
+          };
 
-        var buttonsSvg = controlSvg.append("g")
-          .attr("transform", "translate(0,15)");
+          document.addEventListener('keypress', function(event) {
 
-        // Inspired by https://gist.github.com/guilhermesimoes/fbe967d45ceeb350b765
-        var play = "M11,10 L18,13.74 18,22.28 11,26 M18,13.74 L26,18 26,18 18,22.28",
-            pause = "M11,10 L17,10 17,26 11,26 M20,10 L26,10 26,26 20,26";
-
-        var controlButton = buttonsSvg
-          .append("g").attr("style", "pointer-events: bounding-box")
-          .append("path")
-          .attr("d", pause);
-
-        controlButton.on("click", function() {
-          if (svg.animationsPaused()) {
-            unpauseAnimation();
-          } else {
-            pauseAnimation();
-          }
-        });
-
-        function unpauseAnimation() {
-          svg.unpauseAnimations();
-          controlButton
-            .transition()
-            .duration(500)
-            .attr("d", pause);
-        }
-
-        function pauseAnimation() {
-          svg.pauseAnimations();
-          controlButton
-            .transition()
-            .duration(500)
-            .attr("d", play);
-        }
-
-        document.addEventListener('keypress', function(event) {
-
-          function getNumberFromKeyEvent(event) {
-            if (event.keyCode >= 96 && event.keyCode <= 105) {
-                return event.keyCode - 96;
-            } else if (event.keyCode >= 48 && event.keyCode <= 57) {
-                return event.keyCode - 48;
+            function getNumberFromKeyEvent(event) {
+              if (event.keyCode >= 96 && event.keyCode <= 105) {
+                  return event.keyCode - 96;
+              } else if (event.keyCode >= 48 && event.keyCode <= 57) {
+                  return event.keyCode - 48;
+              }
+              return null;
             }
-            return null;
-          }
 
-          if (svg.offsetParent !== null) {
-            if (event.code === "Space") {
-              if (svg.animationsPaused()) {
-                unpauseAnimation();
+            if (svg.offsetParent !== null) {
+              if (event.code === "Space") {
+                if (svg.animationsPaused()) {
+                  unpauseAnimation();
+                } else {
+                  pauseAnimation();
+                }
               } else {
-                pauseAnimation();
-              }
-            } else {
-              var num = getNumberFromKeyEvent(event);
-              if (num !== null) {
-                svg.setCurrentTime((duration / 10) * num);
+                var num = getNumberFromKeyEvent(event);
+                if (num !== null) {
+                  svg.setCurrentTime((duration / 10) * num);
+                }
               }
             }
-          }
-        });
+          });
 
-        (function(){
-            var time = svg.getCurrentTime();
-            if (time > 0 && time <= duration && !svg.animationsPaused()) {
-              slider.silentValue(time);
-            }
-            setTimeout(arguments.callee, 60);
-        })();
+          (function(){
+              var time = svg.getCurrentTime();
+              if (time > 0 && time <= duration) {
+                if (!svg.animationsPaused()) {
+                  if (x.mode === "relative") {
+                    slider.silentValue(x.timeline_start + time * x.factor);
+                  } else {
+                    slider.silentValue(new Date(x.timeline_start + (time * x.factor)));
+                  }
+                }
+              }
+              setTimeout(arguments.callee, 60);
+          })();
+
+        }
 
       },
 

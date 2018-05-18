@@ -12,6 +12,7 @@
 #'  The token color is change accordingly during the animation (default color is orange). You may use \code{\link{add_token_color}} to add a suitable attribute to the event log.
 #' @param token_image The event attribute (character) or alternatively a data frame with three columns (case, time, image) matching the case identifier of the supplied event log.
 #'  The token image is change accordingly during the animation (by default a SVG shape is used).
+#' @param show_slider Whether to render a timeline slider in supported browsers (Recent versions of Chrome and Firefox only).
 #' @param width,height Fixed size for widget (in css units). The default is NULL, which results in intelligent automatic sizing based on the widget's container.
 #'
 #' @examples
@@ -82,6 +83,7 @@ animate_process <- function(eventlog,
                             token_size = NULL,
                             token_color = NULL,
                             token_image = NULL,
+                            show_timeline = TRUE,
                             width = NULL,
                             height = NULL) {
 
@@ -104,31 +106,32 @@ animate_process <- function(eventlog,
     summarise(case_start = min(start_time, na.rm = T),
               case_end = max(end_time, na.rm = T)) %>%
     mutate(case_duration = case_end - case_start) %>%
-    ungroup() %>%
-    mutate(log_start = min(case_start, na.rm = T),
-           log_end = max(case_end, na.rm = T),
-           log_duration = log_end - log_start)
+    ungroup()
 
   # determine animation factor based on requested duration
   if (animation_mode == "absolute") {
-    animation_factor = cases %>% pull(log_duration) %>% first() / animation_duration
+    timeline_start <- cases %>% pull(case_start) %>% min(na.rm = T)
+    timeline_end <- cases %>% pull(case_end) %>% max()
+    animation_factor <- (timeline_end - timeline_start) / animation_duration
   } else {
-    animation_factor = cases %>% pull(case_duration) %>% max(na.rm = T) / animation_duration
+    timeline_start <- 0
+    timeline_end <- cases %>% pull(case_duration) %>% max(na.rm = T)
+    animation_factor =  timeline_end / animation_duration
   }
 
   sizes <- generate_animation_attribute(eventlog, "size", token_size, 6)
-  sizes <- transform_time(sizes, "size", cases, animation_mode, animation_factor)
+  sizes <- transform_time(sizes, "size", cases, animation_mode, animation_factor, timeline_start, timeline_end)
 
   colors <- generate_animation_attribute(eventlog, "color", token_color, "white")
-  colors <- transform_time(colors, "color", cases, animation_mode, animation_factor)
+  colors <- transform_time(colors, "color", cases, animation_mode, animation_factor, timeline_start, timeline_end)
 
   images <- generate_animation_attribute(eventlog, "image", token_image, NA)
-  images <- transform_time(images, "image", cases, animation_mode, animation_factor)
+  images <- transform_time(images, "image", cases, animation_mode, animation_factor, timeline_start, timeline_end)
 
-  tokens <- generate_tokens(cases, precedence, processmap, animation_mode, animation_factor)
+  tokens <- generate_tokens(cases, precedence, processmap, animation_mode, animation_factor, timeline_start, timeline_end)
   start_activity <- processmap$nodes_df %>% filter(label == "Start") %>% pull(id)
   end_activity <- processmap$nodes_df %>% filter(label == "End") %>% pull(id)
-  cases <- tokens %>% distinct(case) %>% pull(case)
+  case_ids <- tokens %>% distinct(case) %>% pull(case)
 
   settings <- list()
   x <- list(
@@ -136,12 +139,17 @@ animate_process <- function(eventlog,
     tokens = tokens,
     sizes = sizes,
     colors = colors,
-    cases = cases,
+    cases = case_ids,
     images = images,
     shape = "circle", #TODO make configureable
     start_activity = start_activity,
     end_activity = end_activity,
-    duration = animation_duration
+    duration = animation_duration,
+    show_timeline = show_timeline,
+    mode = animation_mode,
+    factor = animation_factor * 1000,
+    timeline_start = timeline_start * 1000,
+    timeline_end = timeline_end * 1000
   )
 
   htmlwidgets::createWidget(name = "processanimateR", x = x,
@@ -184,7 +192,7 @@ renderProcessanimater <- function(expr, env = parent.frame(), quoted = FALSE) {
 # Private helper functions
 #
 
-generate_tokens <- function(cases, precedence, processmap, animation_mode, animation_factor) {
+generate_tokens <- function(cases, precedence, processmap, animation_mode, animation_factor, timeline_start, timeline_end) {
 
   case <- end_time <- next_end_time <- next_start_time <- case_start <- token_duration <- NULL
   min_order <- token_start <- activity_duration <- token_end <- from_id <- to_id <- case_duration <- NULL
@@ -198,9 +206,8 @@ generate_tokens <- function(cases, precedence, processmap, animation_mode, anima
   EPSILON = 0.00001
 
   if (animation_mode == "absolute") {
-    log_start <- min(cases$case_start, na.rm = T)
     tokens <- mutate(tokens,
-                     token_start = (end_time - log_start) / animation_factor,
+                     token_start = (end_time - timeline_start) / animation_factor,
                      token_duration = (next_start_time - end_time) / animation_factor,
                      activity_duration = EPSILON + pmax(0, (next_end_time - next_start_time) / animation_factor))
   } else {
@@ -266,7 +273,7 @@ generate_animation_attribute <- function(eventlog, attributeName, value, default
   }
 }
 
-transform_time <- function(data, col, cases, animation_mode, animation_factor) {
+transform_time <- function(data, col, cases, animation_mode, animation_factor, timeline_start, timeline_end) {
 
   .order <- time <- case <- log_start <- case_start <- NULL
 
@@ -278,7 +285,7 @@ transform_time <- function(data, col, cases, animation_mode, animation_factor) {
 
   if (animation_mode == "absolute") {
     data <- data %>%
-      mutate(time = as.numeric(time - log_start, units = "secs") / animation_factor) %>%
+      mutate(time = as.numeric(time - timeline_start, units = "secs") / animation_factor) %>%
       select(case, time, !!col)
   } else {
     col <- data %>%
