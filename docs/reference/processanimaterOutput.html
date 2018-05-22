@@ -25,9 +25,12 @@
 <link href="../pkgdown.css" rel="stylesheet">
 <script src="../jquery.sticky-kit.min.js"></script>
 <script src="../pkgdown.js"></script>
+
+
+
 <meta property="og:title" content="Create a process animation output element — processanimaterOutput" />
 
-<meta property="og:description" content="Renders a renderProcessanimater within an application page" />
+<meta property="og:description" content="Renders a renderProcessanimater within an application page." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -38,8 +41,6 @@
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]-->
-
-
 
 
   </head>
@@ -57,7 +58,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">processanimateR</a>
-        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.1.1</span>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.1.2.9000</span>
       </span>
     </div>
 
@@ -94,30 +95,29 @@
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Create a process animation output element</h1>
-    <small>Source: <a href='https://github.com/fmannhardt/processanimateR//blob/master/R/processanimateR.R'><code>R/processanimateR.R</code></a></small>
+    <small class="dont-index">Source: <a href='https://github.com/fmannhardt/processanimateR//blob/master/R/processanimateR.R'><code>R/processanimateR.R</code></a></small>
     <div class="hidden name"><code>processanimaterOutput.Rd</code></div>
     </div>
 
+    <div class="ref-description">
     
-    <p>Renders a renderProcessanimater within an application page</p>
+    <p>Renders a renderProcessanimater within an application page.</p>
     
+    </div>
 
-    <pre class="usage"><span class='fu'>processanimaterOutput</span>(<span class='no'>outputId</span>, <span class='kw'>width</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>height</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
+    <pre class="usage"><span class='fu'>processanimaterOutput</span>(<span class='no'>outputId</span>, <span class='kw'>width</span> <span class='kw'>=</span> <span class='st'>"100%"</span>, <span class='kw'>height</span> <span class='kw'>=</span> <span class='st'>"400px"</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>outputId</th>
-      <td><p>output variable to read the animation from</p></td>
+      <td><p>Output variable to read the animation from</p></td>
     </tr>
     <tr>
-      <th>width</th>
-      <td><p>The desired width of the SVG</p></td>
-    </tr>
-    <tr>
-      <th>height</th>
-      <td><p>The desired height of the SVG</p></td>
+      <th>width, height</th>
+      <td><p>Must be a valid CSS unit (like 100<!-- %, 400px, auto) or a number, -->
+which will be coerced to a string and have px appended.</p></td>
     </tr>
     </table>
     

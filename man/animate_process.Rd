@@ -6,7 +6,8 @@
 \usage{
 animate_process(eventlog, processmap = process_map(eventlog, render = F),
   animation_mode = "absolute", animation_duration = 60, token_size = NULL,
-  token_color = NULL, token_image = NULL, width = NULL, height = NULL)
+  token_color = NULL, token_image = NULL, show_timeline = TRUE,
+  width = NULL, height = NULL)
 }
 \arguments{
 \item{eventlog}{The event log object that should be animated}
@@ -28,6 +29,8 @@ The token color is change accordingly during the animation (default color is ora
 The token image is change accordingly during the animation (by default a SVG shape is used).}
 
 \item{width, height}{Fixed size for widget (in css units). The default is NULL, which results in intelligent automatic sizing based on the widget's container.}
+
+\item{show_slider}{Whether to render a timeline slider in supported browsers (Recent versions of Chrome and Firefox only).}
 }
 \description{
 A function for creating a SVG animation of an event log on a process map created by processmapR.

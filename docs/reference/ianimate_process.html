@@ -25,6 +25,9 @@
 <link href="../pkgdown.css" rel="stylesheet">
 <script src="../jquery.sticky-kit.min.js"></script>
 <script src="../pkgdown.js"></script>
+
+
+
 <meta property="og:title" content="Interactive Process Animation — ianimate_process" />
 
 <meta property="og:description" content="Creates an interactive Shiny dashbord that allows to configure the animation produced by processanimateR." />
@@ -38,8 +41,6 @@
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]-->
-
-
 
 
   </head>
@@ -57,7 +58,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">processanimateR</a>
-        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.1.1</span>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.1.2.9000</span>
       </span>
     </div>
 
@@ -94,13 +95,15 @@
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Interactive Process Animation</h1>
-    <small>Source: <a href='https://github.com/fmannhardt/processanimateR//blob/master/R/iprocessanimateR.R'><code>R/iprocessanimateR.R</code></a></small>
+    <small class="dont-index">Source: <a href='https://github.com/fmannhardt/processanimateR//blob/master/R/iprocessanimateR.R'><code>R/iprocessanimateR.R</code></a></small>
     <div class="hidden name"><code>ianimate_process.Rd</code></div>
     </div>
 
+    <div class="ref-description">
     
     <p>Creates an interactive Shiny dashbord that allows to configure the animation produced by processanimateR.</p>
     
+    </div>
 
     <pre class="usage"><span class='fu'>ianimate_process</span>(<span class='no'>eventlog</span>, <span class='kw'>min.time</span> <span class='kw'>=</span> <span class='fl'>30</span>, <span class='kw'>max.time</span> <span class='kw'>=</span> <span class='fl'>600</span>,
   <span class='kw'>default.time</span> <span class='kw'>=</span> <span class='fl'>60</span>)</pre>
@@ -132,10 +135,11 @@
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"># NOT RUN {
-{
-# }
-<span class='co'># NOT RUN {</span>
+    <pre class="examples"><div class='input'>{
+</div><div class='output co'>#&gt; <span class='error'>Error: &lt;text&gt;:3:0: unexpected end of input</span>
+#&gt; <span class='error'>1: {</span>
+#&gt; <span class='error'>2: </span>
+#&gt; <span class='error'>  ^</span></div><span class='co'># NOT RUN {</span>
 <span class='fu'>library</span>(<span class='no'>eventdataR</span>)
 <span class='fu'>library</span>(<span class='no'>edeaR</span>)
 <span class='fu'>library</span>(<span class='no'>dplyr</span>)
@@ -146,11 +150,11 @@
  <span class='co'># the token size option currently only support numeric attributes</span>
  <span class='fu'><a href='http://dplyr.tidyverse.org/reference/summarise_all.html'>mutate_at</a></span>(<span class='fu'>c</span>(<span class='st'>"lacticacid"</span>, <span class='st'>"leucocytes"</span>, <span class='st'>"crp"</span>, <span class='st'>"age"</span>), <span class='no'>as.numeric</span>) <span class='kw'>%&gt;%</span>
  <span class='fu'><a href='http://dplyr.tidyverse.org/reference/summarise_all.html'>mutate_at</a></span>(<span class='fu'>c</span>(<span class='st'>"disfuncorg"</span>, <span class='st'>"sirscriteria2ormore"</span>, <span class='st'>"infectionsuspected"</span>), <span class='no'>as.logical</span>))
-<span class='co'># }</span># NOT RUN {
-}
+<span class='co'># }</span><div class='input'>}
 
-# }
-</pre>
+</div><div class='output co'>#&gt; <span class='error'>Error: &lt;text&gt;:1:1: unexpected '}'</span>
+#&gt; <span class='error'>1: }</span>
+#&gt; <span class='error'>    ^</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
