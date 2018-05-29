@@ -13,7 +13,6 @@ Imports:
   bupaR, processmapR (>= 0.3.1), rlang, magrittr, dplyr, shiny, tidyr, htmlwidgets, 
   DiagrammeR (>= 1.0.0), DiagrammeRsvg, RColorBrewer, zoo, scales, shinycssloaders
 Suggests: eventdataR, edeaR
-Remotes: gertjanssenswillen/processmapR
 RoxygenNote: 6.0.1
 URL: https://github.com/fmannhardt/processanimateR/
 BugReports: https://github.com/fmannhardt/processanimateR/issues

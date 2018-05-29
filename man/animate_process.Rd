@@ -28,9 +28,9 @@ The token color is change accordingly during the animation (default color is ora
 \item{token_image}{The event attribute (character) or alternatively a data frame with three columns (case, time, image) matching the case identifier of the supplied event log.
 The token image is change accordingly during the animation (by default a SVG shape is used).}
 
-\item{width, height}{Fixed size for widget (in css units). The default is NULL, which results in intelligent automatic sizing based on the widget's container.}
+\item{show_timeline}{Whether to render a timeline slider in supported browsers (Recent versions of Chrome and Firefox only).}
 
-\item{show_slider}{Whether to render a timeline slider in supported browsers (Recent versions of Chrome and Firefox only).}
+\item{width, height}{Fixed size for widget (in css units). The default is NULL, which results in intelligent automatic sizing based on the widget's container.}
 }
 \description{
 A function for creating a SVG animation of an event log on a process map created by processmapR.
