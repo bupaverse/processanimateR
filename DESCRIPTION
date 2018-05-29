@@ -10,8 +10,8 @@ License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 Imports: 
-  bupaR, processmapR, rlang, magrittr, dplyr, shiny, tidyr, htmlwidgets, 
-  DiagrammeR, DiagrammeRsvg, RColorBrewer, zoo, scales, shinycssloaders
+  bupaR, processmapR (>= 0.3.1), rlang, magrittr, dplyr, shiny, tidyr, htmlwidgets, 
+  DiagrammeR (>= 1.0.0), DiagrammeRsvg, RColorBrewer, zoo, scales, shinycssloaders
 Suggests: eventdataR, edeaR
 Remotes: gertjanssenswillen/processmapR
 RoxygenNote: 6.0.1
