@@ -12,7 +12,7 @@
 #'  The token color is change accordingly during the animation (default color is orange). You may use \code{\link{add_token_color}} to add a suitable attribute to the event log.
 #' @param token_image The event attribute (character) or alternatively a data frame with three columns (case, time, image) matching the case identifier of the supplied event log.
 #'  The token image is change accordingly during the animation (by default a SVG shape is used).
-#' @param show_slider Whether to render a timeline slider in supported browsers (Recent versions of Chrome and Firefox only).
+#' @param show_timeline Whether to render a timeline slider in supported browsers (Recent versions of Chrome and Firefox only).
 #' @param width,height Fixed size for widget (in css units). The default is NULL, which results in intelligent automatic sizing based on the widget's container.
 #'
 #' @examples
