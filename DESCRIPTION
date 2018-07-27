@@ -1,7 +1,7 @@
 Package: processanimateR
 Type: Package
 Title: Process Map Token Replay Animation
-Version: 0.1.2.9000
+Version: 0.1.2.9001
 Authors@R: c(person("Felix","Mannhardt", email = "felix.mannhardt@sintef.no", role = c("aut","cre")),
   person("Gert","Janssenswillen",email = "gert.janssenswillen@uhasselt.be", role = c("ctb")))
 Description: Token replay animation for process maps created with 
@@ -10,9 +10,26 @@ License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 Imports: 
-  bupaR, processmapR (>= 0.3.1), rlang, magrittr, dplyr, shiny, tidyr, htmlwidgets, 
-  DiagrammeR (>= 1.0.0), DiagrammeRsvg, RColorBrewer, zoo, scales, shinycssloaders
-Suggests: eventdataR, edeaR
+  bupaR, 
+  processmapR (>= 0.3.1), 
+  rlang, 
+  magrittr, 
+  dplyr, 
+  tidyr, 
+  htmlwidgets, 
+  DiagrammeR (>= 1.0.0), 
+  DiagrammeRsvg, 
+  RColorBrewer, 
+  zoo, 
+  scales
+Suggests: 
+    eventdataR,
+    edeaR,
+    testthat,
+    knitr,
+    rmarkdown,
+    shiny
 RoxygenNote: 6.0.1
 URL: https://github.com/fmannhardt/processanimateR/
 BugReports: https://github.com/fmannhardt/processanimateR/issues
+VignetteBuilder: knitr

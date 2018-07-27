@@ -21,9 +21,11 @@
 <!-- clipboard.js -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3" crossorigin="anonymous"></script>
 
+<!-- sticky kit -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script>
+
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
-<script src="../jquery.sticky-kit.min.js"></script>
 <script src="../pkgdown.js"></script>
 
 
@@ -32,6 +34,7 @@
 
 <meta property="og:description" content="A function for creating a SVG animation of an event log on a process map created by processmapR." />
 <meta name="twitter:card" content="summary" />
+
 
 
 <!-- mathjax -->
@@ -58,7 +61,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">processanimateR</a>
-        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.1.1</span>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.1.2.9000</span>
       </span>
     </div>
 
@@ -72,6 +75,18 @@
 </li>
 <li>
   <a href="../reference/index.html">Reference</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Articles
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../articles/use-with-shiny.html">Use processanimateR and Shiny</a>
+    </li>
+  </ul>
 </li>
       </ul>
       
@@ -146,12 +161,12 @@ The token color is change accordingly during the animation (default color is ora
 The token image is change accordingly during the animation (by default a SVG shape is used).</p></td>
     </tr>
     <tr>
-      <th>width, height</th>
-      <td><p>Fixed size for widget (in css units). The default is NULL, which results in intelligent automatic sizing based on the widget's container.</p></td>
+      <th>show_timeline</th>
+      <td><p>Whether to render a timeline slider in supported browsers (Recent versions of Chrome and Firefox only).</p></td>
     </tr>
     <tr>
-      <th>show_slider</th>
-      <td><p>Whether to render a timeline slider in supported browsers (Recent versions of Chrome and Firefox only).</p></td>
+      <th>width, height</th>
+      <td><p>Fixed size for widget (in css units). The default is NULL, which results in intelligent automatic sizing based on the widget's container.</p></td>
     </tr>
     </table>
     
@@ -183,13 +198,12 @@ The token image is change accordingly during the animation (by default a SVG sha
                 <span class='kw'>token_color</span> <span class='kw'>=</span> <span class='st'>"color"</span>)
 
 <span class='co'># Next example requires the 'dplyr' and 'edeaR' packages</span>
-<span class='fu'>library</span>(<span class='no'>dplyr</span>)</div><div class='output co'>#&gt; <span class='message'></span>
-#&gt; <span class='message'>Attaching package: ‘dplyr’</span></div><div class='output co'>#&gt; <span class='message'>The following objects are masked from ‘package:stats’:</span>
+<span class='fu'>library</span>(<span class='no'>dplyr</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: package 'dplyr' was built under R version 3.5.1</span></div><div class='output co'>#&gt; <span class='message'></span>
+#&gt; <span class='message'>Attaching package: 'dplyr'</span></div><div class='output co'>#&gt; <span class='message'>The following objects are masked from 'package:stats':</span>
 #&gt; <span class='message'></span>
-#&gt; <span class='message'>    filter, lag</span></div><div class='output co'>#&gt; <span class='message'>The following objects are masked from ‘package:base’:</span>
+#&gt; <span class='message'>    filter, lag</span></div><div class='output co'>#&gt; <span class='message'>The following objects are masked from 'package:base':</span>
 #&gt; <span class='message'></span>
-#&gt; <span class='message'>    intersect, setdiff, setequal, union</span></div><div class='input'><span class='fu'>library</span>(<span class='no'>edeaR</span>)
-
+#&gt; <span class='message'>    intersect, setdiff, setequal, union</span></div><div class='input'><span class='fu'>library</span>(<span class='no'>edeaR</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: package 'edeaR' was built under R version 3.5.1</span></div><div class='input'>
 <span class='co'># Change token_color based on colors in a second data frame</span>
 <span class='co'># Extract only the lacticacid measurements</span>
 <span class='no'>lactic</span> <span class='kw'>&lt;-</span> <span class='no'>sepsis</span> <span class='kw'>%&gt;%</span>

@@ -6,7 +6,7 @@
 [![lifecycle](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
 [![Travis-CI Build Status](https://travis-ci.org/fmannhardt/processanimateR.svg?branch=master)](https://travis-ci.org/fmannhardt/processanimateR)
 
-[![processanimateR example](inst/processanimateR-banner.png)](https://fmannhardt.github.io/processanimateR/index.html)
+[![processanimateR example](man/figures/processanimateR-banner.png)](https://fmannhardt.github.io/processanimateR/index.html)
 
 Flexible token replay animation for process maps created through the [processmapR](https://github.com/gertjanssenswillen/processmapR/) package from the [bupaR](http://www.bupar.net) suite, which uses [DiagrammeR](https://github.com/rich-iannone/DiagrammeR/) and [viz.js](https://github.com/mdaines/viz.js) library to render process maps using GraphViz. 
 ProcessanimateR adds a [htmlwidget](https://www.htmlwidgets.org/) that uses SVG animations ([SMIL](https://www.w3.org/standards/techs/smil#w3c_all)) to create the animation. 
@@ -98,18 +98,8 @@ animate_process(sepsisBase, token_color = lacticColors, animation_mode = "relati
                 animation_duration = 600)
 ```
 
-
-There is also an interactive variant that starts a Shiny web-application. It expects that attributes are of an appropriate data type to choose a good color scale.
-```r
-library(edeaR)
-library(dplyr)
-ianimate_process(sepsis %>%
- filter_trace_frequency(percentage = 0.3) %>%
- # we fix the datatype of some of the attributes to allow proper rendering of the token color
- # the token size option currently only support numeric attributes
- mutate_at(c("lacticacid", "leucocytes", "crp", "age"), as.numeric) %>%
- mutate_at(c("disfuncorg", "sirscriteria2ormore", "infectionsuspected"), as.logical))
-```
+### More usage examples:
+* [Shiny application with processanimateR](articles/use-with-shiny.html)
 
 ## Libraries Used
 This package makes use of the following libraries:

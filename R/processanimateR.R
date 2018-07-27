@@ -91,6 +91,7 @@ animate_process <- function(eventlog,
   case_start <- log_end <- start_time <- end_time <- next_end_time <- next_start_time <- NULL
   case <- case_end <- log_start <- log_duration <- case_duration <- NULL
   from_id <- to_id <- NULL
+  label <- NULL
 
   # Generate the DOT source
   graph <- DiagrammeR::render_graph(processmap, width = width, height = height)
