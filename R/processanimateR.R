@@ -221,10 +221,10 @@ generate_tokens <- function(cases, precedence, processmap, animation_mode, anima
   tokens <- tokens %>%
     # Filter all negative durations caused by parallelism (TODO, deal with it in a better way)
     # Also, SMIL does not like 0 duration animateMotion
-    filter(token_duration >= 0) %>%
+    filter(token_duration >= 0, activity_duration >= 0) %>%
     group_by(case) %>%
     # Ensure start times are not overlapping SMIL does not fancy this
-    arrange(min_order) %>%
+    arrange(start_time, min_order) %>%
     # Add small delta for activities with same start time
     mutate(token_start = token_start + ((row_number(token_start) - min_rank(token_start)) * EPSILON)) %>%
     # Ensure consecutive start times

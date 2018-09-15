@@ -93,7 +93,7 @@ HTMLWidgets.widget({
       			motions.append("animateMotion")
       			    .attr("begin", function(d) { return safeNumber(d.token_start + d.token_duration) + "s"; })
       					.attr("dur", function(d, i) {
-      					  if (d.to_id === x.end_activity) {
+      					  if (i == caseTokens.length-1) { // last node should be endNode
                     return "0.5s";
       					  } else  {
       					    return safeNumber(d.activity_duration) + "s";
@@ -106,7 +106,7 @@ HTMLWidgets.widget({
                     return point.x + "," + point.y;
       					})
       					.attr("to", function(d, i) {
-      					    if (d.to_id === x.end_activity) {
+      					    if (i == caseTokens.length-1) { // last node should be endNode
                       return endNode.cx.animVal.value + "," + endNode.cy.animVal.value;
       					    } else {
       					      var edge = svg.querySelector("#edge" + caseTokens[i+1].edge_id + "-path");
