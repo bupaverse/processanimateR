@@ -5,8 +5,8 @@
 \title{Adds a token color attribute}
 \usage{
 add_token_color(eventlog, attribute, color_attribute, palette = "YlOrBr",
-  na.color = "red", color_mapping = scales::col_numeric(palette, eventlog
-  \%>\% pull(`!!`(attr)), na.color = na.color))
+  na.color = "red", color_mapping = scales::col_numeric(palette,
+  eventlog \%>\% pull(`!!`(attr)), na.color = na.color))
 }
 \arguments{
 \item{eventlog}{The source eventlog}

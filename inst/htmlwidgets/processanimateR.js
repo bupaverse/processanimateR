@@ -31,6 +31,7 @@ HTMLWidgets.widget({
         var sizes = HTMLWidgets.dataframeToD3(x.sizes);
         var colors = HTMLWidgets.dataframeToD3(x.colors);
         var images = HTMLWidgets.dataframeToD3(x.images);
+        var opacities = HTMLWidgets.dataframeToD3(x.opacities);
         var hasImages = images.some(function (x) { return x !== null; });
         var shape = hasImages ? "image" : x.shape;
         var cases = Array.isArray(x.cases) ? x.cases: [x.cases];
@@ -62,9 +63,14 @@ HTMLWidgets.widget({
               		     .data(cases)
               		     .enter()
               		     .append(shape)
+              		     .attr("fill-opacity", "0.9")
               		     .attr("fill", "white")
               		     .attr("stroke", "black")
                        .attr("display", "none");
+        }
+
+        if (x.jitter > 0) {
+          circles.attr("transform", function(d) { return "translate(0," + (Math.random() - 0.5) * x.jitter + ")" });
         }
 
         circles.each(function(d, i) {
@@ -184,6 +190,17 @@ HTMLWidgets.widget({
                   .attr("begin", safeNumber(d.time) + "s" )
                   .attr("fill", "freeze");
               }
+            });
+
+            opacities.filter(function(opacity) {
+              return(opacity.case == d);
+            }).forEach(function(d){
+              circle.append('set')
+                .attr("attributeName", "fill-opacity")
+                .attr("to", d.opacity )
+                .attr("duration", "0")
+                .attr("begin", safeNumber(d.time) + "s" )
+                .attr("fill", "freeze");
             });
 
         });
