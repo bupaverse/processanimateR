@@ -139,7 +139,7 @@ animate_process <- function(eventlog,
     animation_factor =  timeline_end / animation_duration
   }
 
-  sizes <- generate_animation_attribute(eventlog, "size", token_size, 4)
+  sizes <- generate_animation_attribute(eventlog, "size", token_size, 6)
   sizes <- transform_time(sizes, "size", cases, animation_mode, animation_factor, timeline_start, timeline_end)
 
   colors <- generate_animation_attribute(eventlog, "color", token_color, "white")

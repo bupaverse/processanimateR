@@ -61,7 +61,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">processanimateR</a>
-        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.1.2.9000</span>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.2.0</span>
       </span>
     </div>
 
@@ -121,8 +121,8 @@
     </div>
 
     <pre class="usage"><span class='fu'>add_token_color</span>(<span class='no'>eventlog</span>, <span class='no'>attribute</span>, <span class='no'>color_attribute</span>, <span class='kw'>palette</span> <span class='kw'>=</span> <span class='st'>"YlOrBr"</span>,
-  <span class='kw'>na.color</span> <span class='kw'>=</span> <span class='st'>"red"</span>, <span class='kw'>color_mapping</span> <span class='kw'>=</span> <span class='kw pkg'>scales</span><span class='kw ns'>::</span><span class='fu'><a href='http://www.rdocumentation.org/packages/scales/topics/col_numeric'>col_numeric</a></span>(<span class='no'>palette</span>, <span class='no'>eventlog</span>
-  <span class='kw'>%&gt;%</span> <span class='fu'>pull</span>(<span class='fu'>`!!`</span>(<span class='no'>attr</span>)), <span class='kw'>na.color</span> <span class='kw'>=</span> <span class='no'>na.color</span>))</pre>
+  <span class='kw'>na.color</span> <span class='kw'>=</span> <span class='st'>"red"</span>, <span class='kw'>color_mapping</span> <span class='kw'>=</span> <span class='kw pkg'>scales</span><span class='kw ns'>::</span><span class='fu'><a href='http://www.rdocumentation.org/packages/scales/topics/col_numeric'>col_numeric</a></span>(<span class='no'>palette</span>,
+  <span class='no'>eventlog</span> <span class='kw'>%&gt;%</span> <span class='fu'>pull</span>(<span class='fu'>`!!`</span>(<span class='no'>attr</span>)), <span class='kw'>na.color</span> <span class='kw'>=</span> <span class='no'>na.color</span>))</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -173,18 +173,18 @@
 #&gt; 2721 activity instances
 #&gt; 
 #&gt; # A tibble: 5,442 x 8
-#&gt;    handling   patient employee handling_id registration_ty~ time               
-#&gt;    &lt;fct&gt;      &lt;chr&gt;   &lt;fct&gt;    &lt;chr&gt;       &lt;fct&gt;            &lt;dttm&gt;             
-#&gt;  1 Registrat~ 1       r1       1           start            2017-01-02 11:41:53
-#&gt;  2 Registrat~ 2       r1       2           start            2017-01-02 11:41:53
-#&gt;  3 Registrat~ 3       r1       3           start            2017-01-04 01:34:05
-#&gt;  4 Registrat~ 4       r1       4           start            2017-01-04 01:34:04
-#&gt;  5 Registrat~ 5       r1       5           start            2017-01-04 16:07:47
-#&gt;  6 Registrat~ 6       r1       6           start            2017-01-04 16:07:47
-#&gt;  7 Registrat~ 7       r1       7           start            2017-01-05 04:56:11
-#&gt;  8 Registrat~ 8       r1       8           start            2017-01-05 04:56:11
-#&gt;  9 Registrat~ 9       r1       9           start            2017-01-06 05:58:54
-#&gt; 10 Registrat~ 10      r1       10          start            2017-01-06 05:58:54
+#&gt;    handling patient employee handling_id registration_ty~ time               
+#&gt;    &lt;fct&gt;    &lt;chr&gt;   &lt;fct&gt;    &lt;chr&gt;       &lt;fct&gt;            &lt;dttm&gt;             
+#&gt;  1 Registr~ 1       r1       1           start            2017-01-02 11:41:53
+#&gt;  2 Registr~ 2       r1       2           start            2017-01-02 11:41:53
+#&gt;  3 Registr~ 3       r1       3           start            2017-01-04 01:34:05
+#&gt;  4 Registr~ 4       r1       4           start            2017-01-04 01:34:04
+#&gt;  5 Registr~ 5       r1       5           start            2017-01-04 16:07:47
+#&gt;  6 Registr~ 6       r1       6           start            2017-01-04 16:07:47
+#&gt;  7 Registr~ 7       r1       7           start            2017-01-05 04:56:11
+#&gt;  8 Registr~ 8       r1       8           start            2017-01-05 04:56:11
+#&gt;  9 Registr~ 9       r1       9           start            2017-01-06 05:58:54
+#&gt; 10 Registr~ 10      r1       10          start            2017-01-06 05:58:54
 #&gt; # ... with 5,432 more rows, and 2 more variables: .order &lt;int&gt;, color &lt;chr&gt;</div><div class='input'>
 </div></pre>
   </div>

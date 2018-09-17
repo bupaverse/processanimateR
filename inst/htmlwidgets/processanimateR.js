@@ -149,7 +149,7 @@ HTMLWidgets.widget({
                 .attr("begin", function(d) { return safeNumber(d.token_start) + "s"; })
                 .attr("dur", function(d) { return safeNumber(d.case_duration + 2.0) + "s"; });
 
-            if (shape === "curShape") {
+            if (shape === "circle") {
               sizes.filter(function(size) {
                 return(size.case == d);
               }).forEach(function(d){
