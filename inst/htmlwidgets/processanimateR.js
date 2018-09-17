@@ -39,9 +39,9 @@ HTMLWidgets.widget({
         var endNode = svg.querySelector("#a_node"+x.end_activity+" > a > ellipse");
         var duration = x.duration;
 
-        var circles;
+        var shapes;
         if (hasImages) {
-          circles = graph.selectAll("image")
+          shapes = graph.selectAll("image")
               		     .data(cases)
               		     .enter()
               		     .append("image")
@@ -58,33 +58,49 @@ HTMLWidgets.widget({
                           return "translate("+-size/2+","+-size/2+")";
                        })
                        .attr("preserveAspectRatio", "xMinYMin");
-        } else {
-          circles = graph.selectAll(shape)
+        } else if (shape === "rect") {
+          shapes = graph.selectAll(shape)
               		     .data(cases)
               		     .enter()
               		     .append(shape)
-              		     .attr("fill-opacity", "0.9")
-              		     .attr("fill", "white")
-              		     .attr("stroke", "black")
-                       .attr("display", "none");
+              		     .attr("transform", function(d) {
+                          var size = sizes.filter(function(size) {
+                            return(size.case == d);
+                          })[0].size;
+                          return "translate("+-size/2+","+-size/2+")";
+                       })
+              		     .attr("stroke", "black");
+        } else {
+          shapes = graph.selectAll(shape)
+              		     .data(cases)
+              		     .enter()
+              		     .append(shape)
+              		     .attr("stroke", "black");
+        }
+
+        // initially hide
+        shapes.attr("display", "none");
+
+        if (x.options !== null) {
+          shapes.attrs(x.options);
         }
 
         if (x.jitter > 0) {
-          circles.attr("transform", function(d) { return "translate(0," + (Math.random() - 0.5) * x.jitter + ")" });
+          shapes.attr("transform", function(d) { return "translate(0," + (Math.random() - 0.5) * x.jitter + ")" });
         }
 
-        circles.each(function(d, i) {
+        shapes.each(function(d, i) {
 
             function safeNumber(x) {
               return (parseFloat(x) || 0).toFixed(6);
             }
 
-            var circle = d3.select(this);
+            var curShape = d3.select(this);
             var caseTokens = tokens.filter(function(token) {
               return(token.case == d);
             });
 
-            var motions = circle.selectAll("animateMotion")
+            var motions = curShape.selectAll("animateMotion")
               .data(caseTokens)
               .enter();
 
@@ -121,7 +137,7 @@ HTMLWidgets.widget({
       					    }
       					});
 
-            var setAnimations = circle.selectAll("set")
+            var setAnimations = curShape.selectAll("set")
               .data(caseTokens)
               .enter();
 
@@ -133,11 +149,11 @@ HTMLWidgets.widget({
                 .attr("begin", function(d) { return safeNumber(d.token_start) + "s"; })
                 .attr("dur", function(d) { return safeNumber(d.case_duration + 2.0) + "s"; });
 
-            if (shape === "circle") {
+            if (shape === "curShape") {
               sizes.filter(function(size) {
                 return(size.case == d);
               }).forEach(function(d){
-                circle.append('set')
+                curShape.append('set')
                   .attr("attributeName", "r")
                   .attr("to", d.size )
                   .attr("begin", safeNumber(d.time) + "s")
@@ -148,7 +164,7 @@ HTMLWidgets.widget({
               sizes.filter(function(size) {
                 return(size.case == d);
               }).forEach(function(d){
-                circle.append('set')
+                curShape.append('set')
                   .attr("attributeName", "height")
                   .attr("to", d.size )
                   .attr("begin", safeNumber(d.time) + "s")
@@ -159,7 +175,7 @@ HTMLWidgets.widget({
               sizes.filter(function(size) {
                 return(size.case == d);
               }).forEach(function(d){
-                circle.append('set')
+                curShape.append('set')
                   .attr("attributeName", "width")
                   .attr("to", d.size )
                   .attr("begin", safeNumber(d.time) + "s")
@@ -171,7 +187,7 @@ HTMLWidgets.widget({
             colors.filter(function(color) {
               return(color.case == d);
             }).forEach(function(d){
-              circle.append('set')
+              curShape.append('set')
                 .attr("attributeName", "fill")
                 .attr("to", d.color )
                 .attr("duration", "0")
@@ -183,7 +199,7 @@ HTMLWidgets.widget({
               return(image.case == d);
             }).forEach(function(d,i){
               if (i > 0) {
-                circle.append('set')
+                curShape.append('set')
                   .attr("attributeName", "xlink:href")
                   .attr("to", d.image )
                   .attr("duration", "10s")
@@ -195,7 +211,7 @@ HTMLWidgets.widget({
             opacities.filter(function(opacity) {
               return(opacity.case == d);
             }).forEach(function(d){
-              circle.append('set')
+              curShape.append('set')
                 .attr("attributeName", "fill-opacity")
                 .attr("to", d.opacity )
                 .attr("duration", "0")
@@ -219,7 +235,7 @@ HTMLWidgets.widget({
 
         var svgPan = svgPanZoom(svg);
 
-        if (x.show_timeline &&
+        if (x.timeline &&
             // Polyfill fakesmile does not support pausing/unpausing for IE
             typeof SVGSVGElement.prototype.animationsPaused === "function") {
 

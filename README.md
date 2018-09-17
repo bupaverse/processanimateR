@@ -31,7 +31,7 @@ source("https://install-github.me/r-lib/remotes")
 remotes::install_github("fmannhardt/processanimateR")
 
 # or install a specific tag
-remotes::install_github("fmannhardt/processanimateR@v0.1.1")
+remotes::install_github("fmannhardt/processanimateR@v0.2.0")
 ```
 
 ### Warnings and Limitations

@@ -3,6 +3,10 @@ dependencies:
     version: 5.0.0
     src: "htmlwidgets/lib/d3"
     script: d3.min.js
+  - name: d3-selection-multi
+    version: 1.0.1
+    src: "htmlwidgets/lib/d3-selection-multi"
+    script: d3-selection-multi.min.js
   - name: fakesmil
     version: 0.3.0
     src: "htmlwidgets/lib/fakesmil"

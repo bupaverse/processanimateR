@@ -7,6 +7,7 @@
 #' @param animation_mode Whether to animate the cases according to their actual time of occurence ("absolute") or to start all cases at once ("relative").
 #' @param animation_duration The overall duration of the animation, all times are scaled according to this overall duration.
 #' @param animation_jitter The magnitude of a random coordinate translation, known as jitter in scatterplots, which is added to each token. Adding jitter can help to disambiguate tokens traveling on top of each other.
+#' @param animation_timeline Whether to render a timeline slider in supported browsers (Recent versions of Chrome and Firefox only).
 #' @param token_size The event attribute (character) or alternatively a data frame with three columns (case, time, size) matching the case identifier of the supplied event log.
 #'  The token size is scaled accordingly during the animation (default size is 4). You may use \code{\link{add_token_size}} to add a suitable attribute to the event log.
 #' @param token_color The event attribute (character) or alternatively a data frame with three columns (case, time, color) matching the case identifier of the supplied event log.
@@ -15,8 +16,10 @@
 #'  The token image is change accordingly during the animation (by default a SVG shape is used).
 #' @param token_opacity The event attribute (character) or alternatively a data frame with three columns (case, time, transparency) matching the case identifier of the supplied event log.
 #'  The token fill-opacity is change accordingly during the animation (by default the token is dranw with 0.9 opacity).
-#' @param show_timeline Whether to render a timeline slider in supported browsers (Recent versions of Chrome and Firefox only).
+#' @param token_shape The (fixed) SVG shape to be used to draw tokens. Can be either 'circle' (default) or 'rect'.
+#' @param token_options A list of additional (fixed) SVG properties to be added to each token.
 #' @param width,height Fixed size for widget (in css units). The default is NULL, which results in intelligent automatic sizing based on the widget's container.
+#' @param ... Options passed on to \code{\link{process_map}}.
 #'
 #' @examples
 #' # Load example event log
@@ -86,23 +89,28 @@
 #'
 #' @export
 animate_process <- function(eventlog,
-                            processmap = process_map(eventlog, render = F),
+                            processmap = process_map(eventlog, render = F, ...),
                             animation_mode = "absolute",
                             animation_duration = 60,
                             animation_jitter = 0,
+                            animation_timeline = TRUE,
                             token_size = NULL,
                             token_color = NULL,
                             token_image = NULL,
                             token_opacity = NULL,
-                            show_timeline = TRUE,
+                            token_shape = c("circle","rect"),
+                            token_options = NULL,
                             width = NULL,
-                            height = NULL) {
+                            height = NULL,
+                            ...) {
 
   # Make CRAN happy about dplyr evaluation
   case_start <- log_end <- start_time <- end_time <- next_end_time <- next_start_time <- NULL
   case <- case_end <- log_start <- log_duration <- case_duration <- NULL
   from_id <- to_id <- NULL
   label <- NULL
+
+  token_shape <- match.arg(token_shape)
 
   # Generate the DOT source
   graph <- DiagrammeR::render_graph(processmap, width = width, height = height)
@@ -155,13 +163,14 @@ animate_process <- function(eventlog,
     sizes = sizes,
     colors = colors,
     opacities = opacities,
+    options = token_options,
     cases = case_ids,
     images = images,
-    shape = "circle", #TODO make configureable
+    shape = token_shape,
     start_activity = start_activity,
     end_activity = end_activity,
     duration = animation_duration,
-    show_timeline = show_timeline,
+    timeline = animation_timeline,
     mode = animation_mode,
     jitter = animation_jitter,
     factor = animation_factor * 1000,
