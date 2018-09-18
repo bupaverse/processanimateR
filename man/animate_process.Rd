@@ -58,7 +58,9 @@ animate_process(patients)
 # Animate the process with default options (relative time and with jitter)
 animate_process(patients, animation_mode = "relative", animation_jitter = 10)
 
-# Change default token sizes
+\donttest{
+
+#' # Change default token sizes
 animate_process(patients, token_size = 2)
 
 # Change default token color
@@ -67,7 +69,6 @@ animate_process(patients, token_color = "red")
 # Change default token opacity
 animate_process(patients, token_opacity = 0.5)
 
-\donttest{
 # Change default token image (GIFs work too)
 animate_process(patients, token_image = "https://upload.wikimedia.org/wikipedia/en/5/5f/Pacman.gif")
 

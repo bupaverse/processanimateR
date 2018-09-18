@@ -15,10 +15,8 @@ Imports:
   rlang,
   magrittr, 
   dplyr, 
-  tidyr, 
   htmlwidgets, 
   DiagrammeR (>= 1.0.0), 
-  DiagrammeRsvg, 
   RColorBrewer, 
   zoo, 
   scales
