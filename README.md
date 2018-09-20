@@ -38,6 +38,7 @@ remotes::install_github("fmannhardt/processanimateR@v0.2.0")
 * Tokens travel through the process approximately according to the times at which (start and complete) events of the activities occur. In some cases processanimateR will add a small epsilon time to make sure that the SMIL animation works fine, since there seem to be some limitations with regard to zero duration animations. 
 * Be aware that the perceived speed in which tokens travel depends on the length of edges in the process map, which is the result of an automatic layout algorithm and does not represent any kind of real distance between activities. 
 * Parallelism is still handled poorly as to be expected from a process map. In particular overlapping start and completion times of activities may result in tokens moving unexpectedly.
+* The timeline slider option cannot be used in Internet Explorer due to missing support for certain SVG animation functions.
 
 ### Usage
 

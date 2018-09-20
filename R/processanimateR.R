@@ -16,8 +16,9 @@
 #'  The token image is change accordingly during the animation (by default a SVG shape is used).
 #' @param token_opacity The event attribute (character) or alternatively a data frame with three columns (case, time, transparency) matching the case identifier of the supplied event log.
 #'  The token fill-opacity is change accordingly during the animation (by default the token is dranw with 0.9 opacity).
-#' @param token_shape The (fixed) SVG shape to be used to draw tokens. Can be either 'circle' (default) or 'rect'.
+#' @param token_shape The (fixed) SVG shape to be used to draw tokens. Can be either 'circle' (default), 'rect' or 'image'. In the latter case the image URL needs to be specified as parameter 'token_image'.
 #' @param token_options A list of additional (fixed) SVG properties to be added to each token.
+#' @param token_callback_onclick A javascript function that is called when a token is clicked. The function is parsed by \code{\link{JS}} and received three parameters: 'svg_root', 'svg_element', and 'case_id'.
 #' @param width,height Fixed size for widget (in css units). The default is NULL, which results in intelligent automatic sizing based on the widget's container.
 #' @param ... Options passed on to \code{\link{process_map}}.
 #'
@@ -32,8 +33,7 @@
 #' animate_process(patients, animation_mode = "relative", animation_jitter = 10)
 #'
 #' \donttest{
-#'
-#' #' # Change default token sizes
+#' # Change default token sizes
 #' animate_process(patients, token_size = 2)
 #'
 #' # Change default token color
@@ -99,8 +99,14 @@ animate_process <- function(eventlog,
                             token_color = NULL,
                             token_image = NULL,
                             token_opacity = NULL,
-                            token_shape = c("circle","rect"),
+                            token_shape = c("circle","rect","image"),
                             token_options = NULL,
+                            token_callback_onclick = c("function(svg_root, svg_element, case_id) {",
+                                                        "if (svg_element.attr('stroke') === 'red') {",
+                                                        " svg_element.attr('stroke', 'black');",
+                                                        "} else {",
+                                                        " svg_element.attr('stroke', 'red');",
+                                                        "}}"),
                             width = NULL,
                             height = NULL,
                             ...) {
@@ -116,7 +122,7 @@ animate_process <- function(eventlog,
   # Generate the DOT source
   graph <- DiagrammeR::render_graph(processmap, width = width, height = height)
   # Get the DOT source for later rendering through vis.js
-  diagram <- graph$x$diagram
+  diagram <- DiagrammeRsvg::export_svg(graph)
 
   precedence <- attr(processmap, "base_precedence") %>%
     mutate_at(vars(start_time, end_time, next_start_time, next_end_time), as.numeric, units = "secs")
@@ -149,13 +155,16 @@ animate_process <- function(eventlog,
   images <- generate_animation_attribute(eventlog, "image", token_image, NA)
   images <- transform_time(images, "image", cases, animation_mode, animation_factor, timeline_start, timeline_end)
 
+  if (token_shape == "image") {
+    stopifnot(nrow(images) > 0, "Need to supply image URLs in parameter 'token_images' to use shape 'image'.");
+  }
+
   opacities <- generate_animation_attribute(eventlog, "opacity", token_opacity, 0.9)
   opacities <- transform_time(opacities, "opacity", cases, animation_mode, animation_factor, timeline_start, timeline_end)
 
   tokens <- generate_tokens(cases, precedence, processmap, animation_mode, animation_factor, timeline_start, timeline_end)
   start_activity <- processmap$nodes_df %>% filter(label == "Start") %>% pull(id)
   end_activity <- processmap$nodes_df %>% filter(label == "End") %>% pull(id)
-  case_ids <- tokens %>% distinct(case) %>% pull(case)
 
   settings <- list()
   x <- list(
@@ -165,7 +174,6 @@ animate_process <- function(eventlog,
     colors = colors,
     opacities = opacities,
     options = token_options,
-    cases = case_ids,
     images = images,
     shape = token_shape,
     start_activity = start_activity,
@@ -176,7 +184,8 @@ animate_process <- function(eventlog,
     jitter = animation_jitter,
     factor = animation_factor * 1000,
     timeline_start = timeline_start * 1000,
-    timeline_end = timeline_end * 1000
+    timeline_end = timeline_end * 1000,
+    onclick_callback = htmlwidgets::JS(token_callback_onclick)
   )
 
   htmlwidgets::createWidget(name = "processanimateR", x = x,
@@ -236,22 +245,23 @@ generate_tokens <- function(cases, precedence, processmap, animation_mode, anima
     tokens <- mutate(tokens,
                      token_start = (end_time - timeline_start) / animation_factor,
                      token_duration = (next_start_time - end_time) / animation_factor,
-                     activity_duration = EPSILON + pmax(0, (next_end_time - next_start_time) / animation_factor))
+                     activity_duration = pmax(0, (next_end_time - next_start_time) / animation_factor))
   } else {
     tokens <- mutate(tokens,
                      token_start = (end_time - case_start) / animation_factor,
                      token_duration = (next_start_time - end_time) / animation_factor,
-                     activity_duration = EPSILON + pmax(0, (next_end_time - next_start_time) / animation_factor))
+                     activity_duration = pmax(0, (next_end_time - next_start_time) / animation_factor))
   }
 
   tokens <- tokens %>%
     # Filter all negative durations caused by parallelism (TODO, deal with it in a better way)
     # Also, SMIL does not like 0 duration animateMotion
     filter(token_duration >= 0, activity_duration >= 0) %>%
+    mutate(token_duration = EPSILON + token_duration,
+           activity_duration = EPSILON + activity_duration) %>%
+    arrange(case, start_time, min_order) %>%
     group_by(case) %>%
     # Ensure start times are not overlapping SMIL does not fancy this
-    arrange(start_time, min_order) %>%
-    # Add small delta for activities with same start time
     mutate(token_start = token_start + ((row_number(token_start) - min_rank(token_start)) * EPSILON)) %>%
     # Ensure consecutive start times
     mutate(token_end = min(token_start) + cumsum(token_duration + activity_duration) + EPSILON) %>%

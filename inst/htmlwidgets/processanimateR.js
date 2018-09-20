@@ -6,226 +6,399 @@ HTMLWidgets.widget({
 
   factory: function(el, width, height) {
 
-    var smargin = {top:25, right:30, bottom:0, left:50},
-      swidth = width - smargin.left - smargin.right,
-      sheight = 75 - smargin.top - smargin.bottom;
+    var svg = null;
+    var svgPan = null;
+    var data = null;
 
-    return {
-      renderValue: function(x) {
+    var smargin = {top:5, right:20, bottom:0, left:50};
+    var sheight = 75 - smargin.top - smargin.bottom;
+    var slider = null;
+    var sliderSvg = null;
+    var sliderListener = null;
+    var sliderLoop = null;
 
-        el.innerHTML = Viz(x.diagram,format="svg");
-        var svg = el.querySelector("svg");
+    function renderSlider(data, width) {
 
-    		var edges = svg.querySelectorAll('.edge');
-    		for(var i = 0; i < edges.length; i++) {
-    			var id = edges[i].id;
-    			var paths = edges[i].getElementsByTagName("path");
-    			for(var j = 0; j < paths.length; j++) {
-    				paths[j].id = id + "-path";
-    			}
-    		}
+      if (data.timeline &&
+          // Polyfill fakesmile does not support pausing/unpausing for IE
+          typeof SVGSVGElement.prototype.animationsPaused === "function") {
 
-        var graph = d3.select(svg).select("#graph0");
+        // Clean-up
+        if (sliderSvg) {
+          sliderSvg.remove();
+        }
+        if (sliderListener) {
+          document.removeEventListener(sliderListener);
+        }
+        if (sliderLoop) {
+          clearTimeout(sliderLoop);
+        }
 
-        var tokens = HTMLWidgets.dataframeToD3(x.tokens);
-        var sizes = HTMLWidgets.dataframeToD3(x.sizes);
-        var colors = HTMLWidgets.dataframeToD3(x.colors);
-        var images = HTMLWidgets.dataframeToD3(x.images);
-        var opacities = HTMLWidgets.dataframeToD3(x.opacities);
-        var hasImages = images.some(function (x) { return x !== null; });
-        var shape = hasImages ? "image" : x.shape;
-        var cases = Array.isArray(x.cases) ? x.cases: [x.cases];
-        var startNode = svg.querySelector("#a_node"+x.start_activity+" > a > ellipse");
-        var endNode = svg.querySelector("#a_node"+x.end_activity+" > a > ellipse");
-        var duration = x.duration;
+        // re-calculate dimensions
+        var swidth = width - smargin.left - smargin.right;
 
-        var shapes;
-        if (hasImages) {
-          shapes = graph.selectAll("image")
-              		     .data(cases)
-              		     .enter()
-              		     .append("image")
-                       .attr("display", "none")
-                       .attr("xlink:href", function(d) {
-                          return images.filter(function(image) {
-                            return(image.case == d);
-                          })[0].image;
-                       })
-                       .attr("transform", function(d) {
-                          var size = sizes.filter(function(size) {
-                            return(size.case == d);
-                          })[0].size;
-                          return "translate("+-size/2+","+-size/2+")";
-                       })
-                       .attr("preserveAspectRatio", "xMinYMin");
-        } else if (shape === "rect") {
-          shapes = graph.selectAll(shape)
-              		     .data(cases)
-              		     .enter()
-              		     .append(shape)
-              		     .attr("transform", function(d) {
-                          var size = sizes.filter(function(size) {
-                            return(size.case == d);
-                          })[0].size;
-                          return "translate("+-size/2+","+-size/2+")";
-                       })
-              		     .attr("stroke", "black");
+        if (data.mode === "relative") {
+          animMin = data.timeline_start;
+          animMax = data.timeline_end;
         } else {
-          shapes = graph.selectAll(shape)
-              		     .data(cases)
-              		     .enter()
-              		     .append(shape)
-              		     .attr("stroke", "black");
+          animMin = new Date(data.timeline_start);
+          animMax = new Date(data.timeline_end);
         }
 
-        // initially hide
-        shapes.attr("display", "none");
+        slider = d3.sliderHorizontal()
+          .min(animMin)
+          .max(animMax)
+          .ticks(10)
+          .width(swidth)
+          .displayValue(true)
+          .on('onchange', function(val) {
+            svg.setCurrentTime((val - data.timeline_start) / data.factor);
+          });
 
-        if (x.options !== null) {
-          shapes.attrs(x.options);
+        //TODO formatter
+        if (data.mode === "relative") {
+          slider.tickFormat(function(val){
+            return moment.duration(val, 'milliseconds').humanize();
+          });
+          slider.displayFormat(function(val){
+            return moment.duration(val, 'milliseconds').humanize();
+          });
+        } else {
+          slider.displayFormat(d3.timeFormat("%x %X"));
         }
 
-        if (x.jitter > 0) {
-          shapes.attr("transform", function(d) { return "translate(0," + (Math.random() - 0.5) * x.jitter + ")" });
-        }
 
-        shapes.each(function(d, i) {
+        sliderSvg = d3.select(el).append("svg")
+          .attr("class", "control")
+          .attr("width", swidth + smargin.left + smargin.right)
+          .attr("height", sheight + smargin.top + smargin.bottom);
 
-            function safeNumber(x) {
-              return (parseFloat(x) || 0).toFixed(6);
-            }
+        sliderSvg.append("g")
+          .attr("transform", "translate("+smargin.left+",30)")
+          .call(slider);
 
-            var curShape = d3.select(this);
-            var caseTokens = tokens.filter(function(token) {
-              return(token.case == d);
-            });
+        var buttonsSvg = sliderSvg.append("g")
+          .attr("transform", "translate(0,15)");
 
-            var motions = curShape.selectAll("animateMotion")
-              .data(caseTokens)
-              .enter();
+        // Inspired by https://gist.github.com/guilhermesimoes/fbe967d45ceeb350b765
+        var play = "M11,10 L18,13.74 18,22.28 11,26 M18,13.74 L26,18 26,18 18,22.28",
+            pause = "M11,10 L17,10 17,26 11,26 M20,10 L26,10 26,26 20,26";
 
-            motions.append("animateMotion")
-      					.attr("begin", function(d) { return safeNumber(d.token_start) + "s"; })
-      					.attr("dur", function(d) { return safeNumber(d.token_duration) + "s"; })
-      					.attr("fill", "freeze")
-      					.attr("rotate", "auto")
-                .append("mpath")
-      				    .attr("xlink:href", function(d) { return "#edge" + d.edge_id + "-path"; });
+        var controlButton = buttonsSvg
+          .append("g").attr("style", "pointer-events: bounding-box")
+          .append("path")
+          .attr("d", pause);
 
-      			motions.append("animateMotion")
-      			    .attr("begin", function(d) { return safeNumber(d.token_start + d.token_duration) + "s"; })
-      					.attr("dur", function(d, i) {
-      					  if (i == caseTokens.length-1) { // last node should be endNode
-                    return "0.5s";
-      					  } else  {
-      					    return safeNumber(d.activity_duration) + "s";
-      					  }
-      					})
-                .attr("fill", "freeze")
-      					.attr("from", function(d) {
-                    var edge = svg.querySelector("#edge" + d.edge_id + "-path");
-                    var point = edge.getPointAtLength(edge.getTotalLength()-0.1);
-                    return point.x + "," + point.y;
-      					})
-      					.attr("to", function(d, i) {
-      					    if (i == caseTokens.length-1) { // last node should be endNode
-                      return endNode.cx.animVal.value + "," + endNode.cy.animVal.value;
-      					    } else {
-      					      var edge = svg.querySelector("#edge" + caseTokens[i+1].edge_id + "-path");
-                      var point = edge.getPointAtLength(0.1);
-                      return point.x + "," + point.y;
-      					    }
-      					});
-
-            var setAnimations = curShape.selectAll("set")
-              .data(caseTokens)
-              .enter();
-
-            setAnimations.filter(function(d, i) {
-              return i === 0;
-            }).append("set")
-                .attr("attributeName", "display")
-                .attr("to", "inline")
-                .attr("begin", function(d) { return safeNumber(d.token_start) + "s"; })
-                .attr("dur", function(d) { return safeNumber(d.case_duration + 2.0) + "s"; });
-
-            if (shape === "circle") {
-              sizes.filter(function(size) {
-                return(size.case == d);
-              }).forEach(function(d){
-                curShape.append('set')
-                  .attr("attributeName", "r")
-                  .attr("to", d.size )
-                  .attr("begin", safeNumber(d.time) + "s")
-                  .attr("duration", "0")
-                  .attr("fill", "freeze");
-              });
-            } else {
-              sizes.filter(function(size) {
-                return(size.case == d);
-              }).forEach(function(d){
-                curShape.append('set')
-                  .attr("attributeName", "height")
-                  .attr("to", d.size )
-                  .attr("begin", safeNumber(d.time) + "s")
-                  .attr("duration", "0")
-                  .attr("fill", "freeze");
-              });
-
-              sizes.filter(function(size) {
-                return(size.case == d);
-              }).forEach(function(d){
-                curShape.append('set')
-                  .attr("attributeName", "width")
-                  .attr("to", d.size )
-                  .attr("begin", safeNumber(d.time) + "s")
-                  .attr("duration", "0")
-                  .attr("fill", "freeze");
-              });
-            }
-
-            colors.filter(function(color) {
-              return(color.case == d);
-            }).forEach(function(d){
-              curShape.append('set')
-                .attr("attributeName", "fill")
-                .attr("to", d.color )
-                .attr("duration", "0")
-                .attr("begin", safeNumber(d.time) + "s" )
-                .attr("fill", "freeze");
-            });
-
-            images.filter(function(image) {
-              return(image.case == d);
-            }).forEach(function(d,i){
-              if (i > 0) {
-                curShape.append('set')
-                  .attr("attributeName", "xlink:href")
-                  .attr("to", d.image )
-                  .attr("duration", "10s")
-                  .attr("begin", safeNumber(d.time) + "s" )
-                  .attr("fill", "freeze");
-              }
-            });
-
-            opacities.filter(function(opacity) {
-              return(opacity.case == d);
-            }).forEach(function(d){
-              curShape.append('set')
-                .attr("attributeName", "fill-opacity")
-                .attr("to", d.opacity )
-                .attr("duration", "0")
-                .attr("begin", safeNumber(d.time) + "s" )
-                .attr("fill", "freeze");
-            });
-
+        controlButton.on("click", function() {
+          if (svg.animationsPaused()) {
+            unpauseAnimation();
+          } else {
+            pauseAnimation();
+          }
         });
 
-        // Workaround for starting the SVG animation at time 0 in Chrome
-        // Whole SVG is re-add to the DOM after creation
-        el.innerHTML = el.innerHTML;
+        unpauseAnimation = function() {
+          svg.unpauseAnimations();
+          controlButton
+            .transition()
+            .duration(500)
+            .attr("d", pause);
+        };
 
-        svg = el.querySelector("svg");
+        pauseAnimation = function() {
+          svg.pauseAnimations();
+          controlButton
+            .transition()
+            .duration(500)
+            .attr("d", play);
+        };
+
+        sliderListener = document.addEventListener('keypress', function(event) {
+
+          function getNumberFromKeyEvent(event) {
+            if (event.keyCode >= 96 && event.keyCode <= 105) {
+                return event.keyCode - 96;
+            } else if (event.keyCode >= 48 && event.keyCode <= 57) {
+                return event.keyCode - 48;
+            }
+            return null;
+          }
+
+          if (svg.offsetParent !== null) {
+            if (event.code === "Space") {
+              if (svg.animationsPaused()) {
+                unpauseAnimation();
+              } else {
+                pauseAnimation();
+              }
+            } else {
+              var num = getNumberFromKeyEvent(event);
+              if (num !== null) {
+                svg.setCurrentTime((data.duration / 10) * num);
+              }
+            }
+          }
+        });
+
+        (function(){
+            var time = svg.getCurrentTime();
+            if (time > 0 && time <= data.duration) {
+              if (!svg.animationsPaused()) {
+                if (data.mode === "relative") {
+                  slider.silentValue(data.timeline_start + time * data.factor);
+                } else {
+                  slider.silentValue(new Date(data.timeline_start + (time * data.factor)));
+                }
+              }
+            }
+            sliderLoop = setTimeout(arguments.callee, 60);
+        })();
+
+      }
+
+    }
+
+    function fixEdgeIds(svg) {
+      var edges = svg.querySelectorAll('.edge');
+      for(var i = 0; i < edges.length; i++) {
+      	var id = edges[i].id;
+      	var paths = edges[i].getElementsByTagName("path");
+      	for(var j = 0; j < paths.length; j++) {
+      		paths[j].id = id + "-path";
+      	}
+      }
+    }
+
+    function safeNumber(x) {
+      return (parseFloat(x) || 0).toFixed(6);
+    }
+
+    function insertTokens(svg, data) {
+
+      var graph = d3.select(svg).select("#graph0");
+
+      var tokens = HTMLWidgets.dataframeToD3(data.tokens);
+      var cases = tokens.reduce(function (a, e) {
+                                   if (a.indexOf(e.case) === -1) {
+                                     a.push(e.case);
+                                   }
+                                   return a;
+                                }, []);
+      var startNode = svg.querySelector("#a_node"+data.start_activity+" > a > ellipse");
+      var endNode = svg.querySelector("#a_node"+data.end_activity+" > a > ellipse");
+
+      var shapes;
+      if (data.shape === "image") {
+        shapes = graph.selectAll(data.shape)
+            		     .data(cases)
+            		     .enter()
+            		     .append(data.shape)
+                     .attr("display", "none")
+                     .attr("xlink:href", function(d) {
+                        return images.filter(function(image) {
+                          return(image.case == d);
+                        })[0].image;
+                     })
+                     .attr("transform", function(d) {
+                        var size = sizes.filter(function(size) {
+                          return(size.case == d);
+                        })[0].size;
+                        return "translate("+-size/2+","+-size/2+")";
+                     })
+                     .attr("preserveAspectRatio", "xMinYMin");
+      } else if (data.shape === "rect") {
+        shapes = graph.selectAll(data.shape)
+            		     .data(cases)
+            		     .enter()
+            		     .append(data.shape)
+            		     .attr("transform", function(d) {
+                        var size = sizes.filter(function(size) {
+                          return(size.case == d);
+                        })[0].size;
+                        return "translate("+-size/2+","+-size/2+")";
+                     })
+            		     .attr("stroke", "black");
+      } else {
+        shapes = graph.selectAll(data.shape)
+            		     .data(cases)
+            		     .enter()
+            		     .append(data.shape)
+            		     .attr("stroke", "black");
+      }
+
+      // add tooltip
+      shapes.append("title").text(function(d) { return d; });
+
+      if (data.options !== null) {
+        shapes.attrs(data.options);
+      }
+
+      if (data.jitter > 0) {
+        shapes.attr("transform", function(d) { return "translate(0," + (Math.random() - 0.5) * data.jitter + ")" });
+      }
+
+      var sizes = HTMLWidgets.dataframeToD3(data.sizes);
+      var colors = HTMLWidgets.dataframeToD3(data.colors);
+      var images = HTMLWidgets.dataframeToD3(data.images);
+      var opacities = HTMLWidgets.dataframeToD3(data.opacities);
+
+      shapes.each(function(d, i) {
+
+          var shape = d3.select(this);
+          var caseTokens = tokens.filter(function(token) {
+            return(token.case == d);
+          });
+
+          var customAttrs = {
+            sizes: sizes.filter(function(x) { return(x.case == d); }),
+            colors: colors.filter(function(x) { return(x.case == d); }),
+            images: images.filter(function(x) { return(x.case == d); }),
+            opacities: opacities.filter(function(x) { return(x.case == d); })
+          };
+          insertAnimation(svg, shape, caseTokens, startNode, endNode, customAttrs);
+
+      });
+
+    }
+
+    function insertAnimation(svg, shape, caseTokens, startNode, endNode, customAttrs) {
+
+      var motions = shape.selectAll("animateMotion").data(caseTokens).enter();
+
+      motions.append("animateMotion")
+      	.attr("begin", function(d) { return safeNumber(d.token_start) + "s"; })
+      	.attr("dur", function(d) { return safeNumber(d.token_duration) + "s"; })
+      	.attr("fill", "freeze")
+      	.attr("rotate", "auto")
+        .append("mpath")
+          .attr("xlink:href", function(d) { return "#edge" + d.edge_id + "-path"; });
+
+      motions.append("animateMotion")
+        .attr("begin", function(d) { return safeNumber(d.token_start + d.token_duration) + "s"; })
+      	.attr("dur", function(d, i) {
+      	  if (i == caseTokens.length-1) { // last node should be endNode
+            return "0.5s";
+      	  } else  {
+      	    return safeNumber(d.activity_duration) + "s";
+      	  }
+      	})
+        .attr("fill", "freeze")
+      	.attr("from", function(d) {
+            var edge = svg.querySelector("#edge" + d.edge_id + "-path");
+            var point = edge.getPointAtLength(edge.getTotalLength()-0.1);
+            return point.x + "," + point.y;
+      	})
+      	.attr("to", function(d, i) {
+      	    if (i == caseTokens.length-1) { // last node should be endNode
+              return endNode.cx.animVal.value + "," + endNode.cy.animVal.value;
+      	    } else {
+      	      var edge = svg.querySelector("#edge" + caseTokens[i+1].edge_id + "-path");
+              var point = edge.getPointAtLength(0.1);
+              return point.x + "," + point.y;
+      	    }
+      	});
+
+      var setAnimations = shape.selectAll("set").data(caseTokens).enter();
+
+      if (data.shape === "circle") {
+        customAttrs.sizes.forEach(function(d){
+          shape.append('set')
+            .attr("attributeName", "r")
+            .attr("to", d.size )
+            .attr("begin", safeNumber(d.time) + "s")
+            .attr("fill", "freeze");
+        });
+
+      } else {
+        customAttrs.sizes.forEach(function(d){
+          shape.append('set')
+            .attr("attributeName", "height")
+            .attr("to", d.size )
+            .attr("begin", safeNumber(d.time) + "s")
+            .attr("fill", "freeze");
+        });
+        customAttrs.sizes.forEach(function(d){
+          shape.append('set')
+            .attr("attributeName", "width")
+            .attr("to", d.size )
+            .attr("begin", safeNumber(d.time) + "s")
+            .attr("dur", "0")
+            .attr("fill", "freeze");
+        });
+      }
+
+      setAnimations.filter(function(d, i) {
+        return i === 0;
+      }).append("set")
+        .attr("attributeName", "display")
+        .attr("to", "inline")
+        .attr("begin", function(d) { return safeNumber(d.token_start) + "s"; })
+        .attr("dur", function(d) { return safeNumber(d.case_duration + 2.0) + "s"; });
+
+      customAttrs.colors.forEach(function(d){
+        shape.append('set')
+          .attr("attributeName", "fill")
+          .attr("to", d.color )
+          .attr("begin", safeNumber(d.time) + "s" )
+          .attr("fill", "freeze");
+      });
+
+      customAttrs.images.forEach(function(d,i){
+        if (i > 0) {
+          shape.append('set')
+            .attr("attributeName", "xlink:href")
+            .attr("to", d.image )
+            .attr("begin", safeNumber(d.time) + "s" )
+            .attr("fill", "freeze");
+        }
+      });
+
+      customAttrs.opacities.forEach(function(d){
+        shape.append('set')
+          .attr("attributeName", "fill-opacity")
+          .attr("to", d.opacity )
+          .attr("begin", safeNumber(d.time) + "s" )
+          .attr("fill", "freeze");
+      });
+
+    }
+
+    return {
+
+      renderValue: function(x) {
+
+        // Remember data for re- building slider upon resize
+        data = x;
+
+        // Create detached container
+        var container = document.createElement("div");
+
+        // Render DOT using Graphviz
+        container.innerHTML = data.diagram;
+        svg = container.querySelector("svg");
+
+        // Assign edge ids
+        fixEdgeIds(svg);
+
+        // Generate tokens and animations
+        insertTokens(svg, data);
+
+        // Attach event listeners after re-insertion
+        if (data.onclick_callback) {
+          d3.select(svg)
+            .select("#graph0")
+            .selectAll(data.shape)
+            .on("click", function(d) { data.onclick_callback(svg, d3.select(this), d); });
+        }
+
+        // Workaround for starting the SVG animation at time 0 in Chrome
+        // Whole SVG element is added at once
+        if (el.hasChildNodes()) {
+          el.replaceChild(container, el.childNodes[0]);
+        } else {
+          el.appendChild(container);
+        }
+
         if (width > 0) {
           svg.setAttribute("width", width);
         }
@@ -233,144 +406,29 @@ HTMLWidgets.widget({
           svg.setAttribute("height", height - sheight - smargin.top - smargin.bottom);
         }
 
-        var svgPan = svgPanZoom(svg);
+        svgPan = svgPanZoom(svg, { dblClickZoomEnabled: false });
 
-        if (x.timeline &&
-            // Polyfill fakesmile does not support pausing/unpausing for IE
-            typeof SVGSVGElement.prototype.animationsPaused === "function") {
-
-          if (x.mode === "relative") {
-            animMin = x.timeline_start;
-            animMax = x.timeline_end;
-          } else {
-            animMin = new Date(x.timeline_start);
-            animMax = new Date(x.timeline_end);
-          }
-
-          var slider = d3.sliderHorizontal()
-            .min(animMin)
-            .max(animMax)
-            .ticks(10)
-            .width(swidth)
-            .displayValue(true)
-            .on('onchange', function(val) {
-              svg.setCurrentTime((val - x.timeline_start) / x.factor);
-            });
-
-          //TODO formatter
-          if (x.mode === "relative") {
-            slider.tickFormat(function(val){
-              return moment.duration(val, 'milliseconds').humanize();
-            });
-            slider.displayFormat(function(val){
-              return moment.duration(val, 'milliseconds').humanize();
-            });
-          } else {
-            slider.displayFormat(d3.timeFormat("%x %X"));
-          }
-
-          var controlSvg = d3.select(el).append("svg")
-            .attr("width", swidth + smargin.left + smargin.right)
-            .attr("height", sheight + smargin.top + smargin.bottom);
-
-          controlSvg.append("g")
-            .attr("transform", "translate("+smargin.left+",30)")
-            .call(slider);
-
-          var buttonsSvg = controlSvg.append("g")
-            .attr("transform", "translate(0,15)");
-
-          // Inspired by https://gist.github.com/guilhermesimoes/fbe967d45ceeb350b765
-          var play = "M11,10 L18,13.74 18,22.28 11,26 M18,13.74 L26,18 26,18 18,22.28",
-              pause = "M11,10 L17,10 17,26 11,26 M20,10 L26,10 26,26 20,26";
-
-          var controlButton = buttonsSvg
-            .append("g").attr("style", "pointer-events: bounding-box")
-            .append("path")
-            .attr("d", pause);
-
-          controlButton.on("click", function() {
-            if (svg.animationsPaused()) {
-              unpauseAnimation();
-            } else {
-              pauseAnimation();
-            }
-          });
-
-          unpauseAnimation = function() {
-            svg.unpauseAnimations();
-            controlButton
-              .transition()
-              .duration(500)
-              .attr("d", pause);
-          };
-
-          pauseAnimation = function() {
-            svg.pauseAnimations();
-            controlButton
-              .transition()
-              .duration(500)
-              .attr("d", play);
-          };
-
-          document.addEventListener('keypress', function(event) {
-
-            function getNumberFromKeyEvent(event) {
-              if (event.keyCode >= 96 && event.keyCode <= 105) {
-                  return event.keyCode - 96;
-              } else if (event.keyCode >= 48 && event.keyCode <= 57) {
-                  return event.keyCode - 48;
-              }
-              return null;
-            }
-
-            if (svg.offsetParent !== null) {
-              if (event.code === "Space") {
-                if (svg.animationsPaused()) {
-                  unpauseAnimation();
-                } else {
-                  pauseAnimation();
-                }
-              } else {
-                var num = getNumberFromKeyEvent(event);
-                if (num !== null) {
-                  svg.setCurrentTime((duration / 10) * num);
-                }
-              }
-            }
-          });
-
-          (function(){
-              var time = svg.getCurrentTime();
-              if (time > 0 && time <= duration) {
-                if (!svg.animationsPaused()) {
-                  if (x.mode === "relative") {
-                    slider.silentValue(x.timeline_start + time * x.factor);
-                  } else {
-                    slider.silentValue(new Date(x.timeline_start + (time * x.factor)));
-                  }
-                }
-              }
-              setTimeout(arguments.callee, 60);
-          })();
-
-        }
+        renderSlider(data, width);
 
       },
 
       resize: function(width, height) {
 
-        var svg = el.querySelector("svg");
-        svg.setAttribute("width", width);
-        svg.setAttribute("height", height - sheight - smargin.top - smargin.bottom);
-        var svgPan = svgPanZoom(svg);
-        svgPan.resize();
-        try {
-          svgPan.fit();
-        } catch (err) {
-          // might cause an error if initial height was 0
+        if (svg && svgPan) {
+          // Adjust GraphViz diagram size
+          svg.setAttribute("width", width);
+          svg.setAttribute("height", height - sheight - smargin.top - smargin.bottom);
+          svgPan.resize();
+          if (height > 0) {
+            svgPan.fit();
+          }
+          svgPan.center();
         }
-        svgPan.center();
+
+        if (data) {
+          // Adjust timeline control size
+          renderSlider(data, width);
+        }
 
       },
 

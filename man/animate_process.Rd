@@ -8,8 +8,12 @@ animate_process(eventlog, processmap = process_map(eventlog, render = F,
   ...), animation_mode = "absolute", animation_duration = 60,
   animation_jitter = 0, animation_timeline = TRUE, token_size = NULL,
   token_color = NULL, token_image = NULL, token_opacity = NULL,
-  token_shape = c("circle", "rect"), token_options = NULL,
-  width = NULL, height = NULL, ...)
+  token_shape = c("circle", "rect", "image"), token_options = NULL,
+  token_callback_onclick = c("function(svg_root, svg_element, case_id) {",
+  "if (svg_element.attr('stroke') === 'red') {",
+  " svg_element.attr('stroke', 'black');", "} else {",
+  " svg_element.attr('stroke', 'red');", "}}"), width = NULL,
+  height = NULL, ...)
 }
 \arguments{
 \item{eventlog}{The event log object that should be animated}
@@ -37,9 +41,11 @@ The token image is change accordingly during the animation (by default a SVG sha
 \item{token_opacity}{The event attribute (character) or alternatively a data frame with three columns (case, time, transparency) matching the case identifier of the supplied event log.
 The token fill-opacity is change accordingly during the animation (by default the token is dranw with 0.9 opacity).}
 
-\item{token_shape}{The (fixed) SVG shape to be used to draw tokens. Can be either 'circle' (default) or 'rect'.}
+\item{token_shape}{The (fixed) SVG shape to be used to draw tokens. Can be either 'circle' (default), 'rect' or 'image'. In the latter case the image URL needs to be specified as parameter 'token_image'.}
 
 \item{token_options}{A list of additional (fixed) SVG properties to be added to each token.}
+
+\item{token_callback_onclick}{A javascript function that is called when a token is clicked. The function is parsed by \code{\link{JS}} and received three parameters: 'svg_root', 'svg_element', and 'case_id'.}
 
 \item{width, height}{Fixed size for widget (in css units). The default is NULL, which results in intelligent automatic sizing based on the widget's container.}
 
