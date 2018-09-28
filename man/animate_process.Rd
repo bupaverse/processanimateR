@@ -10,9 +10,9 @@ animate_process(eventlog, processmap = process_map(eventlog, render = F,
   token_color = NULL, token_image = NULL, token_opacity = NULL,
   token_shape = c("circle", "rect", "image"), token_options = NULL,
   token_callback_onclick = c("function(svg_root, svg_element, case_id) {",
-  "if (svg_element.attr('stroke') === 'red') {",
-  " svg_element.attr('stroke', 'black');", "} else {",
-  " svg_element.attr('stroke', 'red');", "}}"), width = NULL,
+  "}"),
+  activity_callback_onclick = c("function(svg_root, svg_element, activity_id) {",
+  "}"), elementId = NULL, preRenderHook = NULL, width = NULL,
   height = NULL, ...)
 }
 \arguments{
@@ -47,6 +47,12 @@ The token fill-opacity is change accordingly during the animation (by default th
 
 \item{token_callback_onclick}{A javascript function that is called when a token is clicked. The function is parsed by \code{\link{JS}} and received three parameters: 'svg_root', 'svg_element', and 'case_id'.}
 
+\item{activity_callback_onclick}{A javascript function that is called when an activity is clicked. The function is parsed by \code{\link{JS}} and received three parameters: 'svg_root', 'svg_element', and 'activity_id'.}
+
+\item{elementId}{passed through to \code{\link{createWidget}}. A custom elementId is useful to capture the selection events via input$elementId_tokens and input$elementId_activities when used in Shiny.}
+
+\item{preRenderHook}{passed through to \code{\link{createWidget}}.}
+
 \item{width, height}{Fixed size for widget (in css units). The default is NULL, which results in intelligent automatic sizing based on the widget's container.}
 
 \item{...}{Options passed on to \code{\link{process_map}}.}
@@ -65,8 +71,7 @@ animate_process(patients)
 animate_process(patients, animation_mode = "relative", animation_jitter = 10)
 
 \donttest{
-
-#' # Change default token sizes
+# Change default token sizes
 animate_process(patients, token_size = 2)
 
 # Change default token color

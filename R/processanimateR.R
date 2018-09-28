@@ -19,6 +19,9 @@
 #' @param token_shape The (fixed) SVG shape to be used to draw tokens. Can be either 'circle' (default), 'rect' or 'image'. In the latter case the image URL needs to be specified as parameter 'token_image'.
 #' @param token_options A list of additional (fixed) SVG properties to be added to each token.
 #' @param token_callback_onclick A javascript function that is called when a token is clicked. The function is parsed by \code{\link{JS}} and received three parameters: 'svg_root', 'svg_element', and 'case_id'.
+#' @param activity_callback_onclick A javascript function that is called when an activity is clicked. The function is parsed by \code{\link{JS}} and received three parameters: 'svg_root', 'svg_element', and 'activity_id'.
+#' @param elementId passed through to \code{\link{createWidget}}. A custom elementId is useful to capture the selection events via input$elementId_tokens and input$elementId_activities when used in Shiny.
+#' @param preRenderHook passed through to \code{\link{createWidget}}.
 #' @param width,height Fixed size for widget (in css units). The default is NULL, which results in intelligent automatic sizing based on the widget's container.
 #' @param ... Options passed on to \code{\link{process_map}}.
 #'
@@ -102,11 +105,11 @@ animate_process <- function(eventlog,
                             token_shape = c("circle","rect","image"),
                             token_options = NULL,
                             token_callback_onclick = c("function(svg_root, svg_element, case_id) {",
-                                                        "if (svg_element.attr('stroke') === 'red') {",
-                                                        " svg_element.attr('stroke', 'black');",
-                                                        "} else {",
-                                                        " svg_element.attr('stroke', 'red');",
-                                                        "}}"),
+                                                        "}"),
+                            activity_callback_onclick = c("function(svg_root, svg_element, activity_id) {",
+                                                        "}"),
+                            elementId = NULL,
+                            preRenderHook = NULL,
                             width = NULL,
                             height = NULL,
                             ...) {
@@ -185,16 +188,19 @@ animate_process <- function(eventlog,
     factor = animation_factor * 1000,
     timeline_start = timeline_start * 1000,
     timeline_end = timeline_end * 1000,
-    onclick_callback = htmlwidgets::JS(token_callback_onclick)
+    onclick_token_callback = htmlwidgets::JS(token_callback_onclick),
+    onclick_activity_callback = htmlwidgets::JS(activity_callback_onclick)
   )
 
-  htmlwidgets::createWidget(name = "processanimateR", x = x,
+  htmlwidgets::createWidget(elementId = elementId,
+                            name = "processanimateR", x = x,
                             width = width, height = height,
                             sizingPolicy = htmlwidgets::sizingPolicy(
                               defaultWidth = 800,
                               defaultHeight = 600,
                               browser.fill = TRUE
-                            ))
+                            ),
+                            preRenderHook = preRenderHook)
 }
 
 #' @title Create a process animation output element

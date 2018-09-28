@@ -31,7 +31,7 @@ HTMLWidgets.widget({
           document.removeEventListener(sliderListener);
         }
         if (sliderLoop) {
-          clearTimeout(sliderLoop);
+          window.cancelAnimationFrame(sliderLoop);
         }
 
         // re-calculate dimensions
@@ -55,7 +55,6 @@ HTMLWidgets.widget({
             svg.setCurrentTime((val - data.timeline_start) / data.factor);
           });
 
-        //TODO formatter
         if (data.mode === "relative") {
           slider.tickFormat(function(val){
             return moment.duration(val, 'milliseconds').humanize();
@@ -66,7 +65,6 @@ HTMLWidgets.widget({
         } else {
           slider.displayFormat(d3.timeFormat("%x %X"));
         }
-
 
         sliderSvg = d3.select(el).append("svg")
           .attr("class", "control")
@@ -103,6 +101,7 @@ HTMLWidgets.widget({
             .transition()
             .duration(500)
             .attr("d", pause);
+          animateSlider(svg, data, slider);
         };
 
         pauseAnimation = function() {
@@ -111,6 +110,9 @@ HTMLWidgets.widget({
             .transition()
             .duration(500)
             .attr("d", play);
+          if (sliderLoop) {
+            window.cancelAnimationFrame(sliderLoop);
+          }
         };
 
         sliderListener = document.addEventListener('keypress', function(event) {
@@ -140,20 +142,29 @@ HTMLWidgets.widget({
           }
         });
 
+        animateSlider(svg, data, slider);
+
+      }
+    }
+
+    function animateSlider(svg, data, slider) {
+
+      if (data.mode === "relative") {
         (function(){
             var time = svg.getCurrentTime();
             if (time > 0 && time <= data.duration) {
-              if (!svg.animationsPaused()) {
-                if (data.mode === "relative") {
-                  slider.silentValue(data.timeline_start + time * data.factor);
-                } else {
-                  slider.silentValue(new Date(data.timeline_start + (time * data.factor)));
-                }
-              }
+              slider.silentValue(data.timeline_start + time * data.factor);
             }
-            sliderLoop = setTimeout(arguments.callee, 60);
+            sliderLoop = window.requestAnimationFrame(arguments.callee);
         })();
-
+      } else {
+        (function(){
+            var time = svg.getCurrentTime();
+            if (time > 0 && time <= data.duration) {
+              slider.silentValue(new Date(data.timeline_start + (time * data.factor)));
+            }
+            sliderLoop = window.requestAnimationFrame(arguments.callee);
+        })();
       }
 
     }
@@ -175,7 +186,12 @@ HTMLWidgets.widget({
 
     function insertTokens(svg, data) {
 
-      var graph = d3.select(svg).select("#graph0");
+      var existingTransform = d3.select(svg).select("#graph0").attr("transform");
+
+      var tokenGroup = d3.select(svg).select("#graph0")
+        .select(function() { return this.parentNode; })
+        .append("g")
+        .attr("transform", existingTransform);
 
       var tokens = HTMLWidgets.dataframeToD3(data.tokens);
       var cases = tokens.reduce(function (a, e) {
@@ -189,7 +205,7 @@ HTMLWidgets.widget({
 
       var shapes;
       if (data.shape === "image") {
-        shapes = graph.selectAll(data.shape)
+        shapes = tokenGroup.selectAll(data.shape)
             		     .data(cases)
             		     .enter()
             		     .append(data.shape)
@@ -207,7 +223,7 @@ HTMLWidgets.widget({
                      })
                      .attr("preserveAspectRatio", "xMinYMin");
       } else if (data.shape === "rect") {
-        shapes = graph.selectAll(data.shape)
+        shapes = tokenGroup.selectAll(data.shape)
             		     .data(cases)
             		     .enter()
             		     .append(data.shape)
@@ -219,7 +235,7 @@ HTMLWidgets.widget({
                      })
             		     .attr("stroke", "black");
       } else {
-        shapes = graph.selectAll(data.shape)
+        shapes = tokenGroup.selectAll(data.shape)
             		     .data(cases)
             		     .enter()
             		     .append(data.shape)
@@ -258,6 +274,8 @@ HTMLWidgets.widget({
           insertAnimation(svg, shape, caseTokens, startNode, endNode, customAttrs);
 
       });
+
+      return tokenGroup;
 
     }
 
@@ -300,66 +318,84 @@ HTMLWidgets.widget({
 
       var setAnimations = shape.selectAll("set").data(caseTokens).enter();
 
+      // We improve the rendering performance in Chrome by avoiding to add 'set' animations if the value stays the same.
+      function isSingle(attr) {
+        return attr.length === 1 && attr[0].time === 0;
+      }
+
       if (data.shape === "circle") {
-        customAttrs.sizes.forEach(function(d){
-          shape.append('set')
-            .attr("attributeName", "r")
-            .attr("to", d.size )
-            .attr("begin", safeNumber(d.time) + "s")
-            .attr("fill", "freeze");
-        });
+        if (isSingle(customAttrs.sizes)) {
+          shape.attr("r", customAttrs.sizes[0].size);
+        } else {
+          customAttrs.sizes.forEach(function(d){
+            shape.append('set')
+              .attr("attributeName", "r")
+              .attr("to", d.size )
+              .attr("begin", safeNumber(d.time) + "s")
+              .attr("fill", "freeze");
+          });
+        }
 
       } else {
-        customAttrs.sizes.forEach(function(d){
+        if (isSingle(customAttrs.sizes)) {
+          shape.attr("height", customAttrs.sizes[0].size);
+          shape.attr("width", customAttrs.sizes[0].size);
+        } else {
+          customAttrs.sizes.forEach(function(d){
+            shape.append('set')
+              .attr("attributeName", "height")
+              .attr("to", d.size )
+              .attr("begin", safeNumber(d.time) + "s")
+              .attr("fill", "freeze");
+          });
+          customAttrs.sizes.forEach(function(d){
+            shape.append('set')
+              .attr("attributeName", "width")
+              .attr("to", d.size )
+              .attr("begin", safeNumber(d.time) + "s")
+              .attr("dur", "0")
+              .attr("fill", "freeze");
+          });
+        }
+      }
+
+      if (isSingle(customAttrs.colors)) {
+        shape.attr("fill", customAttrs.colors[0].color);
+      } else {
+        customAttrs.colors.forEach(function(d){
           shape.append('set')
-            .attr("attributeName", "height")
-            .attr("to", d.size )
-            .attr("begin", safeNumber(d.time) + "s")
-            .attr("fill", "freeze");
-        });
-        customAttrs.sizes.forEach(function(d){
-          shape.append('set')
-            .attr("attributeName", "width")
-            .attr("to", d.size )
-            .attr("begin", safeNumber(d.time) + "s")
-            .attr("dur", "0")
+            .attr("attributeName", "fill")
+            .attr("to", d.color )
+            .attr("begin", safeNumber(d.time) + "s" )
             .attr("fill", "freeze");
         });
       }
 
-      setAnimations.filter(function(d, i) {
-        return i === 0;
-      }).append("set")
-        .attr("attributeName", "display")
-        .attr("to", "inline")
-        .attr("begin", function(d) { return safeNumber(d.token_start) + "s"; })
-        .attr("dur", function(d) { return safeNumber(d.case_duration + 2.0) + "s"; });
+      if (isSingle(customAttrs.images)) {
+        shape.attr("xlink:href", customAttrs.images[0].image);
+      } else {
+        customAttrs.images.forEach(function(d,i){
+          if (i > 0) {
+            shape.append('set')
+              .attr("attributeName", "xlink:href")
+              .attr("to", d.image )
+              .attr("begin", safeNumber(d.time) + "s" )
+              .attr("fill", "freeze");
+          }
+        });
+      }
 
-      customAttrs.colors.forEach(function(d){
-        shape.append('set')
-          .attr("attributeName", "fill")
-          .attr("to", d.color )
-          .attr("begin", safeNumber(d.time) + "s" )
-          .attr("fill", "freeze");
-      });
-
-      customAttrs.images.forEach(function(d,i){
-        if (i > 0) {
+      if (isSingle(customAttrs.opacities)) {
+        shape.attr("fill-opacity", customAttrs.opacities[0].opacity);
+      } else {
+        customAttrs.opacities.forEach(function(d){
           shape.append('set')
-            .attr("attributeName", "xlink:href")
-            .attr("to", d.image )
+            .attr("attributeName", "fill-opacity")
+            .attr("to", d.opacity )
             .attr("begin", safeNumber(d.time) + "s" )
             .attr("fill", "freeze");
-        }
-      });
-
-      customAttrs.opacities.forEach(function(d){
-        shape.append('set')
-          .attr("attributeName", "fill-opacity")
-          .attr("to", d.opacity )
-          .attr("begin", safeNumber(d.time) + "s" )
-          .attr("fill", "freeze");
-      });
+        });
+      }
 
     }
 
@@ -381,15 +417,78 @@ HTMLWidgets.widget({
         fixEdgeIds(svg);
 
         // Generate tokens and animations
-        insertTokens(svg, data);
+        var tokenGroup = insertTokens(svg, data);
 
         // Attach event listeners after re-insertion
-        if (data.onclick_callback) {
-          d3.select(svg)
-            .select("#graph0")
-            .selectAll(data.shape)
-            .on("click", function(d) { data.onclick_callback(svg, d3.select(this), d); });
-        }
+
+        tokenGroup.selectAll(data.shape)
+          .on("click", function(d) {
+
+            if (d3.select(this).attr("stroke") === "red") {
+              d3.select(this).attr("stroke", "black");
+            } else {
+              d3.select(this).attr("stroke", "red");
+            }
+
+            if ('Shiny' in window) {
+
+              if (!this.dataset.selected) {
+                this.dataset.selected = "true";
+              }
+
+              var selectedTokens = tokenGroup.selectAll(data.shape)
+                .filter(function(d) {
+                  if ("selected" in this.dataset) {
+                    return(this.dataset.selected === "true");
+                  } else {
+                    return false;
+                  }
+                })
+
+              Shiny.onInputChange(el.id + "_tokens", selectedTokens.data());
+            }
+
+
+            if (data.onclick_token_callback) {
+              data.onclick_token_callback(svg, d3.select(this), d);
+            }
+          });
+
+        d3.select(svg)
+          .selectAll(".node")
+          .on("click", function() {
+
+            var path = d3.select(this).select("path");
+            if (path.attr("stroke") === "red") {
+              path.attr("stroke", "#c0c0c0");
+            } else {
+              path.attr("stroke", "red");
+            }
+
+            if ('Shiny' in window) {
+
+              if (!this.dataset.selected) {
+                this.dataset.selected = "true";
+              }
+
+              var selectedActivities = d3.select(svg).selectAll(".node")
+                .filter(function(d) {
+                  if ("selected" in this.dataset) {
+                    return(this.dataset.selected === "true");
+                  } else {
+                    return false;
+                  }
+                })
+
+              var selectedIds = selectedActivities.nodes().map(function(activity) { return activity.id });
+
+              Shiny.onInputChange(el.id + "_activities", selectedIds);
+            }
+
+            if (data.onclick_activity_callback) {
+              data.onclick_token_callback(svg, d3.select(this));
+            }
+          });
 
         // Workaround for starting the SVG animation at time 0 in Chrome
         // Whole SVG element is added at once
