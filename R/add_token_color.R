@@ -28,6 +28,7 @@
 #' @export
 add_token_color <- function(eventlog, attribute, color_attribute, palette = "YlOrBr", na.color = "red",
                             color_mapping = scales::col_numeric(palette, eventlog %>% pull(`!!`(attr)), na.color = na.color)) {
+  .Deprecated(msg = "The scale mechanism is being replaced with D3 scales. This method is going to be removed soon.")
   attr <- rlang::sym(attribute)
   cAttr <- rlang::sym(color_attribute)
   eventlog %>%

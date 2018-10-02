@@ -12,10 +12,96 @@ HTMLWidgets.widget({
 
     var smargin = {top:5, right:20, bottom:0, left:50};
     var sheight = 75 - smargin.top - smargin.bottom;
+
+    var colorScale = null;
+    var sizeScale = null;
+
     var slider = null;
     var sliderSvg = null;
     var sliderListener = null;
     var sliderLoop = null;
+
+    var legendSvg = null;
+
+    function computeDomain(values) {
+      return values.sort().filter(function(x, i, a) {
+                            return i == a.length - 1 || a[i+1] != x;
+                          });
+    }
+
+    function buildScale(type, values, domain, range, defaultValue) {
+
+      var valDomain = computeDomain(values);
+
+      // Guard against missing values
+      if (domain === null) {
+        if (type === "ordinal" | type === "identity") {
+          domain = valDomain;
+        } else {
+          domain = [Math.min.apply(null, valDomain), Math.max.apply(null, valDomain)];
+        }
+      }
+      // Default color is white
+      if (range === null) {
+        range = [defaultValue];
+      }
+
+      switch(type) {
+        case "linear":
+          scale = d3.scaleLinear();
+        break;
+        case "quantize":
+          scale = d3.scaleQuantize();
+        break;
+        case "sqrt":
+          scale = d3.scaleSqrt();
+        break;
+        case "log":
+          scale = d3.scaleLog();
+        break;
+        case "ordinal":
+          scale = d3.scaleOrdinal();
+        break;
+        default: // also 'identity'
+          scale = d3.scaleOrdinal();
+          range = domain;
+        break;
+      }
+
+      scale.domain(domain)
+           .range(range);
+
+      return(scale);
+    }
+
+    function renderLegend(data, width) {
+
+      if (legendSvg) {
+        legendSvg.attr("transform", "translate("+(width-smargin.right-legendSvg.node().getBBox().width)+","+(smargin.top+10)+")");
+      } else {
+
+        if (data.legend) {
+
+          legendSvg = d3.select(svg).append("g")
+            .attr("class", "processanimater-legend")
+            .attr("style", "outline: thin solid black; outline-offset: 5px;");
+
+          switch(data.legend) {
+            case "color":
+              legendSvg.call(d3.legendColor().scale(colorScale));
+            break;
+            case "size":
+              legendSvg.call(d3.legendSize().scale(sizeScale).shape("circle"));
+            break;
+            default:
+          }
+
+          legendSvg.attr("transform", "translate("+(width-smargin.right-legendSvg.node().getBBox().width)+","+(smargin.top+10)+")");
+
+        }
+      }
+
+    }
 
     function renderSlider(data, width) {
 
@@ -67,7 +153,7 @@ HTMLWidgets.widget({
         }
 
         sliderSvg = d3.select(el).append("svg")
-          .attr("class", "control")
+          .attr("class", "processanimater-control")
           .attr("width", swidth + smargin.left + smargin.right)
           .attr("height", sheight + smargin.top + smargin.bottom);
 
@@ -186,9 +272,9 @@ HTMLWidgets.widget({
 
     function insertTokens(svg, data) {
 
-      var existingTransform = d3.select(svg).select("#graph0").attr("transform");
+      var existingTransform = d3.select(svg).select(".graph").attr("transform");
 
-      var tokenGroup = d3.select(svg).select("#graph0")
+      var tokenGroup = d3.select(svg).select(".graph")
         .select(function() { return this.parentNode; })
         .append("g")
         .attr("transform", existingTransform);
@@ -245,8 +331,8 @@ HTMLWidgets.widget({
       // add tooltip
       shapes.append("title").text(function(d) { return d; });
 
-      if (data.options !== null) {
-        shapes.attrs(data.options);
+      if (data.attributes !== null) {
+        shapes.attrs(data.attributes);
       }
 
       if (data.jitter > 0) {
@@ -255,6 +341,7 @@ HTMLWidgets.widget({
 
       var sizes = HTMLWidgets.dataframeToD3(data.sizes);
       var colors = HTMLWidgets.dataframeToD3(data.colors);
+
       var images = HTMLWidgets.dataframeToD3(data.images);
       var opacities = HTMLWidgets.dataframeToD3(data.opacities);
 
@@ -325,12 +412,12 @@ HTMLWidgets.widget({
 
       if (data.shape === "circle") {
         if (isSingle(customAttrs.sizes)) {
-          shape.attr("r", customAttrs.sizes[0].size);
+          shape.attr("r", sizeScale(customAttrs.sizes[0].size));
         } else {
           customAttrs.sizes.forEach(function(d){
             shape.append('set')
               .attr("attributeName", "r")
-              .attr("to", d.size )
+              .attr("to", sizeScale(d.size))
               .attr("begin", safeNumber(d.time) + "s")
               .attr("fill", "freeze");
           });
@@ -338,20 +425,20 @@ HTMLWidgets.widget({
 
       } else {
         if (isSingle(customAttrs.sizes)) {
-          shape.attr("height", customAttrs.sizes[0].size);
-          shape.attr("width", customAttrs.sizes[0].size);
+          shape.attr("height", sizeScale(customAttrs.sizes[0].size));
+          shape.attr("width", sizeScale(customAttrs.sizes[0].size));
         } else {
           customAttrs.sizes.forEach(function(d){
             shape.append('set')
               .attr("attributeName", "height")
-              .attr("to", d.size )
+              .attr("to", sizeScale(d.size))
               .attr("begin", safeNumber(d.time) + "s")
               .attr("fill", "freeze");
           });
           customAttrs.sizes.forEach(function(d){
             shape.append('set')
               .attr("attributeName", "width")
-              .attr("to", d.size )
+              .attr("to", sizeScale(d.size))
               .attr("begin", safeNumber(d.time) + "s")
               .attr("dur", "0")
               .attr("fill", "freeze");
@@ -360,12 +447,12 @@ HTMLWidgets.widget({
       }
 
       if (isSingle(customAttrs.colors)) {
-        shape.attr("fill", customAttrs.colors[0].color);
+        shape.attr("fill", colorScale(customAttrs.colors[0].color));
       } else {
         customAttrs.colors.forEach(function(d){
           shape.append('set')
             .attr("attributeName", "fill")
-            .attr("to", d.color )
+            .attr("to", colorScale(d.color) )
             .attr("begin", safeNumber(d.time) + "s" )
             .attr("fill", "freeze");
         });
@@ -399,12 +486,136 @@ HTMLWidgets.widget({
 
     }
 
+    function wrapInPanZoomViewport(svg) {
+      d3.select(svg)
+        .insert("g")
+        .attr("class", "svg-pan-zoom_viewport")
+        .append(function() {        // Append to the wrapper the element...
+        	return d3.select(svg).select(".graph").remove().node();
+         });
+    }
+
+    function fixTranslate(svg) {
+
+      function getTranslate(transform) {
+        // More of a hack to get the translate applied by Graphviz
+        // Assumes that there is only one translate!
+        for (var i=0; i<transform.length; i++) {
+          if (transform[i].type == 2) {
+            return("translate("+transform[i].matrix.e+","+transform[i].matrix.f+")");
+          }
+        }
+        return("translate(0,0)");
+      }
+
+      // This fixes performance issues caused by the no-op scale and rotate transform returned by viz.js
+      // TODO profile whether this is really helping
+      var graphNode = d3.select(svg).select(".graph");
+      var transform = graphNode.node().transform.baseVal;
+      graphNode.attr("transform", getTranslate(transform));
+    }
+
+    function attachEventListeners(svg, data, tokenGroup) {
+
+      function toggleSelection(element) {
+        if (!element.dataset.selected || element.dataset.selected === "false") {
+          element.dataset.selected = "true";
+        } else {
+          element.dataset.selected = "false";
+        }
+      }
+
+      function isSelected(element) {
+        return "selected" in element.dataset && element.dataset.selected === "true";
+      }
+
+      tokenGroup.selectAll(data.shape)
+        .on("click", function(d) {
+
+          toggleSelection(this);
+
+          tokenGroup.selectAll(data.shape)
+              .attr("stroke", function() {
+                if (isSelected(this)) {
+                  return "red";
+                } else {
+                  return "black";
+                }
+              });
+
+          if ('Shiny' in window) {
+
+            var selectedTokens = tokenGroup.selectAll(data.shape)
+              .filter(function(d) { return(isSelected(this)); });
+            Shiny.onInputChange(el.id + "_tokens", selectedTokens.data());
+          }
+
+          if (data.onclick_token_callback) {
+            data.onclick_token_callback(svg, d3.select(this), d);
+          }
+
+        });
+
+      d3.select(svg)
+        .selectAll(".node")
+        .filter(function() {
+          return this.id !== "node"+data.start_activity && this.id !== "node"+data.end_activity;
+        })
+        .on("click", function() {
+
+          toggleSelection(this);
+
+          d3.select(svg).selectAll(".node")
+              .each(function() {
+                var node = this;
+                d3.select(node).select("path")
+                  .attr("stroke", function() {
+                    if (isSelected(node)) {
+                      return "red";
+                    } else {
+                      return "#c0c0c0";
+                    }
+                  });
+              })
+
+          if ('Shiny' in window) {
+
+            var selectedActivities = d3.select(svg).selectAll(".node")
+              .filter(function(d) { return(isSelected(this)); })
+              .nodes().map(function(activity) { return activity.id });
+            Shiny.onInputChange(el.id + "_activities", selectedActivities);
+          }
+
+          if (data.onclick_activity_callback) {
+            data.onclick_token_callback(svg, d3.select(this));
+          }
+        });
+
+    }
+
     return {
 
       renderValue: function(x) {
 
+        if ('Shiny' in window) {
+          Shiny.onInputChange(el.id + "_tokens", []);
+          Shiny.onInputChange(el.id + "_activities", []);
+        }
+
         // Remember data for re- building slider upon resize
         data = x;
+
+        // Create D3 scales
+        colorScale = buildScale(data.colors_scale,
+                                HTMLWidgets.dataframeToD3(data.colors).map(function(x){ return(x.color); }),
+                                data.colors_scale_domain,
+                                data.colors_scale_range,
+                                "#FFFFFF");
+        sizeScale = buildScale(data.sizes_scale,
+                                HTMLWidgets.dataframeToD3(data.sizes).map(function(x){ return(x.size); }),
+                                data.sizes_scale_domain,
+                                data.sizes_scale_range,
+                                6);
 
         // Create detached container
         var container = document.createElement("div");
@@ -413,82 +624,16 @@ HTMLWidgets.widget({
         container.innerHTML = data.diagram;
         svg = container.querySelector("svg");
 
-        // Assign edge ids
+        // Some DOM fixes
+        wrapInPanZoomViewport(svg);
         fixEdgeIds(svg);
+        fixTranslate(svg);
 
         // Generate tokens and animations
         var tokenGroup = insertTokens(svg, data);
 
         // Attach event listeners after re-insertion
-
-        tokenGroup.selectAll(data.shape)
-          .on("click", function(d) {
-
-            if (d3.select(this).attr("stroke") === "red") {
-              d3.select(this).attr("stroke", "black");
-            } else {
-              d3.select(this).attr("stroke", "red");
-            }
-
-            if ('Shiny' in window) {
-
-              if (!this.dataset.selected) {
-                this.dataset.selected = "true";
-              }
-
-              var selectedTokens = tokenGroup.selectAll(data.shape)
-                .filter(function(d) {
-                  if ("selected" in this.dataset) {
-                    return(this.dataset.selected === "true");
-                  } else {
-                    return false;
-                  }
-                })
-
-              Shiny.onInputChange(el.id + "_tokens", selectedTokens.data());
-            }
-
-
-            if (data.onclick_token_callback) {
-              data.onclick_token_callback(svg, d3.select(this), d);
-            }
-          });
-
-        d3.select(svg)
-          .selectAll(".node")
-          .on("click", function() {
-
-            var path = d3.select(this).select("path");
-            if (path.attr("stroke") === "red") {
-              path.attr("stroke", "#c0c0c0");
-            } else {
-              path.attr("stroke", "red");
-            }
-
-            if ('Shiny' in window) {
-
-              if (!this.dataset.selected) {
-                this.dataset.selected = "true";
-              }
-
-              var selectedActivities = d3.select(svg).selectAll(".node")
-                .filter(function(d) {
-                  if ("selected" in this.dataset) {
-                    return(this.dataset.selected === "true");
-                  } else {
-                    return false;
-                  }
-                })
-
-              var selectedIds = selectedActivities.nodes().map(function(activity) { return activity.id });
-
-              Shiny.onInputChange(el.id + "_activities", selectedIds);
-            }
-
-            if (data.onclick_activity_callback) {
-              data.onclick_token_callback(svg, d3.select(this));
-            }
-          });
+        attachEventListeners(svg, data, tokenGroup)
 
         // Workaround for starting the SVG animation at time 0 in Chrome
         // Whole SVG element is added at once
@@ -498,6 +643,7 @@ HTMLWidgets.widget({
           el.appendChild(container);
         }
 
+        // Correct sizing
         if (width > 0) {
           svg.setAttribute("width", width);
         }
@@ -508,6 +654,7 @@ HTMLWidgets.widget({
         svgPan = svgPanZoom(svg, { dblClickZoomEnabled: false });
 
         renderSlider(data, width);
+        renderLegend(data, width);
 
       },
 
@@ -527,6 +674,7 @@ HTMLWidgets.widget({
         if (data) {
           // Adjust timeline control size
           renderSlider(data, width);
+          renderLegend(data, width);
         }
 
       },

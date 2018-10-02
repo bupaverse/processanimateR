@@ -23,3 +23,7 @@ dependencies:
     version: 0.2.22.1
     src: "htmlwidgets/lib/momentjs"
     script: moment.min.js
+  - name: d3-legend
+    version: 2.25.6
+    src: "htmlwidgets/lib/d3-legend"
+    script: d3-legend.min.js

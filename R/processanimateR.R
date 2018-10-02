@@ -8,16 +8,23 @@
 #' @param animation_duration The overall duration of the animation, all times are scaled according to this overall duration.
 #' @param animation_jitter The magnitude of a random coordinate translation, known as jitter in scatterplots, which is added to each token. Adding jitter can help to disambiguate tokens traveling on top of each other.
 #' @param animation_timeline Whether to render a timeline slider in supported browsers (Recent versions of Chrome and Firefox only).
+#' @param animation_legend TODO
 #' @param token_size The event attribute (character) or alternatively a data frame with three columns (case, time, size) matching the case identifier of the supplied event log.
 #'  The token size is scaled accordingly during the animation (default size is 4). You may use \code{\link{add_token_size}} to add a suitable attribute to the event log.
+#' @param token_size_scale TODO
+#' @param token_size_scale_domain TODO
+#' @param token_size_scale_range TODO
 #' @param token_color The event attribute (character) or alternatively a data frame with three columns (case, time, color) matching the case identifier of the supplied event log.
 #'  The token color is change accordingly during the animation (default color is orange). You may use \code{\link{add_token_color}} to add a suitable attribute to the event log.
+#' @param token_color_scale TODO
+#' @param token_color_scale_domain TODO
+#' @param token_color_scale_range TODO
 #' @param token_image The event attribute (character) or alternatively a data frame with three columns (case, time, image) matching the case identifier of the supplied event log.
 #'  The token image is change accordingly during the animation (by default a SVG shape is used).
 #' @param token_opacity The event attribute (character) or alternatively a data frame with three columns (case, time, transparency) matching the case identifier of the supplied event log.
-#'  The token fill-opacity is change accordingly during the animation (by default the token is dranw with 0.9 opacity).
+#'  The token fill-opacity is change accordingly during the animation (by default the token is drawn with 0.9 opacity).
 #' @param token_shape The (fixed) SVG shape to be used to draw tokens. Can be either 'circle' (default), 'rect' or 'image'. In the latter case the image URL needs to be specified as parameter 'token_image'.
-#' @param token_options A list of additional (fixed) SVG properties to be added to each token.
+#' @param token_attributes A list of additional (fixed) SVG attributes to be added to each token.
 #' @param token_callback_onclick A javascript function that is called when a token is clicked. The function is parsed by \code{\link{JS}} and received three parameters: 'svg_root', 'svg_element', and 'case_id'.
 #' @param activity_callback_onclick A javascript function that is called when an activity is clicked. The function is parsed by \code{\link{JS}} and received three parameters: 'svg_root', 'svg_element', and 'activity_id'.
 #' @param elementId passed through to \code{\link{createWidget}}. A custom elementId is useful to capture the selection events via input$elementId_tokens and input$elementId_activities when used in Shiny.
@@ -98,12 +105,19 @@ animate_process <- function(eventlog,
                             animation_duration = 60,
                             animation_jitter = 0,
                             animation_timeline = TRUE,
+                            animation_legend = NULL,
                             token_size = NULL,
+                            token_size_scale = c("identity", "linear", "sqrt", "log", "quantize", "ordinal"),
+                            token_size_scale_domain = NULL,
+                            token_size_scale_range = NULL,
                             token_color = NULL,
+                            token_color_scale = c("identity", "linear", "sqrt", "log", "quantize", "ordinal"),
+                            token_color_scale_domain = NULL,
+                            token_color_scale_range = NULL,
                             token_image = NULL,
                             token_opacity = NULL,
                             token_shape = c("circle","rect","image"),
-                            token_options = NULL,
+                            token_attributes = NULL,
                             token_callback_onclick = c("function(svg_root, svg_element, case_id) {",
                                                         "}"),
                             activity_callback_onclick = c("function(svg_root, svg_element, activity_id) {",
@@ -121,6 +135,8 @@ animate_process <- function(eventlog,
   label <- NULL
 
   token_shape <- match.arg(token_shape)
+  token_size_scale <- match.arg(token_color_scale)
+  token_color_scale <- match.arg(token_color_scale)
 
   # Generate the DOT source
   graph <- DiagrammeR::render_graph(processmap, width = width, height = height)
@@ -174,9 +190,15 @@ animate_process <- function(eventlog,
     diagram = diagram,
     tokens = tokens,
     sizes = sizes,
+    sizes_scale = token_size_scale,
+    sizes_scale_domain = token_size_scale_domain,
+    sizes_scale_range = token_size_scale_range,
     colors = colors,
+    colors_scale = token_color_scale,
+    colors_scale_domain = token_color_scale_domain,
+    colors_scale_range = token_color_scale_range,
     opacities = opacities,
-    options = token_options,
+    attributes = token_attributes,
     images = images,
     shape = token_shape,
     start_activity = start_activity,
@@ -186,6 +208,7 @@ animate_process <- function(eventlog,
     mode = animation_mode,
     jitter = animation_jitter,
     factor = animation_factor * 1000,
+    legend = animation_legend,
     timeline_start = timeline_start * 1000,
     timeline_end = timeline_end * 1000,
     onclick_token_callback = htmlwidgets::JS(token_callback_onclick),
@@ -290,29 +313,33 @@ generate_tokens <- function(cases, precedence, processmap, animation_mode, anima
 
 generate_animation_attribute <- function(eventlog, attributeName, value, default) {
   attribute <- rlang::sym(attributeName)
-  # standard token size
   if (is.null(value)) {
     eventlog %>%
       as.data.frame() %>%
+      mutate(!!attribute := default) %>%
       select(case = !!case_id_(eventlog),
-             time = !!timestamp_(eventlog)) %>%
-      mutate(!!attribute := default)
+             time = !!timestamp_(eventlog),
+             !!attribute)
   } else if (is.data.frame(value)) {
     stopifnot(c("case", "time", attributeName) %in% colnames(value))
     value
   } else if (value %in% colnames(eventlog)) {
+    # use existing value from event log
     eventlog %>%
       as.data.frame() %>%
+      mutate(!!attribute := !!rlang::sym(value)) %>%
       select(case = !!case_id_(eventlog),
              time = !!timestamp_(eventlog),
-             !!rlang::sym(value)) %>%
-      mutate(!!attribute := !!rlang::sym(value))
+             !!attribute)
+
   } else {
+    # set to a fixed value
     eventlog %>%
       as.data.frame() %>%
+      mutate(!!attribute := value) %>%
       select(case = !!case_id_(eventlog),
-             time = !!timestamp_(eventlog)) %>%
-      mutate(!!attribute := value)
+             time = !!timestamp_(eventlog),
+             !!attribute)
   }
 }
 
@@ -323,7 +350,7 @@ transform_time <- function(data, col, cases, animation_mode, animation_factor, t
   col <- rlang::sym(col)
   data <- data %>%
     group_by(case) %>%
-    filter(row_number(!!col) == 1 | lag(!!col) != !!col) %>%
+    filter(row_number(!!col) == 1 | lag(!!col) != !!col) %>% # only keep changes in value
     left_join(cases, by = "case")
 
   if (animation_mode == "absolute") {

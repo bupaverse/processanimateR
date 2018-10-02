@@ -30,6 +30,7 @@
 add_token_size <- function(eventlog, attribute, size_attribute,
                            min.size = 2, max.size = 8, na.size = 2,
                            size_mapping = size_numeric(eventlog %>% pull(`!!`(attr)), min.size, max.size, na.size)) {
+  .Deprecated(msg = "The scale mechanism is being replaced with D3 scales. This method is going to be removed soon.")
 
   attr <- rlang::sym(attribute)
   sAttr <- rlang::sym(size_attribute)
