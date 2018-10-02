@@ -135,7 +135,7 @@ animate_process <- function(eventlog,
   label <- NULL
 
   token_shape <- match.arg(token_shape)
-  token_size_scale <- match.arg(token_color_scale)
+  token_size_scale <- match.arg(token_size_scale)
   token_color_scale <- match.arg(token_color_scale)
 
   # Generate the DOT source

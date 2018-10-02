@@ -77,7 +77,7 @@ HTMLWidgets.widget({
     function renderLegend(data, width) {
 
       if (legendSvg) {
-        legendSvg.attr("transform", "translate("+(width-smargin.right-legendSvg.node().getBBox().width)+","+(smargin.top+10)+")");
+        legendSvg.attr("transform", "translate("+(width-smargin.right-legendSvg.node().getBBox().width)+","+(smargin.top+15)+")");
       } else {
 
         if (data.legend) {
@@ -88,7 +88,7 @@ HTMLWidgets.widget({
 
           switch(data.legend) {
             case "color":
-              legendSvg.call(d3.legendColor().scale(colorScale));
+              legendSvg.call(d3.legendColor().scale(colorScale).shape("circle").shapeRadius(6));
             break;
             case "size":
               legendSvg.call(d3.legendSize().scale(sizeScale).shape("circle"));
