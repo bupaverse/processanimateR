@@ -181,7 +181,7 @@ HTMLWidgets.widget({
           }
         });
 
-        unpauseAnimation = function() {
+        var unpauseAnimation = function() {
           svg.unpauseAnimations();
           controlButton
             .transition()
@@ -190,7 +190,7 @@ HTMLWidgets.widget({
           animateSlider(svg, data, slider);
         };
 
-        pauseAnimation = function() {
+        var pauseAnimation = function() {
           svg.pauseAnimations();
           controlButton
             .transition()
