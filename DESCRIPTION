@@ -1,7 +1,7 @@
 Package: processanimateR
 Type: Package
 Title: Process Map Token Replay Animation
-Version: 0.2.1.9000
+Version: 0.3.0
 Authors@R: c(person("Felix","Mannhardt", email = "felix.mannhardt@sintef.no", role = c("aut","cre")),
   person("Gert","Janssenswillen",email = "gert.janssenswillen@uhasselt.be", role = c("ctb")))
 Description: Token replay animation for process maps created with 
@@ -21,12 +21,13 @@ Imports:
   zoo, 
   scales
 Suggests: 
-    eventdataR,
-    edeaR,
-    testthat,
-    knitr,
-    rmarkdown,
-    shiny
+  eventdataR,
+  edeaR,
+  testthat,
+  knitr,
+  rmarkdown,
+  shiny,
+  RColorBrewer
 RoxygenNote: 6.1.0
 URL: https://github.com/fmannhardt/processanimateR/
 BugReports: https://github.com/fmannhardt/processanimateR/issues
