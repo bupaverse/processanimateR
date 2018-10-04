@@ -107,11 +107,11 @@ animate_process <- function(eventlog,
                             animation_timeline = TRUE,
                             animation_legend = NULL,
                             token_size = NULL,
-                            token_size_scale = c("identity", "linear", "sqrt", "log", "quantize", "ordinal"),
+                            token_size_scale = c("identity", "linear", "sqrt", "log", "quantize", "ordinal", "time"),
                             token_size_scale_domain = NULL,
                             token_size_scale_range = NULL,
                             token_color = NULL,
-                            token_color_scale = c("identity", "linear", "sqrt", "log", "quantize", "ordinal"),
+                            token_color_scale = c("identity", "linear", "sqrt", "log", "quantize", "ordinal", "time"),
                             token_color_scale_domain = NULL,
                             token_color_scale_range = NULL,
                             token_image = NULL,
@@ -133,6 +133,7 @@ animate_process <- function(eventlog,
   case <- case_end <- log_start <- log_duration <- case_duration <- NULL
   from_id <- to_id <- NULL
   label <- NULL
+  act <- NULL
 
   token_shape <- match.arg(token_shape)
   token_size_scale <- match.arg(token_size_scale)
@@ -174,8 +175,8 @@ animate_process <- function(eventlog,
   images <- generate_animation_attribute(eventlog, "image", token_image, NA)
   images <- transform_time(images, "image", cases, animation_mode, animation_factor, timeline_start, timeline_end)
 
-  if (token_shape == "image") {
-    stopifnot(nrow(images) > 0, "Need to supply image URLs in parameter 'token_images' to use shape 'image'.");
+  if (token_shape == "image" && nrow(images) == 0) {
+    stop("Need to supply image URLs in parameter 'token_images' to use shape 'image'.");
   }
 
   opacities <- generate_animation_attribute(eventlog, "opacity", token_opacity, 0.9)
@@ -184,10 +185,12 @@ animate_process <- function(eventlog,
   tokens <- generate_tokens(cases, precedence, processmap, animation_mode, animation_factor, timeline_start, timeline_end)
   start_activity <- processmap$nodes_df %>% filter(label == "Start") %>% pull(id)
   end_activity <- processmap$nodes_df %>% filter(label == "End") %>% pull(id)
+  activities <- precedence %>% select(act, id = from_id) %>% stats::na.omit() %>% distinct() %>% arrange(id)
 
   settings <- list()
   x <- list(
     diagram = diagram,
+    activities = activities,
     tokens = tokens,
     sizes = sizes,
     sizes_scale = token_size_scale,
@@ -302,18 +305,16 @@ generate_tokens <- function(cases, precedence, processmap, animation_mode, anima
   tokens %>%
     select(case,
            edge_id = id,
-           from_id,
-           to_id,
            token_start,
            token_duration,
-           activity_duration,
-           case_duration)
+           activity_duration)
 
 }
 
 generate_animation_attribute <- function(eventlog, attributeName, value, default) {
   attribute <- rlang::sym(attributeName)
   if (is.null(value)) {
+    # use default
     eventlog %>%
       as.data.frame() %>%
       mutate(!!attribute := default) %>%
@@ -321,6 +322,7 @@ generate_animation_attribute <- function(eventlog, attributeName, value, default
              time = !!timestamp_(eventlog),
              !!attribute)
   } else if (is.data.frame(value)) {
+    # check data present
     stopifnot(c("case", "time", attributeName) %in% colnames(value))
     value
   } else if (value %in% colnames(eventlog)) {

@@ -37,6 +37,8 @@ HTMLWidgets.widget({
       if (domain === null) {
         if (type === "ordinal" | type === "identity") {
           domain = valDomain;
+        } else if (type === "time") {
+          domain = [new Date(Math.min.apply(null, valDomain)), new Date(Math.max.apply(null, valDomain))];
         } else {
           domain = [Math.min.apply(null, valDomain), Math.max.apply(null, valDomain)];
         }
@@ -62,6 +64,9 @@ HTMLWidgets.widget({
         case "ordinal":
           scale = d3.scaleOrdinal();
         break;
+        case "time":
+          scale = d3.scaleTime();
+        break;
         default: // also 'identity'
           scale = d3.scaleOrdinal();
           range = domain;
@@ -80,7 +85,7 @@ HTMLWidgets.widget({
         legendSvg.attr("transform", "translate("+(width-smargin.right-legendSvg.node().getBBox().width)+","+(smargin.top+15)+")");
       } else {
 
-        if (data.legend) {
+        if (data.legend && !(data.colors_scale === "time" || data.sizes_scale === "time")) {
 
           legendSvg = d3.select(svg).append("g")
             .attr("class", "processanimater-legend")
@@ -289,13 +294,19 @@ HTMLWidgets.widget({
       var startNode = svg.querySelector("#a_node"+data.start_activity+" > a > ellipse");
       var endNode = svg.querySelector("#a_node"+data.end_activity+" > a > ellipse");
 
+      var sizes = HTMLWidgets.dataframeToD3(data.sizes);
+      var colors = HTMLWidgets.dataframeToD3(data.colors);
+      var images = HTMLWidgets.dataframeToD3(data.images);
+      var opacities = HTMLWidgets.dataframeToD3(data.opacities);
+
       var shapes;
       if (data.shape === "image") {
         shapes = tokenGroup.selectAll(data.shape)
             		     .data(cases)
             		     .enter()
             		     .append(data.shape)
-                     .attr("display", "none")
+            		     .attr("width", 0)
+            		     .attr("height", 0)
                      .attr("xlink:href", function(d) {
                         return images.filter(function(image) {
                           return(image.case == d);
@@ -319,13 +330,15 @@ HTMLWidgets.widget({
                         })[0].size;
                         return "translate("+-size/2+","+-size/2+")";
                      })
-            		     .attr("stroke", "black");
+            		     .attr("stroke", "black")
+            		     .attr("fill", "white");
       } else {
         shapes = tokenGroup.selectAll(data.shape)
             		     .data(cases)
             		     .enter()
             		     .append(data.shape)
-            		     .attr("stroke", "black");
+            		     .attr("stroke", "black")
+            		     .attr("fill", "white");
       }
 
       // add tooltip
@@ -338,12 +351,6 @@ HTMLWidgets.widget({
       if (data.jitter > 0) {
         shapes.attr("transform", function(d) { return "translate(0," + (Math.random() - 0.5) * data.jitter + ")" });
       }
-
-      var sizes = HTMLWidgets.dataframeToD3(data.sizes);
-      var colors = HTMLWidgets.dataframeToD3(data.colors);
-
-      var images = HTMLWidgets.dataframeToD3(data.images);
-      var opacities = HTMLWidgets.dataframeToD3(data.opacities);
 
       shapes.each(function(d, i) {
 
@@ -582,8 +589,13 @@ HTMLWidgets.widget({
 
             var selectedActivities = d3.select(svg).selectAll(".node")
               .filter(function(d) { return(isSelected(this)); })
-              .nodes().map(function(activity) { return activity.id });
-            Shiny.onInputChange(el.id + "_activities", selectedActivities);
+              .nodes().map(function(activity) {
+                  // javascript is zero-based
+                  var id = Number(activity.id.replace(/.*?(\d+)/,"$1"));
+                  return {id: activity.id, activity: data.activities.act[id-1]};
+                });
+
+            Shiny.onInputChange(el.id + "_activities", JSON.stringify(selectedActivities));
           }
 
           if (data.onclick_activity_callback) {
@@ -604,6 +616,15 @@ HTMLWidgets.widget({
 
         // Remember data for re- building slider upon resize
         data = x;
+
+        // Fix data type for dates
+        if (data.colors_scale === "time") {
+          data.colors.color = data.colors.color.map(function(x) { return moment(x).toDate(); });
+        }
+
+        if (data.sizes_scale === "time") {
+          data.sizes.size = data.sizes.size.map(function(x) { return moment(x).toDate(); });
+        }
 
         // Create D3 scales
         colorScale = buildScale(data.colors_scale,

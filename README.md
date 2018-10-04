@@ -48,7 +48,6 @@ We use the `patients` event log provided by the `eventdataR` package.
 ```r
 library(processanimateR)
 library(eventdataR)
-data(patients)
 ```
 
 A basic animation with static color and token size:
@@ -60,43 +59,53 @@ Default token color, size, or image can be changed as follows:
 ```r
 animate_process(patients, token_size = 2)
 animate_process(patients, token_color = "red")
-animate_process(patients, token_image = "https://upload.wikimedia.org/wikipedia/en/5/5f/Pacman.gif", token_size = 15)
+animate_process(patients,  token_image = "https://upload.wikimedia.org/wikipedia/en/5/5f/Pacman.gif", token_size = 15)
 ```
 
-Dynamic token colors or sizes based on event attributes can be configured:
+Dynamic token colors or sizes based on event attributes can be configured. 
+Based on `ordinal` scales:
 ```r
-animate_process(add_token_color(patients, "time", "color"), token_color = "color")
-animate_process(add_token_color(patients, "employee", "color", 
-                color_mapping = scales::col_factor("Paired", patients$employee)),
-                token_color = "color")
+library(RColorBrewer)
+animate_process(patients, 
+                animation_legend = "color", token_color = "employee", 
+                token_color_scale = "ordinal", token_color_scale_range = RColorBrewer::brewer.pal(8, "Paired"))
+```
+Based on `linear` scales:
+```r
+library(dplyr)
+animate_process(sample_n(traffic_fines,1000) %>% filter_trace_frequency(percentage = 0.95),
+                animation_legend = "color", token_color = "amount", 
+                token_color_scale = "linear", token_color_scale_range = c("yellow","red"), animation_mode = "relative")
+```
+
+Based on `time`scales (no legend yet):
+```r
+animate_process(patients, 
+                animation_legend = "color", token_color = "time", 
+                token_color_scale = "time", token_color_scale_range = c("blue","red"))
 ```
 
 It is also possible to use a secondary data frame to color the tokens irregardless of the event times. This can be useful if measurement are taken throughout a process, but the measurement event itself should not be included in the process map. For example, the lactic acid measurements of the `sepsis` data could be used in that way: 
 ```r
-library(dplyr)
-data(sepsis)
-
 # Extract only the lacticacid measurements
 lactic <- sepsis %>%
     mutate(lacticacid = as.numeric(lacticacid)) %>%
     filter_activity(c("LacticAcid")) %>%
     as.data.frame() %>%
-    select("case" = case_id, "time" =  timestamp, lacticacid)
-
-# Create a numeric color scale
-cscale <- scales::col_numeric("Oranges", lactic$lacticacid , na.color = "white")
-
-# Create colors data frame for animate_process
-lacticColors <- lactic %>%
-    mutate(color = cscale(lacticacid))
+    select("case" = case_id, 
+            "time" =  timestamp, 
+            color = lacticacid) # format needs to be 'case,time,color'
 
 # Remove the measurement events from the sepsis log
 sepsisBase <- sepsis %>%
     filter_activity(c("LacticAcid", "CRP", "Leucocytes", "Return ER",
                       "IV Liquid", "IV Antibiotics"), reverse = T) %>%
     filter_trace_frequency(percentage = 0.95)
-animate_process(sepsisBase, token_color = lacticColors, animation_mode = "relative",
-                animation_duration = 600)
+
+# Animate with the secondary data frame `lactic`
+animate_process(sepsisBase, animation_mode = "relative", animation_duration = 600,
+                animation_legend = "color", token_color = lactic,
+                token_color_scale = "linear", token_color_scale_range = c("#fff5eb","#7f2704"))
 ```
 
 ### More usage examples:
@@ -124,4 +133,4 @@ This software is licensed under the MIT License - see the [LICENSE](LICENSE) fil
 
 ## Acknowledgments
 
-This software was developed in the [HUMAN project](http://www.humanmanufacturing.eu/), which has received funding from the European Union’s Horizon 2020 research and innovation programme under grant agreement no. 723737 (HUMAN)
+This software was partly developed in the [HUMAN project](http://www.humanmanufacturing.eu/), which has received funding from the European Union's Horizon 2020 research and innovation programme under grant agreement no. 723737 (HUMAN)
