@@ -30,7 +30,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">processanimateR</a>
-        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.2.0</span>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.3.0</span>
       </span>
     </div>
 
@@ -53,6 +53,9 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
+      <a href="articles/use-shiny-selections.html">Use processanimateR selection as Shiny inputs</a>
+    </li>
+    <li>
       <a href="articles/use-with-shiny.html">Use processanimateR and Shiny</a>
     </li>
   </ul>
@@ -110,6 +113,7 @@
 <li>Tokens travel through the process approximately according to the times at which (start and complete) events of the activities occur. In some cases processanimateR will add a small epsilon time to make sure that the SMIL animation works fine, since there seem to be some limitations with regard to zero duration animations.</li>
 <li>Be aware that the perceived speed in which tokens travel depends on the length of edges in the process map, which is the result of an automatic layout algorithm and does not represent any kind of real distance between activities.</li>
 <li>Parallelism is still handled poorly as to be expected from a process map. In particular overlapping start and completion times of activities may result in tokens moving unexpectedly.</li>
+<li>The timeline slider option cannot be used in Internet Explorer due to missing support for certain SVG animation functions.</li>
 </ul>
 </div>
 <div id="usage" class="section level3">
@@ -118,44 +122,47 @@
 <p>There are two main functions: <code>animate_process</code> and <code>ianimate_process</code> (interactive version).</p>
 <p>We use the <code>patients</code> event log provided by the <code>eventdataR</code> package.</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1"><span class="kw">library</span>(processanimateR)</a>
-<a class="sourceLine" id="cb3-2" data-line-number="2"><span class="kw">library</span>(eventdataR)</a>
-<a class="sourceLine" id="cb3-3" data-line-number="3"><span class="kw">data</span>(patients)</a></code></pre></div>
+<a class="sourceLine" id="cb3-2" data-line-number="2"><span class="kw">library</span>(eventdataR)</a></code></pre></div>
 <p>A basic animation with static color and token size:</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1"><span class="kw"><a href="reference/animate_process.html">animate_process</a></span>(patients)</a></code></pre></div>
 <p>Default token color, size, or image can be changed as follows:</p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1"><span class="kw"><a href="reference/animate_process.html">animate_process</a></span>(patients, <span class="dt">token_size =</span> <span class="dv">2</span>)</a>
 <a class="sourceLine" id="cb5-2" data-line-number="2"><span class="kw"><a href="reference/animate_process.html">animate_process</a></span>(patients, <span class="dt">token_color =</span> <span class="st">"red"</span>)</a>
 <a class="sourceLine" id="cb5-3" data-line-number="3"><span class="kw"><a href="reference/animate_process.html">animate_process</a></span>(patients, <span class="dt">token_image =</span> <span class="st">"https://upload.wikimedia.org/wikipedia/en/5/5f/Pacman.gif"</span>, <span class="dt">token_size =</span> <span class="dv">15</span>)</a></code></pre></div>
-<p>Dynamic token colors or sizes based on event attributes can be configured:</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" data-line-number="1"><span class="kw"><a href="reference/animate_process.html">animate_process</a></span>(<span class="kw"><a href="reference/add_token_color.html">add_token_color</a></span>(patients, <span class="st">"time"</span>, <span class="st">"color"</span>), <span class="dt">token_color =</span> <span class="st">"color"</span>)</a>
-<a class="sourceLine" id="cb6-2" data-line-number="2"><span class="kw"><a href="reference/animate_process.html">animate_process</a></span>(<span class="kw"><a href="reference/add_token_color.html">add_token_color</a></span>(patients, <span class="st">"employee"</span>, <span class="st">"color"</span>, </a>
-<a class="sourceLine" id="cb6-3" data-line-number="3">                <span class="dt">color_mapping =</span> scales<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/scales/topics/col_numeric">col_factor</a></span>(<span class="st">"Paired"</span>, patients<span class="op">$</span>employee)),</a>
-<a class="sourceLine" id="cb6-4" data-line-number="4">                <span class="dt">token_color =</span> <span class="st">"color"</span>)</a></code></pre></div>
-<p>It is also possible to use a secondary data frame to color the tokens irregardless of the event times. This can be useful if measurement are taken throughout a process, but the measurement event itself should not be included in the process map. For example, the lactic acid measurements of the <code>sepsis</code> data could be used in that way:</p>
+<p>Dynamic token colors or sizes based on event attributes can be configured. Based on <code>ordinal</code> scales:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" data-line-number="1"><span class="kw">library</span>(RColorBrewer)</a>
+<a class="sourceLine" id="cb6-2" data-line-number="2"><span class="kw"><a href="reference/animate_process.html">animate_process</a></span>(patients, </a>
+<a class="sourceLine" id="cb6-3" data-line-number="3">                <span class="dt">animation_legend =</span> <span class="st">"color"</span>, <span class="dt">token_color =</span> <span class="st">"employee"</span>, </a>
+<a class="sourceLine" id="cb6-4" data-line-number="4">                <span class="dt">token_color_scale =</span> <span class="st">"ordinal"</span>, <span class="dt">token_color_scale_range =</span> RColorBrewer<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/RColorBrewer/topics/ColorBrewer">brewer.pal</a></span>(<span class="dv">8</span>, <span class="st">"Paired"</span>))</a></code></pre></div>
+<p>Based on <code>linear</code> scales:</p>
 <div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1"><span class="kw">library</span>(dplyr)</a>
-<a class="sourceLine" id="cb7-2" data-line-number="2"><span class="kw">data</span>(sepsis)</a>
-<a class="sourceLine" id="cb7-3" data-line-number="3"></a>
-<a class="sourceLine" id="cb7-4" data-line-number="4"><span class="co"># Extract only the lacticacid measurements</span></a>
-<a class="sourceLine" id="cb7-5" data-line-number="5">lactic &lt;-<span class="st"> </span>sepsis <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb7-6" data-line-number="6"><span class="st">    </span><span class="kw">mutate</span>(<span class="dt">lacticacid =</span> <span class="kw">as.numeric</span>(lacticacid)) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb7-7" data-line-number="7"><span class="st">    </span><span class="kw">filter_activity</span>(<span class="kw">c</span>(<span class="st">"LacticAcid"</span>)) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb7-8" data-line-number="8"><span class="st">    </span><span class="kw">as.data.frame</span>() <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb7-9" data-line-number="9"><span class="st">    </span><span class="kw">select</span>(<span class="st">"case"</span> =<span class="st"> </span>case_id, <span class="st">"time"</span> =<span class="st">  </span>timestamp, lacticacid)</a>
-<a class="sourceLine" id="cb7-10" data-line-number="10"></a>
-<a class="sourceLine" id="cb7-11" data-line-number="11"><span class="co"># Create a numeric color scale</span></a>
-<a class="sourceLine" id="cb7-12" data-line-number="12">cscale &lt;-<span class="st"> </span>scales<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/scales/topics/col_numeric">col_numeric</a></span>(<span class="st">"Oranges"</span>, lactic<span class="op">$</span>lacticacid , <span class="dt">na.color =</span> <span class="st">"white"</span>)</a>
-<a class="sourceLine" id="cb7-13" data-line-number="13"></a>
-<a class="sourceLine" id="cb7-14" data-line-number="14"><span class="co"># Create colors data frame for animate_process</span></a>
-<a class="sourceLine" id="cb7-15" data-line-number="15">lacticColors &lt;-<span class="st"> </span>lactic <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb7-16" data-line-number="16"><span class="st">    </span><span class="kw">mutate</span>(<span class="dt">color =</span> <span class="kw">cscale</span>(lacticacid))</a>
-<a class="sourceLine" id="cb7-17" data-line-number="17"></a>
-<a class="sourceLine" id="cb7-18" data-line-number="18"><span class="co"># Remove the measurement events from the sepsis log</span></a>
-<a class="sourceLine" id="cb7-19" data-line-number="19">sepsisBase &lt;-<span class="st"> </span>sepsis <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb7-20" data-line-number="20"><span class="st">    </span><span class="kw">filter_activity</span>(<span class="kw">c</span>(<span class="st">"LacticAcid"</span>, <span class="st">"CRP"</span>, <span class="st">"Leucocytes"</span>, <span class="st">"Return ER"</span>,</a>
-<a class="sourceLine" id="cb7-21" data-line-number="21">                      <span class="st">"IV Liquid"</span>, <span class="st">"IV Antibiotics"</span>), <span class="dt">reverse =</span> T) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb7-22" data-line-number="22"><span class="st">    </span><span class="kw">filter_trace_frequency</span>(<span class="dt">percentage =</span> <span class="fl">0.95</span>)</a>
-<a class="sourceLine" id="cb7-23" data-line-number="23"><span class="kw"><a href="reference/animate_process.html">animate_process</a></span>(sepsisBase, <span class="dt">token_color =</span> lacticColors, <span class="dt">animation_mode =</span> <span class="st">"relative"</span>,</a>
-<a class="sourceLine" id="cb7-24" data-line-number="24">                <span class="dt">animation_duration =</span> <span class="dv">600</span>)</a></code></pre></div>
+<a class="sourceLine" id="cb7-2" data-line-number="2"><span class="kw"><a href="reference/animate_process.html">animate_process</a></span>(<span class="kw">sample_n</span>(traffic_fines,<span class="dv">1000</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter_trace_frequency</span>(<span class="dt">percentage =</span> <span class="fl">0.95</span>),</a>
+<a class="sourceLine" id="cb7-3" data-line-number="3">                <span class="dt">animation_legend =</span> <span class="st">"color"</span>, <span class="dt">token_color =</span> <span class="st">"amount"</span>, </a>
+<a class="sourceLine" id="cb7-4" data-line-number="4">                <span class="dt">token_color_scale =</span> <span class="st">"linear"</span>, <span class="dt">token_color_scale_range =</span> <span class="kw">c</span>(<span class="st">"yellow"</span>,<span class="st">"red"</span>), <span class="dt">animation_mode =</span> <span class="st">"relative"</span>)</a></code></pre></div>
+<p>Based on <code>time</code> scales (no legend yet):</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" data-line-number="1"><span class="kw"><a href="reference/animate_process.html">animate_process</a></span>(patients, </a>
+<a class="sourceLine" id="cb8-2" data-line-number="2">                <span class="dt">animation_legend =</span> <span class="st">"color"</span>, <span class="dt">token_color =</span> <span class="st">"time"</span>, </a>
+<a class="sourceLine" id="cb8-3" data-line-number="3">                <span class="dt">token_color_scale =</span> <span class="st">"time"</span>, <span class="dt">token_color_scale_range =</span> <span class="kw">c</span>(<span class="st">"blue"</span>,<span class="st">"red"</span>))</a></code></pre></div>
+<p>It is also possible to use a secondary data frame to color the tokens irregardless of the event times. This can be useful if measurement are taken throughout a process, but the measurement event itself should not be included in the process map. For example, the lactic acid measurements of the <code>sepsis</code> data could be used in that way:</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" data-line-number="1"><span class="co"># Extract only the lacticacid measurements</span></a>
+<a class="sourceLine" id="cb9-2" data-line-number="2">lactic &lt;-<span class="st"> </span>sepsis <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb9-3" data-line-number="3"><span class="st">    </span><span class="kw">mutate</span>(<span class="dt">lacticacid =</span> <span class="kw">as.numeric</span>(lacticacid)) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb9-4" data-line-number="4"><span class="st">    </span><span class="kw">filter_activity</span>(<span class="kw">c</span>(<span class="st">"LacticAcid"</span>)) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb9-5" data-line-number="5"><span class="st">    </span><span class="kw">as.data.frame</span>() <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb9-6" data-line-number="6"><span class="st">    </span><span class="kw">select</span>(<span class="st">"case"</span> =<span class="st"> </span>case_id, </a>
+<a class="sourceLine" id="cb9-7" data-line-number="7">            <span class="st">"time"</span> =<span class="st">  </span>timestamp, </a>
+<a class="sourceLine" id="cb9-8" data-line-number="8">            <span class="dt">color =</span> lacticacid) <span class="co"># format needs to be 'case,time,color'</span></a>
+<a class="sourceLine" id="cb9-9" data-line-number="9"></a>
+<a class="sourceLine" id="cb9-10" data-line-number="10"><span class="co"># Remove the measurement events from the sepsis log</span></a>
+<a class="sourceLine" id="cb9-11" data-line-number="11">sepsisBase &lt;-<span class="st"> </span>sepsis <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb9-12" data-line-number="12"><span class="st">    </span><span class="kw">filter_activity</span>(<span class="kw">c</span>(<span class="st">"LacticAcid"</span>, <span class="st">"CRP"</span>, <span class="st">"Leucocytes"</span>, <span class="st">"Return ER"</span>,</a>
+<a class="sourceLine" id="cb9-13" data-line-number="13">                      <span class="st">"IV Liquid"</span>, <span class="st">"IV Antibiotics"</span>), <span class="dt">reverse =</span> T) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb9-14" data-line-number="14"><span class="st">    </span><span class="kw">filter_trace_frequency</span>(<span class="dt">percentage =</span> <span class="fl">0.95</span>)</a>
+<a class="sourceLine" id="cb9-15" data-line-number="15"></a>
+<a class="sourceLine" id="cb9-16" data-line-number="16"><span class="co"># Animate with the secondary data frame `lactic`</span></a>
+<a class="sourceLine" id="cb9-17" data-line-number="17"><span class="kw"><a href="reference/animate_process.html">animate_process</a></span>(sepsisBase, <span class="dt">animation_mode =</span> <span class="st">"relative"</span>, <span class="dt">animation_duration =</span> <span class="dv">600</span>,</a>
+<a class="sourceLine" id="cb9-18" data-line-number="18">                <span class="dt">animation_legend =</span> <span class="st">"color"</span>, <span class="dt">token_color =</span> lactic,</a>
+<a class="sourceLine" id="cb9-19" data-line-number="19">                <span class="dt">token_color_scale =</span> <span class="st">"linear"</span>, <span class="dt">token_color_scale_range =</span> <span class="kw">c</span>(<span class="st">"#fff5eb"</span>,<span class="st">"#7f2704"</span>))</a></code></pre></div>
 </div>
 <div id="more-usage-examples" class="section level3">
 <h3 class="hasAnchor">
@@ -171,15 +178,17 @@
 <p>This package makes use of the following libraries:</p>
 <ul>
 <li>
-<a href="https://d3js.org">d3</a>, to dynamically changing the SVG;</li>
+<a href="https://github.com/gertjanssenswillen/bupaR">bupaR</a>, for the base process mining functions in R.</li>
+<li>
+<a href="https://github.com/mdaines/viz.js">viz.js</a>, for the GraphViz layout;</li>
+<li>
+<a href="https://d3js.org">d3</a>, for SVG management;</li>
+<li>
+<a href="https://github.com/susielu/d3-legend">d3-legend</a>, to render D3 scales;</li>
 <li>
 <a href="https://github.com/FakeSmile/FakeSmile">fakesmil</a>, to provide SMIL support in most browsers;</li>
 <li>
 <a href="https://github.com/ariutta/svg-pan-zoom">svg-pan-zoom</a>, for the panning/zooming option;</li>
-<li>
-<a href="https://github.com/mdaines/viz.js/">viz</a>, to compile the DOT generated by processmapR in JavaScript;</li>
-<li>
-<a href="https://github.com/gertjanssenswillen/bupaR">bupaR</a>, for the base Process Mining functions in R.</li>
 <li>
 <a href="https://github.com/moment/moment">MomentJS</a>, for parsing and formatting times and durations.</li>
 </ul>
@@ -202,7 +211,7 @@
 <div id="acknowledgments" class="section level2">
 <h2 class="hasAnchor">
 <a href="#acknowledgments" class="anchor"></a>Acknowledgments</h2>
-<p>This software was developed in the <a href="http://www.humanmanufacturing.eu/">HUMAN project</a>, which has received funding from the European Union’s Horizon 2020 research and innovation programme under grant agreement no. 723737 (HUMAN)</p>
+<p>This software was partly developed in the <a href="http://www.humanmanufacturing.eu/">HUMAN project</a>, which has received funding from the European Union’s Horizon 2020 research and innovation programme under grant agreement no. 723737 (HUMAN)</p>
 </div>
 </div>
   </div>

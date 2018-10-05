@@ -61,7 +61,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">processanimateR</a>
-        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.2.0</span>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.3.0</span>
       </span>
     </div>
 
@@ -83,6 +83,9 @@
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../articles/use-shiny-selections.html">Use processanimateR selection as Shiny inputs</a>
+    </li>
     <li>
       <a href="../articles/use-with-shiny.html">Use processanimateR and Shiny</a>
     </li>
@@ -165,7 +168,7 @@
   <span class='co'># Add token color based on a factor attribute</span>
   <span class='fu'>add_token_color</span>(<span class='no'>patients</span>, <span class='st'>"employee"</span>, <span class='st'>"color"</span>,
                 <span class='kw'>color_mapping</span> <span class='kw'>=</span> <span class='kw pkg'>scales</span><span class='kw ns'>::</span><span class='fu'><a href='http://www.rdocumentation.org/packages/scales/topics/col_numeric'>col_factor</a></span>(<span class='st'>"Set3"</span>, <span class='no'>patients</span>$<span class='no'>employee</span>))
-}</div><div class='output co'>#&gt; Event log consisting of:
+}</div><div class='output co'>#&gt; <span class='warning'>Warning: The scale mechanism is being replaced with D3 scales. This method is going to be removed soon.</span></div><div class='output co'>#&gt; <span class='warning'>Warning: The scale mechanism is being replaced with D3 scales. This method is going to be removed soon.</span></div><div class='output co'>#&gt; Event log consisting of:
 #&gt; 5442 events
 #&gt; 7 traces
 #&gt; 500 cases
