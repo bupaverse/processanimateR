@@ -16,8 +16,7 @@ Imports:
   magrittr, 
   dplyr, 
   htmlwidgets, 
-  DiagrammeR (>= 1.0.0), 
-  DiagrammeRsvg,
+  DiagrammeR (>= 1.0.0),
   zoo, 
   scales
 Suggests: 

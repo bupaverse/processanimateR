@@ -33,42 +33,61 @@
 #' @param ... Options passed on to \code{\link{process_map}}.
 #'
 #' @examples
-#' # Load example event log
-#' library(eventdataR)
+#' # Create small example event log
+#' library(bupaR)
+#' example_log <- bupaR::eventlog(
+#'                  eventlog = data.frame(
+#'                    case = c(rep(1,6),rep(2,6),rep(3,8)),
+#'                    act = c(rep(c("A","A","B","B","C","C"),2),
+#'                            rep(c("A", "B", "D", "C"), each = 2)),
+#'                    act_id = rep(c(1:10),each=2),
+#'                    lifecycle = rep(c("start", "complete"),10),
+#'                    res = rep(sample(LETTERS[1:3], 10, replace = TRUE), each = 2),
+#'                    time = as.POSIXct(c(0,5,10,15,20,25,
+#'                                        5,10,15,20,25,30,
+#'                                        10,20,30,40,50,60,70,80) * 600, origin = "2018/10/03")),
+#'                  case_id = "case",
+#'                  activity_id = "act",
+#'                  timestamp = "time",
+#'                  activity_instance_id = "act_id",
+#'                  lifecycle_id = "lifecycle",
+#'                  resource_id = "res")
 #'
 #' # Animate the process with default options (absolute time and 60s duration)
-#' animate_process(patients)
+#' animate_process(example_log)
 #'
 #' \donttest{
-#'
 #' # Animate the process with default options (relative time and with jitter)
-#' animate_process(patients, animation_mode = "relative", animation_jitter = 10)
+#' animate_process(example_log, animation_mode = "relative", animation_jitter = 10)
 #'
 #' # Change default token sizes
-#' animate_process(patients, token_size = 2)
+#' animate_process(example_log, token_size = 2)
 #'
 #' # Change default token color
-#' animate_process(patients, token_color = "red")
+#' animate_process(example_log, token_color = "red")
 #'
 #' # Change default token opacity
-#' animate_process(patients, token_opacity = 0.5)
+#' animate_process(example_log, token_opacity = 0.5)
 #'
 #' # Change default token image (GIFs work too)
-#' animate_process(patients, token_image = "https://upload.wikimedia.org/wikipedia/en/5/5f/Pacman.gif")
+#' animate_process(example_log, token_shape = "image", token_size = 10,
+#'                 token_image = "https://upload.wikimedia.org/wikipedia/en/5/5f/Pacman.gif")
 #'
+#' # Change token color based on a factor attribute
+#' animate_process(example_log,
+#'                 animation_legend = "color", token_color = "res",
+#'                 token_color_scale = "ordinal",
+#'                 token_color_scale_range = RColorBrewer::brewer.pal(8, "Paired"))
+#'
+#' # This requires example data
+#' library(eventdataR)
+#' data(traffic_fines)
 #' # Change token color based on a numeric attribute, here the nonsensical 'time' of an event
 #' animate_process(edeaR::filter_trace_frequency(bupaR::sample_n(traffic_fines,1000),percentage=0.95),
 #'                animation_legend = "color", token_color = "amount",
 #'                token_color_scale = "linear", token_color_scale_range = c("yellow","red"),
 #'                animation_mode = "relative")
-#'
-#' # Change token color based on a factor attribute
-#' animate_process(patients,
-#'                 animation_legend = "color", token_color = "employee",
-#'                 token_color_scale = "ordinal",
-#'                 token_color_scale_range = RColorBrewer::brewer.pal(8, "Paired"))
 #' }
-#'
 #'
 #' @author Felix Mannhardt <felix.mannhardt@sintef.no> (SINTEF Digital)
 #' @seealso processmapR:process_map
@@ -83,7 +102,7 @@
 #' @export
 animate_process <- function(eventlog,
                             processmap = process_map(eventlog, render = F, ...),
-                            animation_mode = "absolute",
+                            animation_mode = c("absolute","relative","off"),
                             animation_duration = 60,
                             animation_jitter = 0,
                             animation_timeline = TRUE,
@@ -117,54 +136,71 @@ animate_process <- function(eventlog,
   label <- NULL
   act <- NULL
 
+  animation_mode <- match.arg(animation_mode)
   token_shape <- match.arg(token_shape)
   token_size_scale <- match.arg(token_size_scale)
   token_color_scale <- match.arg(token_color_scale)
 
   # Generate the DOT source
   graph <- DiagrammeR::render_graph(processmap, width = width, height = height)
-  # Get the rendered SVG
-  diagram <- DiagrammeRsvg::export_svg(graph)
+  diagram <- graph$x$diagram
 
   precedence <- attr(processmap, "base_precedence") %>%
     mutate_at(vars(start_time, end_time, next_start_time, next_end_time), as.numeric, units = "secs")
 
-  cases <- precedence %>%
-    group_by(case) %>%
-    filter(!is.na(case)) %>%
-    summarise(case_start = min(start_time, na.rm = T),
-              case_end = max(end_time, na.rm = T)) %>%
-    mutate(case_duration = case_end - case_start) %>%
-    ungroup()
+  if (animation_mode != "off") {
 
-  # determine animation factor based on requested duration
-  if (animation_mode == "absolute") {
-    timeline_start <- cases %>% pull(case_start) %>% min(na.rm = T)
-    timeline_end <- cases %>% pull(case_end) %>% max()
-    animation_factor <- (timeline_end - timeline_start) / animation_duration
+    cases <- precedence %>%
+      group_by(case) %>%
+      filter(!is.na(case)) %>%
+      summarise(case_start = min(start_time, na.rm = T),
+                case_end = max(end_time, na.rm = T)) %>%
+      mutate(case_duration = case_end - case_start) %>%
+      ungroup()
+
+    # determine animation factor based on requested duration
+    if (animation_mode == "absolute") {
+      timeline_start <- cases %>% pull(case_start) %>% min(na.rm = T)
+      timeline_end <- cases %>% pull(case_end) %>% max()
+      animation_factor <- (timeline_end - timeline_start) / animation_duration
+    } else {
+      timeline_start <- 0
+      timeline_end <- cases %>% pull(case_duration) %>% max(na.rm = T)
+      animation_factor =  timeline_end / animation_duration
+    }
+
+    sizes <- generate_animation_attribute(eventlog, "size", token_size, 6)
+    sizes <- transform_time(sizes, "size", cases, animation_mode, animation_factor, timeline_start, timeline_end)
+
+    colors <- generate_animation_attribute(eventlog, "color", token_color, "white")
+    colors <- transform_time(colors, "color", cases, animation_mode, animation_factor, timeline_start, timeline_end)
+
+    images <- generate_animation_attribute(eventlog, "image", token_image, NA)
+    images <- transform_time(images, "image", cases, animation_mode, animation_factor, timeline_start, timeline_end)
+
+    if (token_shape == "image" && nrow(images) == 0) {
+      stop("Need to supply image URLs in parameter 'token_images' to use shape 'image'.");
+    }
+
+    opacities <- generate_animation_attribute(eventlog, "opacity", token_opacity, 0.9)
+    opacities <- transform_time(opacities, "opacity", cases, animation_mode, animation_factor, timeline_start, timeline_end)
+
+    tokens <- generate_tokens(cases, precedence, processmap, animation_mode, animation_factor, timeline_start, timeline_end)
+
   } else {
+    # No animation mode, for using activity selection features only
+    sizes <- data.frame()
+    colors <- data.frame()
+    images <- data.frame()
+    opacities <- data.frame()
+    tokens <- data.frame()
     timeline_start <- 0
-    timeline_end <- cases %>% pull(case_duration) %>% max(na.rm = T)
-    animation_factor =  timeline_end / animation_duration
+    timeline_end <- 0
+    animation_timeline <- FALSE
+    animation_factor <- 0
+
   }
 
-  sizes <- generate_animation_attribute(eventlog, "size", token_size, 6)
-  sizes <- transform_time(sizes, "size", cases, animation_mode, animation_factor, timeline_start, timeline_end)
-
-  colors <- generate_animation_attribute(eventlog, "color", token_color, "white")
-  colors <- transform_time(colors, "color", cases, animation_mode, animation_factor, timeline_start, timeline_end)
-
-  images <- generate_animation_attribute(eventlog, "image", token_image, NA)
-  images <- transform_time(images, "image", cases, animation_mode, animation_factor, timeline_start, timeline_end)
-
-  if (token_shape == "image" && nrow(images) == 0) {
-    stop("Need to supply image URLs in parameter 'token_images' to use shape 'image'.");
-  }
-
-  opacities <- generate_animation_attribute(eventlog, "opacity", token_opacity, 0.9)
-  opacities <- transform_time(opacities, "opacity", cases, animation_mode, animation_factor, timeline_start, timeline_end)
-
-  tokens <- generate_tokens(cases, precedence, processmap, animation_mode, animation_factor, timeline_start, timeline_end)
   start_activity <- processmap$nodes_df %>% filter(label == "Start") %>% pull(id)
   end_activity <- processmap$nodes_df %>% filter(label == "End") %>% pull(id)
   activities <- precedence %>% select(act, id = from_id) %>% stats::na.omit() %>% distinct() %>% arrange(id)

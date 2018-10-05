@@ -27,3 +27,9 @@ dependencies:
     version: 2.25.6
     src: "htmlwidgets/lib/d3-legend"
     script: d3-legend.min.js
+  - name: viz
+    version: 2.0.0
+    src: "htmlwidgets/lib/viz"
+    script:
+     - viz.js
+     - lite.render.js

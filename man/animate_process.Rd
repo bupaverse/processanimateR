@@ -5,11 +5,11 @@
 \title{Animate cases on a process map}
 \usage{
 animate_process(eventlog, processmap = process_map(eventlog, render = F,
-  ...), animation_mode = "absolute", animation_duration = 60,
-  animation_jitter = 0, animation_timeline = TRUE,
-  animation_legend = NULL, token_size = NULL,
-  token_size_scale = c("identity", "linear", "sqrt", "log", "quantize",
-  "ordinal", "time"), token_size_scale_domain = NULL,
+  ...), animation_mode = c("absolute", "relative", "off"),
+  animation_duration = 60, animation_jitter = 0,
+  animation_timeline = TRUE, animation_legend = NULL,
+  token_size = NULL, token_size_scale = c("identity", "linear", "sqrt",
+  "log", "quantize", "ordinal", "time"), token_size_scale_domain = NULL,
   token_size_scale_range = NULL, token_color = NULL,
   token_color_scale = c("identity", "linear", "sqrt", "log", "quantize",
   "ordinal", "time"), token_color_scale_domain = NULL,
@@ -82,42 +82,61 @@ The token fill-opacity is change accordingly during the animation (by default th
 A function for creating a SVG animation of an event log on a process map created by processmapR.
 }
 \examples{
-# Load example event log
-library(eventdataR)
+# Create small example event log
+library(bupaR)
+example_log <- bupaR::eventlog(
+                 eventlog = data.frame(
+                   case = c(rep(1,6),rep(2,6),rep(3,8)),
+                   act = c(rep(c("A","A","B","B","C","C"),2),
+                           rep(c("A", "B", "D", "C"), each = 2)),
+                   act_id = rep(c(1:10),each=2),
+                   lifecycle = rep(c("start", "complete"),10),
+                   res = rep(sample(LETTERS[1:3], 10, replace = TRUE), each = 2),
+                   time = as.POSIXct(c(0,5,10,15,20,25,
+                                       5,10,15,20,25,30,
+                                       10,20,30,40,50,60,70,80) * 600, origin = "2018/10/03")),
+                 case_id = "case",
+                 activity_id = "act",
+                 timestamp = "time",
+                 activity_instance_id = "act_id",
+                 lifecycle_id = "lifecycle",
+                 resource_id = "res")
 
 # Animate the process with default options (absolute time and 60s duration)
-animate_process(patients)
+animate_process(example_log)
 
 \donttest{
-
 # Animate the process with default options (relative time and with jitter)
-animate_process(patients, animation_mode = "relative", animation_jitter = 10)
+animate_process(example_log, animation_mode = "relative", animation_jitter = 10)
 
 # Change default token sizes
-animate_process(patients, token_size = 2)
+animate_process(example_log, token_size = 2)
 
 # Change default token color
-animate_process(patients, token_color = "red")
+animate_process(example_log, token_color = "red")
 
 # Change default token opacity
-animate_process(patients, token_opacity = 0.5)
+animate_process(example_log, token_opacity = 0.5)
 
 # Change default token image (GIFs work too)
-animate_process(patients, token_image = "https://upload.wikimedia.org/wikipedia/en/5/5f/Pacman.gif")
+animate_process(example_log, token_shape = "image", token_size = 10,
+                token_image = "https://upload.wikimedia.org/wikipedia/en/5/5f/Pacman.gif")
 
+# Change token color based on a factor attribute
+animate_process(example_log,
+                animation_legend = "color", token_color = "res",
+                token_color_scale = "ordinal",
+                token_color_scale_range = RColorBrewer::brewer.pal(8, "Paired"))
+
+# This requires example data
+library(eventdataR)
+data(traffic_fines)
 # Change token color based on a numeric attribute, here the nonsensical 'time' of an event
 animate_process(edeaR::filter_trace_frequency(bupaR::sample_n(traffic_fines,1000),percentage=0.95),
                animation_legend = "color", token_color = "amount",
                token_color_scale = "linear", token_color_scale_range = c("yellow","red"),
                animation_mode = "relative")
-
-# Change token color based on a factor attribute
-animate_process(patients,
-                animation_legend = "color", token_color = "employee",
-                token_color_scale = "ordinal",
-                token_color_scale_range = RColorBrewer::brewer.pal(8, "Paired"))
 }
-
 
 }
 \seealso{

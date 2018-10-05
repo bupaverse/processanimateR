@@ -114,6 +114,7 @@ animate_process(sepsisBase, animation_mode = "relative", animation_duration = 60
 ## Libraries Used
 This package makes use of the following libraries:
 * [bupaR](https://github.com/gertjanssenswillen/bupaR), for the base process mining functions in R.
+* [viz.js](https://github.com/mdaines/viz.js), for the GraphViz layout;
 * [d3](https://d3js.org), for SVG management;
 * [d3-legend](https://github.com/susielu/d3-legend), to render D3 scales;
 * [fakesmil](https://github.com/FakeSmile/FakeSmile), to provide SMIL support in most browsers;

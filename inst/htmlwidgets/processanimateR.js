@@ -6,6 +6,8 @@ HTMLWidgets.widget({
 
   factory: function(el, width, height) {
 
+    var viz = new Viz();
+
     var svg = null;
     var svgPan = null;
     var data = null;
@@ -81,29 +83,29 @@ HTMLWidgets.widget({
 
     function renderLegend(data, width) {
 
+      // Clean-up
       if (legendSvg) {
-        legendSvg.attr("transform", "translate("+(width-smargin.right-legendSvg.node().getBBox().width)+","+(smargin.top+15)+")");
-      } else {
+        legendSvg.remove();
+      }
 
-        if (data.legend && !(data.colors_scale === "time" || data.sizes_scale === "time")) {
+      if (data.legend && !(data.colors_scale === "time" || data.sizes_scale === "time")) {
 
-          legendSvg = d3.select(svg).append("g")
-            .attr("class", "processanimater-legend")
-            .attr("style", "outline: thin solid black; outline-offset: 5px;");
+        legendSvg = d3.select(svg).append("g")
+          .attr("class", "processanimater-legend")
+          .attr("style", "outline: thin solid black; outline-offset: 5px;");
 
-          switch(data.legend) {
-            case "color":
-              legendSvg.call(d3.legendColor().scale(colorScale).shape("circle").shapeRadius(6));
-            break;
-            case "size":
-              legendSvg.call(d3.legendSize().scale(sizeScale).shape("circle"));
-            break;
-            default:
-          }
-
-          legendSvg.attr("transform", "translate("+(width-smargin.right-legendSvg.node().getBBox().width)+","+(smargin.top+10)+")");
-
+        switch(data.legend) {
+          case "color":
+            legendSvg.call(d3.legendColor().scale(colorScale).shape("circle").shapeRadius(6));
+          break;
+          case "size":
+            legendSvg.call(d3.legendSize().scale(sizeScale).shape("circle"));
+          break;
+          default:
         }
+
+        legendSvg.attr("transform", "translate("+(width-smargin.right-legendSvg.node().getBBox().width)+","+(smargin.top+10)+")");
+
       }
 
     }
@@ -542,11 +544,18 @@ HTMLWidgets.widget({
           toggleSelection(this);
 
           tokenGroup.selectAll(data.shape)
-              .attr("stroke", function() {
+              .attr("stroke-width", function() {
                 if (isSelected(this)) {
-                  return "red";
+                  return "2";
                 } else {
-                  return "black";
+                  return "1";
+                }
+              })
+              .attr("stroke-dasharray", function() {
+                if (isSelected(this)) {
+                  return "2";
+                } else {
+                  return "0";
                 }
               });
 
@@ -576,9 +585,16 @@ HTMLWidgets.widget({
               .each(function() {
                 var node = this;
                 d3.select(node).select("path")
+                  .attr("stroke-width", function() {
+                    if (isSelected(node)) {
+                      return "3";
+                    } else {
+                      return "1"; // #c0c0c0
+                    }
+                  })
                   .attr("stroke", function() {
                     if (isSelected(node)) {
-                      return "red";
+                      return "black";
                     } else {
                       return "#c0c0c0";
                     }
@@ -638,44 +654,47 @@ HTMLWidgets.widget({
                                 data.sizes_scale_range,
                                 6);
 
-        // Create detached container
-        var container = document.createElement("div");
-
         // Render DOT using Graphviz
-        container.innerHTML = data.diagram;
-        svg = container.querySelector("svg");
+        viz.renderSVGElement(data.diagram).then(function(element) {
 
-        // Some DOM fixes
-        wrapInPanZoomViewport(svg);
-        fixEdgeIds(svg);
-        fixTranslate(svg);
+            // Create detached container
+            var container = document.createElement("div");
+            container.appendChild(element);
+            svg = container.querySelector("svg");
 
-        // Generate tokens and animations
-        var tokenGroup = insertTokens(svg, data);
+            // Some DOM fixes
+            wrapInPanZoomViewport(svg);
+            fixEdgeIds(svg);
+            fixTranslate(svg);
 
-        // Attach event listeners after re-insertion
-        attachEventListeners(svg, data, tokenGroup)
+            // Generate tokens and animations
+            var tokenGroup = insertTokens(svg, data);
 
-        // Workaround for starting the SVG animation at time 0 in Chrome
-        // Whole SVG element is added at once
-        if (el.hasChildNodes()) {
-          el.replaceChild(container, el.childNodes[0]);
-        } else {
-          el.appendChild(container);
-        }
+            // Attach event listeners after re-insertion
+            attachEventListeners(svg, data, tokenGroup)
 
-        // Correct sizing
-        if (width > 0) {
-          svg.setAttribute("width", width);
-        }
-        if (height > 0) {
-          svg.setAttribute("height", height - sheight - smargin.top - smargin.bottom);
-        }
+            // Workaround for starting the SVG animation at time 0 in Chrome
+            // Whole SVG element is added at once
+            if (el.hasChildNodes()) {
+              el.replaceChild(container, el.childNodes[0]);
+            } else {
+              el.appendChild(container);
+            }
 
-        svgPan = svgPanZoom(svg, { dblClickZoomEnabled: false });
+            // Correct sizing
+            if (width > 0) {
+              svg.setAttribute("width", width);
+            }
+            if (height > 0) {
+              svg.setAttribute("height", height - sheight - smargin.top - smargin.bottom);
+            }
 
-        renderSlider(data, width);
-        renderLegend(data, width);
+            svgPan = svgPanZoom(svg, { dblClickZoomEnabled: false });
+
+            renderSlider(data, width);
+            renderLegend(data, width);
+          }
+        );
 
       },
 
@@ -690,12 +709,13 @@ HTMLWidgets.widget({
             svgPan.fit();
           }
           svgPan.center();
-        }
 
-        if (data) {
-          // Adjust timeline control size
-          renderSlider(data, width);
-          renderLegend(data, width);
+          if (data) {
+            // Adjust timeline control size
+            renderSlider(data, width);
+            renderLegend(data, width);
+          }
+
         }
 
       },
