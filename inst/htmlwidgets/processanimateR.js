@@ -1,7 +1,11 @@
+/*
+processanimateR 0.3.0
+Copyright (c) 2018 Felix Mannhardt
+Licensed under MIT license
+*/
 HTMLWidgets.widget({
 
   name: "processanimateR",
-
   type: "output",
 
   factory: function(el, width, height) {
