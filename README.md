@@ -59,7 +59,9 @@ Default token color, size, or image can be changed as follows:
 ```r
 animate_process(patients, token_size = 2)
 animate_process(patients, token_color = "red")
-animate_process(patients, token_image = "https://upload.wikimedia.org/wikipedia/en/5/5f/Pacman.gif", token_size = 15)
+animate_process(patients, token_shape = "image", 
+                          token_image = "https://upload.wikimedia.org/wikipedia/en/5/5f/Pacman.gif", 
+                          token_size = 15)
 ```
 
 Dynamic token colors or sizes based on event attributes can be configured. 
@@ -73,6 +75,7 @@ animate_process(patients,
 Based on `linear` scales:
 ```r
 library(dplyr)
+library(bupaR)
 animate_process(sample_n(traffic_fines,1000) %>% filter_trace_frequency(percentage = 0.95),
                 animation_legend = "color", token_color = "amount", 
                 token_color_scale = "linear", token_color_scale_range = c("yellow","red"), animation_mode = "relative")
@@ -87,6 +90,8 @@ animate_process(patients,
 
 It is also possible to use a secondary data frame to color the tokens irregardless of the event times. This can be useful if measurement are taken throughout a process, but the measurement event itself should not be included in the process map. For example, the lactic acid measurements of the `sepsis` data could be used in that way: 
 ```r
+library(dplyr)
+library(bupaR)
 # Extract only the lacticacid measurements
 lactic <- sepsis %>%
     mutate(lacticacid = as.numeric(lacticacid)) %>%
@@ -110,6 +115,7 @@ animate_process(sepsisBase, animation_mode = "relative", animation_duration = 60
 
 ### More usage examples:
 * [Shiny application with processanimateR](articles/use-with-shiny.html)
+* [Use processanimateR selection as Shiny inputs](articles/use-shiny-selections.html)
 
 ## Libraries Used
 This package makes use of the following libraries:
