@@ -32,4 +32,4 @@ dependencies:
     src: "htmlwidgets/lib/viz"
     script:
      - viz.js
-     - lite.render.js
+     - full.render.js
