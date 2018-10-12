@@ -545,50 +545,52 @@ HTMLWidgets.widget({
           return this.id !== "node"+data.start_activity && this.id !== "node"+data.end_activity;
         });
 
+      function notifyShinyTokenInput(tokenElements) {
+        if ('Shiny' in window) {
+          var selectedTokens = tokenElements.filter(function(d) { return(isSelected(this)); });
+          Shiny.onInputChange(el.id + "_tokens", selectedTokens.data());
+        }
+      }
+
       tokenElements.on("click", function(d) {
 
-          toggleSelection(this);
+        toggleSelection(this);
 
-          tokenGroup.selectAll(data.shape).each(function(){
-             data.onclick_token_decorate(d3.select(this), isSelected(this));
-            });
-
-          if ('Shiny' in window) {
-            var selectedTokens = tokenGroup.selectAll(data.shape)
-              .filter(function(d) { return(isSelected(this)); });
-            Shiny.onInputChange(el.id + "_tokens", selectedTokens.data());
-          }
-
-          if (data.onclick_token_callback) {
-            data.onclick_token_callback(svg, d3.select(this), d);
-          }
-
-          d3.event.stopPropagation()
-
+        tokenElements.each(function(){
+          data.onclick_token_decorate(d3.select(this), isSelected(this));
         });
 
+        notifyShinyTokenInput(tokenElements);
 
+        if (data.onclick_token_callback) {
+          data.onclick_token_callback(svg, d3.select(this), d);
+        }
+
+        d3.event.stopPropagation()
+      });
+
+      function notifyShinyNodeInput(nodeElements, activities) {
+        if ('Shiny' in window) {
+          var sel = nodeElements.filter(function(d) { return(isSelected(this)); })
+            .nodes().map(function(activity) {
+                // javascript is zero-based
+                var id = Number(activity.id.replace(/.*?(\d+)/,"$1"));
+                return {id: activity.id, activity: activities.act[id-1]};
+              });
+
+          Shiny.onInputChange(el.id + "_activities", JSON.stringify(sel));
+        }
+      }
 
       nodeElements.on("click", function() {
 
         toggleSelection(this);
 
-        d3.select(svg).selectAll(".node")
-            .each(function() {
-              data.onclick_activity_decorate(d3.select(this), isSelected(this));
-            })
+        nodeElements.each(function() {
+          data.onclick_activity_decorate(d3.select(this), isSelected(this));
+        })
 
-        if ('Shiny' in window) {
-          var selectedActivities = d3.select(svg).selectAll(".node")
-            .filter(function(d) { return(isSelected(this)); })
-            .nodes().map(function(activity) {
-                // javascript is zero-based
-                var id = Number(activity.id.replace(/.*?(\d+)/,"$1"));
-                return {id: activity.id, activity: data.activities.act[id-1]};
-              });
-
-          Shiny.onInputChange(el.id + "_activities", JSON.stringify(selectedActivities));
-        }
+        notifyShinyNodeInput(nodeElements, data.activities);
 
         if (data.onclick_activity_callback) {
           data.onclick_activity_callback(svg, d3.select(this));
@@ -607,6 +609,8 @@ HTMLWidgets.widget({
           this.dataset.selected = "false";
           data.onclick_activity_decorate(d3.select(this), false);
         });
+        notifyShinyTokenInput(tokenElements);
+        notifyShinyNodeInput(nodeElements, data.activities);
       });
 
     }
