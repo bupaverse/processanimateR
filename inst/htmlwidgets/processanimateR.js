@@ -224,7 +224,7 @@ HTMLWidgets.widget({
           }
 
           if (svg.offsetParent !== null) {
-            if (event.code === "Space") {
+            if (event.keyCode === 32) {
               if (svg.animationsPaused()) {
                 unpauseAnimation();
               } else {
@@ -542,29 +542,22 @@ HTMLWidgets.widget({
         return "selected" in element.dataset && element.dataset.selected === "true";
       }
 
-      tokenGroup.selectAll(data.shape)
-        .on("click", function(d) {
+      var tokenElements = tokenGroup.selectAll(data.shape);
+      var nodeElements = d3.select(svg)
+        .selectAll(".node")
+        .filter(function() {
+          return this.id !== "node"+data.start_activity && this.id !== "node"+data.end_activity;
+        });
+
+      tokenElements.on("click", function(d) {
 
           toggleSelection(this);
 
-          tokenGroup.selectAll(data.shape)
-              .attr("stroke-width", function() {
-                if (isSelected(this)) {
-                  return "2";
-                } else {
-                  return "1";
-                }
-              })
-              .attr("stroke-dasharray", function() {
-                if (isSelected(this)) {
-                  return "2";
-                } else {
-                  return "0";
-                }
-              });
+          tokenGroup.selectAll(data.shape).each(function(){
+             data.onclick_token_decorate(d3.select(this), isSelected(this));
+            });
 
           if ('Shiny' in window) {
-
             var selectedTokens = tokenGroup.selectAll(data.shape)
               .filter(function(d) { return(isSelected(this)); });
             Shiny.onInputChange(el.id + "_tokens", selectedTokens.data());
@@ -574,54 +567,51 @@ HTMLWidgets.widget({
             data.onclick_token_callback(svg, d3.select(this), d);
           }
 
+          d3.event.stopPropagation()
+
         });
 
-      d3.select(svg)
-        .selectAll(".node")
-        .filter(function() {
-          return this.id !== "node"+data.start_activity && this.id !== "node"+data.end_activity;
-        })
-        .on("click", function() {
 
-          toggleSelection(this);
 
-          d3.select(svg).selectAll(".node")
-              .each(function() {
-                var node = this;
-                d3.select(node).select("path")
-                  .attr("stroke-width", function() {
-                    if (isSelected(node)) {
-                      return "3";
-                    } else {
-                      return "1"; // #c0c0c0
-                    }
-                  })
-                  .attr("stroke", function() {
-                    if (isSelected(node)) {
-                      return "black";
-                    } else {
-                      return "#c0c0c0";
-                    }
-                  });
-              })
+      nodeElements.on("click", function() {
 
-          if ('Shiny' in window) {
+        toggleSelection(this);
 
-            var selectedActivities = d3.select(svg).selectAll(".node")
-              .filter(function(d) { return(isSelected(this)); })
-              .nodes().map(function(activity) {
-                  // javascript is zero-based
-                  var id = Number(activity.id.replace(/.*?(\d+)/,"$1"));
-                  return {id: activity.id, activity: data.activities.act[id-1]};
-                });
+        d3.select(svg).selectAll(".node")
+            .each(function() {
+              data.onclick_activity_decorate(d3.select(this), isSelected(this));
+            })
 
-            Shiny.onInputChange(el.id + "_activities", JSON.stringify(selectedActivities));
-          }
+        if ('Shiny' in window) {
+          var selectedActivities = d3.select(svg).selectAll(".node")
+            .filter(function(d) { return(isSelected(this)); })
+            .nodes().map(function(activity) {
+                // javascript is zero-based
+                var id = Number(activity.id.replace(/.*?(\d+)/,"$1"));
+                return {id: activity.id, activity: data.activities.act[id-1]};
+              });
 
-          if (data.onclick_activity_callback) {
-            data.onclick_token_callback(svg, d3.select(this));
-          }
+          Shiny.onInputChange(el.id + "_activities", JSON.stringify(selectedActivities));
+        }
+
+        if (data.onclick_activity_callback) {
+          data.onclick_activity_callback(svg, d3.select(this));
+        }
+
+         d3.event.stopPropagation()
+      });
+
+
+      d3.select(svg).on("click", function() {
+        tokenElements.each(function() {
+          this.dataset.selected = "false";
+          data.onclick_token_decorate(d3.select(this), false);
         });
+        nodeElements.each(function() {
+          this.dataset.selected = "false";
+          data.onclick_activity_decorate(d3.select(this), false);
+        });
+      });
 
     }
 
@@ -636,6 +626,33 @@ HTMLWidgets.widget({
 
         // Remember data for re- building slider upon resize
         data = x;
+
+        //TODO expose in R interface
+        data.onclick_token_decorate = function(node, selected) {
+
+          if (selected) {
+            node.attr("stroke-width", "2")
+                .attr("stroke-dasharray", "2");
+          } else {
+            node.attr("stroke-width", "1")
+                .attr("stroke-dasharray", "0");
+          }
+
+        };
+
+        data.onclick_activity_decorate = function(node, selected) {
+
+          if (selected) {
+            node.select("path")
+              .attr("stroke-width", "3")
+              .attr("stroke", "black");
+          } else {
+            node.select("path")
+              .attr("stroke-width", "1")
+              .attr("stroke", "#c0c0c0");
+          }
+
+        };
 
         // Fix data type for dates
         if (data.colors_scale === "time") {
