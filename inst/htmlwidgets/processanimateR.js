@@ -711,7 +711,11 @@ HTMLWidgets.widget({
               svg.setAttribute("width", width);
             }
             if (height > 0) {
-              svg.setAttribute("height", height - sheight - smargin.top - smargin.bottom);
+              if (data.timeline) {
+                svg.setAttribute("height", height - sheight - smargin.top - smargin.bottom);
+              } else {
+                svg.setAttribute("height", height - smargin.top - smargin.bottom);
+              }
             }
 
             svgPan = svgPanZoom(svg, { dblClickZoomEnabled: false });
@@ -728,7 +732,11 @@ HTMLWidgets.widget({
         if (svg && svgPan) {
           // Adjust GraphViz diagram size
           svg.setAttribute("width", width);
-          svg.setAttribute("height", height - sheight - smargin.top - smargin.bottom);
+          if (data.timeline) {
+            svg.setAttribute("height", height - sheight - smargin.top - smargin.bottom);
+          } else {
+            svg.setAttribute("height", height - smargin.top - smargin.bottom);
+          }
           svgPan.resize();
           if (height > 0) {
             svgPan.fit();
