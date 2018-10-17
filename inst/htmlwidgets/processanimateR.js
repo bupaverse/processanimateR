@@ -35,7 +35,7 @@ HTMLWidgets.widget({
     var sizeScale = null;
 
     var repeatLoop = null;
-    var repeatCount = 0;
+    var repeatCount = 1;
 
     function computeDomain(values) {
       return values.sort().filter(function(x, i, a) {
