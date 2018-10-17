@@ -10,17 +10,20 @@ HTMLWidgets.widget({
 
   factory: function(el, width, height) {
 
-    var viz = new Viz();
-
     var svg = null;
-    var svgPan = null;
     var data = null;
+
+    //TODO, somehow refactor both into common base class
+
+    // Graphviz version
+    var viz = new Viz();
+    var svgPan = null;
+
+    // Leaflet version
+
 
     var smargin = {top:5, right:20, bottom:0, left:50};
     var sheight = 75 - smargin.top - smargin.bottom;
-
-    var colorScale = null;
-    var sizeScale = null;
 
     var slider = null;
     var sliderSvg = null;
@@ -28,6 +31,11 @@ HTMLWidgets.widget({
     var sliderLoop = null;
 
     var legendSvg = null;
+    var colorScale = null;
+    var sizeScale = null;
+
+    var repeatLoop = null;
+    var repeatCount = 0;
 
     function computeDomain(values) {
       return values.sort().filter(function(x, i, a) {
@@ -85,7 +93,7 @@ HTMLWidgets.widget({
       return(scale);
     }
 
-    function renderLegend(data, width) {
+    function renderLegend(data, svg, width) {
 
       // Clean-up
       if (legendSvg) {
@@ -114,7 +122,7 @@ HTMLWidgets.widget({
 
     }
 
-    function renderSlider(data, width) {
+    function renderSlider(data, svg, width) {
 
       if (data.timeline &&
           // Polyfill fakesmile does not support pausing/unpausing for IE
@@ -242,39 +250,29 @@ HTMLWidgets.widget({
         animateSlider(svg, data, slider);
 
       }
-    }
 
-    function animateSlider(svg, data, slider) {
+      function animateSlider(svg, data, slider) {
 
-      if (data.mode === "relative") {
-        (function(){
-            var time = svg.getCurrentTime();
-            if (time > 0 && time <= data.duration) {
-              slider.silentValue(data.timeline_start + time * data.factor);
-            }
-            sliderLoop = window.requestAnimationFrame(arguments.callee);
-        })();
-      } else {
-        (function(){
-            var time = svg.getCurrentTime();
-            if (time > 0 && time <= data.duration) {
-              slider.silentValue(new Date(data.timeline_start + (time * data.factor)));
-            }
-            sliderLoop = window.requestAnimationFrame(arguments.callee);
-        })();
+        if (data.mode === "relative") {
+          (function(){
+              var time = svg.getCurrentTime();
+              if (time > 0 && time <= data.duration) {
+                slider.silentValue(data.timeline_start + time * data.factor);
+              }
+              sliderLoop = window.requestAnimationFrame(arguments.callee);
+          })();
+        } else {
+          (function(){
+              var time = svg.getCurrentTime();
+              if (time > 0 && time <= data.duration) {
+                slider.silentValue(new Date(data.timeline_start + (time * data.factor)));
+              }
+              sliderLoop = window.requestAnimationFrame(arguments.callee);
+          })();
+        }
+
       }
 
-    }
-
-    function fixEdgeIds(svg) {
-      var edges = svg.querySelectorAll('.edge');
-      for(var i = 0; i < edges.length; i++) {
-      	var id = edges[i].id;
-      	var paths = edges[i].getElementsByTagName("path");
-      	for(var j = 0; j < paths.length; j++) {
-      		paths[j].id = id + "-path";
-      	}
-      }
     }
 
     function safeNumber(x) {
@@ -499,35 +497,6 @@ HTMLWidgets.widget({
 
     }
 
-    function wrapInPanZoomViewport(svg) {
-      d3.select(svg)
-        .insert("g")
-        .attr("class", "svg-pan-zoom_viewport")
-        .append(function() {        // Append to the wrapper the element...
-        	return d3.select(svg).select(".graph").remove().node();
-         });
-    }
-
-    function fixTranslate(svg) {
-
-      function getTranslate(transform) {
-        // More of a hack to get the translate applied by Graphviz
-        // Assumes that there is only one translate!
-        for (var i=0; i<transform.length; i++) {
-          if (transform[i].type == 2) {
-            return("translate("+transform[i].matrix.e+","+transform[i].matrix.f+")");
-          }
-        }
-        return("translate(0,0)");
-      }
-
-      // This fixes performance issues caused by the no-op scale and rotate transform returned by viz.js
-      // TODO profile whether this is really helping
-      var graphNode = d3.select(svg).select(".graph");
-      var transform = graphNode.node().transform.baseVal;
-      graphNode.attr("transform", getTranslate(transform));
-    }
-
     function attachEventListeners(svg, data, tokenGroup) {
 
       function toggleSelection(element) {
@@ -619,6 +588,146 @@ HTMLWidgets.widget({
 
     }
 
+    function renderLeaflet() {
+
+        var mapEl = d3.select(el).append("div").attr("style", "width: 100%; height: "+ (height - sheight - smargin.top - smargin.bottom) +"px").node();
+
+        var map = new L.Map(mapEl, {center: [37.8, -96.9], zoom: 4})
+                    .addLayer(new L.TileLayer("http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"));
+
+        var d3Overlay = L.d3SvgOverlay(function(selection, projection){
+
+          //TODO build processmap from data
+
+
+        });
+
+        d3Overlay.addTo(map);
+
+        // Generate tokens and animations
+        var tokenGroup = insertTokens(svg, data);
+
+        // Attach event listeners after re-insertion
+        attachEventListeners(svg, data, tokenGroup)
+
+    }
+
+    function renderGraphViz(el, data) {
+
+      function fixEdgeIds(svg) {
+        var edges = svg.querySelectorAll('.edge');
+        for(var i = 0; i < edges.length; i++) {
+        	var id = edges[i].id;
+        	var paths = edges[i].getElementsByTagName("path");
+        	for(var j = 0; j < paths.length; j++) {
+        		paths[j].id = id + "-path";
+        	}
+        }
+      }
+
+      function wrapInPanZoomViewport(svg) {
+        d3.select(svg)
+          .insert("g")
+          .attr("class", "svg-pan-zoom_viewport")
+          .append(function() {        // Append to the wrapper the element...
+          	return d3.select(svg).select(".graph").remove().node();
+           });
+      }
+
+      function fixTranslate(svg) {
+
+        function getTranslate(transform) {
+          // More of a hack to get the translate applied by Graphviz
+          // Assumes that there is only one translate!
+          for (var i=0; i<transform.length; i++) {
+            if (transform[i].type == 2) {
+              return("translate("+transform[i].matrix.e+","+transform[i].matrix.f+")");
+            }
+          }
+          return("translate(0,0)");
+        }
+
+        // This fixes performance issues caused by the no-op scale and rotate transform returned by viz.js
+        // TODO profile whether this is really helping
+        var graphNode = d3.select(svg).select(".graph");
+        var transform = graphNode.node().transform.baseVal;
+        graphNode.attr("transform", getTranslate(transform));
+      }
+
+      function fixBackground(svg) {
+        d3.select(svg).select(".graph > polygon").remove();
+      }
+
+      // Render DOT using Graphviz
+      viz.renderSVGElement(data.diagram).then(function(element) {
+
+          // Create detached container with the GraphViz SVG
+          var container = document.createElement("div");
+          container.appendChild(element);
+          svg = container.querySelector("svg");
+
+          // Some DOM fixes for GraphViz
+          wrapInPanZoomViewport(svg);
+          fixEdgeIds(svg);
+          fixTranslate(svg);
+          fixBackground(svg);
+
+          // Generate tokens and animations
+          var tokenGroup = insertTokens(svg, data);
+
+          // Attach event listeners after re-insertion
+          attachEventListeners(svg, data, tokenGroup)
+
+          // As workaround for starting the SVG animation at time 0 in Chrome the hole SVG element needs to be added at once
+          if (el.hasChildNodes()) {
+            el.replaceChild(container, el.childNodes[0]);
+          } else {
+            el.appendChild(container);
+          }
+
+          // Correct sizing
+          if (width > 0) {
+            svg.setAttribute("width", width);
+          }
+          if (height > 0) {
+            if (data.timeline) {
+              svg.setAttribute("height", height - sheight - smargin.top - smargin.bottom);
+            } else {
+              svg.setAttribute("height", height - smargin.top - smargin.bottom);
+            }
+          }
+
+          svgPan = svgPanZoom(svg, { dblClickZoomEnabled: false });
+
+          renderSlider(data, svg, width);
+          renderLegend(data, svg, width);
+          repeatAnimation(data, svg);
+
+        }
+      );
+
+    }
+
+
+    function repeatAnimation(data, svg) {
+      if (data.repeat_count === null) {
+        data.repeat_count = Infinity;
+      }
+      if (repeatLoop) {
+        window.cancelAnimationFrame(repeatLoop);
+      }
+      (function(){
+        var time = svg.getCurrentTime();
+        if (time > (data.duration + data.repeat_delay) && repeatCount < data.repeat_count) {
+          svg.setCurrentTime(0);
+          repeatCount++;
+        }
+        if (repeatCount < data.repeat_count) {
+          repeatLoop = window.requestAnimationFrame(arguments.callee);
+        }
+      })();
+    }
+
     return {
 
       renderValue: function(x) {
@@ -631,7 +740,7 @@ HTMLWidgets.widget({
         // Remember data for re- building slider upon resize
         data = x;
 
-        //TODO expose in R interface
+        //TODO expose in R interface when refactored
         data.onclick_token_decorate = function(node, selected) {
 
           if (selected) {
@@ -679,79 +788,47 @@ HTMLWidgets.widget({
                                 data.sizes_scale_range,
                                 6);
 
-        // Render DOT using Graphviz
-        viz.renderSVGElement(data.diagram).then(function(element) {
-
-            // Create detached container
-            var container = document.createElement("div");
-            container.appendChild(element);
-            svg = container.querySelector("svg");
-
-            // Some DOM fixes
-            wrapInPanZoomViewport(svg);
-            fixEdgeIds(svg);
-            fixTranslate(svg);
-
-            // Generate tokens and animations
-            var tokenGroup = insertTokens(svg, data);
-
-            // Attach event listeners after re-insertion
-            attachEventListeners(svg, data, tokenGroup)
-
-            // Workaround for starting the SVG animation at time 0 in Chrome
-            // Whole SVG element is added at once
-            if (el.hasChildNodes()) {
-              el.replaceChild(container, el.childNodes[0]);
-            } else {
-              el.appendChild(container);
-            }
-
-            // Correct sizing
-            if (width > 0) {
-              svg.setAttribute("width", width);
-            }
-            if (height > 0) {
-              if (data.timeline) {
-                svg.setAttribute("height", height - sheight - smargin.top - smargin.bottom);
-              } else {
-                svg.setAttribute("height", height - smargin.top - smargin.bottom);
-              }
-            }
-
-            svgPan = svgPanZoom(svg, { dblClickZoomEnabled: false });
-
-            renderSlider(data, width);
-            renderLegend(data, width);
-          }
-        );
+        // Render process map
+        if (data.processmap_renderer === "leaflet") {
+          renderLeaflet(el, data);
+        } else { // use GraphViz
+          renderGraphViz(el, data);
+        }
 
       },
 
       resize: function(width, height) {
 
-        if (svg && svgPan) {
-          // Adjust GraphViz diagram size
-          svg.setAttribute("width", width);
-          if (data.timeline) {
-            svg.setAttribute("height", height - sheight - smargin.top - smargin.bottom);
-          } else {
-            svg.setAttribute("height", height - smargin.top - smargin.bottom);
-          }
-          svgPan.resize();
-          if (height > 0) {
-            svgPan.fit();
-          }
-          svgPan.center();
+        if (svg) {
 
-          if (data) {
-            // Adjust timeline control size
-            renderSlider(data, width);
-            renderLegend(data, width);
+          renderSlider(data, svg, width);
+          renderLegend(data, svg, width);
+
+          if (data.processmap_renderer === "leaflet") {
+
+            // resize leaflet SVG
+
+          } else {
+
+              // Adjust GraphViz diagram size
+              svg.setAttribute("width", width);
+              if (data.timeline) {
+                svg.setAttribute("height", height - sheight - smargin.top - smargin.bottom);
+              } else {
+                svg.setAttribute("height", height - smargin.top - smargin.bottom);
+              }
+
+              if (svgPan) {
+                svgPan.resize();
+                if (height > 0) {
+                  svgPan.fit();
+                }
+                svgPan.center();
+              }
           }
 
         }
-
-      },
+      }
 
     };
   }

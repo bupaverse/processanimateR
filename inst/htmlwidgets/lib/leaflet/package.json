@@ -1,0 +1,15 @@
+{
+  "name": "leaflet",
+  "version": "1.3.4",
+  "scripts": {
+    "prepare": "rollup -c && uglifyjs leaflet.js -c -m -o leaflet.min.js && rm leaflet.js"
+  },
+  "dependencies": {
+    "leaflet": "^1.3.4",
+    "rollup": "^0.66.6",
+    "rollup-plugin-node-resolve": "^3.4.0",
+    "rollup-plugin-json": "^3.1.0",
+    "rollup-plugin-css-only": "^0.4.0",
+    "uglify-js": "^3.4.9"
+  }
+}

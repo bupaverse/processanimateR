@@ -2,3 +2,4 @@
 ^\.Rproj\.user$
 ^docs/
 ^\.travis\.yml$
+^inst/htmlwidgets/lib/d3/node_modules

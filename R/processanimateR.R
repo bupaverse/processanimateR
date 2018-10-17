@@ -9,6 +9,7 @@
 #' @param animation_jitter The magnitude of a random coordinate translation, known as jitter in scatterplots, which is added to each token. Adding jitter can help to disambiguate tokens traveling on top of each other.
 #' @param animation_timeline Whether to render a timeline slider in supported browsers (Recent versions of Chrome and Firefox only).
 #' @param animation_legend Whether to show a legend for the 'size' or the 'color' scale.
+#' @param animation_repeat The number of times the process animation is repeated.
 #' @param token_size The event attribute (character) or alternatively a data frame with three columns (case, time, size) matching the case identifier of the supplied event log.
 #'  The token size is scaled accordingly during the animation (default size is 4). You may use \code{\link{add_token_size}} to add a suitable attribute to the event log.
 #' @param token_size_scale Which D3 scale function to use for generating the size scale.
@@ -107,6 +108,7 @@ animate_process <- function(eventlog,
                             animation_jitter = 0,
                             animation_timeline = TRUE,
                             animation_legend = NULL,
+                            animation_repeat = 1,
                             token_size = NULL,
                             token_size_scale = c("identity", "linear", "sqrt", "log", "quantize", "ordinal", "time"),
                             token_size_scale_domain = NULL,
@@ -227,14 +229,20 @@ animate_process <- function(eventlog,
     duration = animation_duration,
     timeline = animation_timeline,
     mode = animation_mode,
+    repeat_count = animation_repeat,
+    repeat_delay = 0.5,
     jitter = animation_jitter,
     factor = animation_factor * 1000,
     legend = animation_legend,
     timeline_start = timeline_start * 1000,
     timeline_end = timeline_end * 1000,
     onclick_token_callback = htmlwidgets::JS(token_callback_onclick),
-    onclick_activity_callback = htmlwidgets::JS(activity_callback_onclick)
+    onclick_activity_callback = htmlwidgets::JS(activity_callback_onclick),
+    processmap_renderer = "graphviz"
   )
+
+  # dynamic dependencies
+  dependencies <- list()
 
   htmlwidgets::createWidget(elementId = elementId,
                             name = "processanimateR", x = x,
@@ -244,6 +252,7 @@ animate_process <- function(eventlog,
                               defaultHeight = 600,
                               browser.fill = TRUE
                             ),
+                            dependencies = dependencies,
                             preRenderHook = preRenderHook)
 }
 
