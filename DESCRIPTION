@@ -1,7 +1,7 @@
 Package: processanimateR
 Type: Package
 Title: Process Map Token Replay Animation
-Version: 0.3.1.9000
+Version: 1.0.0.9000
 Authors@R: c(person("Felix","Mannhardt", email = "felix.mannhardt@sintef.no", role = c("aut","cre")),
   person("Gert","Janssenswillen",email = "gert.janssenswillen@uhasselt.be", role = c("ctb")))
 Description: Token replay animation for process maps created with 
@@ -9,6 +9,8 @@ Description: Token replay animation for process maps created with
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
+Depends:
+  R (>= 2.10)
 Imports: 
   bupaR, 
   processmapR (>= 0.3.1), 
@@ -18,7 +20,8 @@ Imports:
   htmlwidgets, 
   DiagrammeR (>= 1.0.0),
   zoo, 
-  scales
+  scales,
+  grDevices
 Suggests: 
   eventdataR,
   edeaR,

@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Function reference • processanimateR</title>
+<title>Token scale to be used as aesthetics — token_scale • processanimateR</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -30,7 +30,10 @@
 
 
 
-<meta property="og:title" content="Function reference" />
+<meta property="og:title" content="Token scale to be used as aesthetics — token_scale" />
+
+<meta property="og:description" content="Token scale to be used as aesthetics" />
+<meta name="twitter:card" content="summary" />
 
 
 
@@ -46,7 +49,7 @@
   </head>
 
   <body>
-    <div class="container template-reference-index">
+    <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -110,96 +113,74 @@
       </header>
 
 <div class="row">
-  <div class="contents col-md-9">
+  <div class="col-md-9 contents">
     <div class="page-header">
-      <h1>Reference</h1>
+    <h1>Token scale to be used as aesthetics</h1>
+    <small class="dont-index">Source: <a href='https://github.com/fmannhardt/processanimateR//blob/master/R/scale.R'><code>R/scale.R</code></a></small>
+    <div class="hidden name"><code>token_scale.Rd</code></div>
     </div>
 
-    <table class="ref-index">
+    <div class="ref-description">
+    
+    <p>Token scale to be used as aesthetics</p>
+    
+    </div>
 
-    <colgroup>
-      
-      <col class="alias" />
-      <col class="title" />
-    </colgroup>
-
-    <tbody>
-      <tr>
-        <th colspan="2">
-          <h2 id="section-all-functions" class="hasAnchor"><a href="#section-all-functions" class="anchor"></a>All functions</h2>
-          <p class="section-desc"></p>
-        </th>
-      </tr>
-      <tr>
-        
-        <td>
-          <p><code><a href="activity_select_decoration.html">activity_select_decoration()</a></code> </p>
-        </td>
-        <td><p>Decoration callback for activity selection</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="animate_process.html">animate_process()</a></code> </p>
-        </td>
-        <td><p>Animate cases on a process map</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="example_log.html">example_log</a></code> </p>
-        </td>
-        <td><p>Example event log used in documentation</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="processanimaterOutput.html">processanimaterOutput()</a></code> </p>
-        </td>
-        <td><p>Create a process animation output element</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="renderer_graphviz.html">renderer_graphviz()</a></code> </p>
-        </td>
-        <td><p>Render as a plain graph</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="renderer_leaflet.html">renderer_leaflet()</a></code> </p>
-        </td>
-        <td><p>Render as graph on a geographical map</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="renderProcessanimater.html">renderProcessanimater()</a></code> </p>
-        </td>
-        <td><p>Renders process animation output</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="token_aes.html">token_aes()</a></code> </p>
-        </td>
-        <td><p>Tokens aesthetics mapping</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="token_scale.html">token_scale()</a></code> </p>
-        </td>
-        <td><p>Token scale to be used as aesthetics</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="token_select_decoration.html">token_select_decoration()</a></code> </p>
-        </td>
-        <td><p>Decoration callback for token selection</p></td>
-      </tr>
-    </tbody>
+    <pre class="usage"><span class='fu'>token_scale</span>(<span class='kw'>attribute</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>scale</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"identity"</span>, <span class='st'>"linear"</span>, <span class='st'>"sqrt"</span>,
+  <span class='st'>"log"</span>, <span class='st'>"quantize"</span>, <span class='st'>"ordinal"</span>, <span class='st'>"time"</span>), <span class='kw'>domain</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>range</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
+    
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>attribute</th>
+      <td><p>The event attribute (character) or alternatively a data frame with three columns (case, time, value)
+matching the case identifier of the supplied event log.</p></td>
+    </tr>
+    <tr>
+      <th>scale</th>
+      <td><p>Which D3 scale function to be used.</p></td>
+    </tr>
+    <tr>
+      <th>domain</th>
+      <td><p>The domain of the D3 scale function. Can be left NULL in which case it will be automatically determined.</p></td>
+    </tr>
+    <tr>
+      <th>range</th>
+      <td><p>The range of the D3 scale function. Should be a vector of two or more numerical values.</p></td>
+    </tr>
     </table>
-  </div>
+    
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
+    <p>A scale to be used with `token_mapping`</p>
+    
+    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
+
+    <div class='dont-index'><p>animate_process</p></div>
+    
+
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='fu'>data</span>(<span class='no'>example_log</span>)
+
+<span class='co'># Change token color based on a factor attribute</span>
+<span class='fu'><a href='animate_process.html'>animate_process</a></span>(<span class='no'>example_log</span>,
+ <span class='kw'>legend</span> <span class='kw'>=</span> <span class='st'>"color"</span>,
+ <span class='kw'>mapping</span> <span class='kw'>=</span> <span class='fu'><a href='token_aes.html'>token_aes</a></span>(<span class='kw'>color</span> <span class='kw'>=</span> <span class='fu'>token_scale</span>(<span class='st'>"res"</span>, <span class='kw'>scale</span> <span class='kw'>=</span> <span class='st'>"ordinal"</span>,
+  <span class='kw'>range</span> <span class='kw'>=</span> <span class='kw pkg'>RColorBrewer</span><span class='kw ns'>::</span><span class='fu'><a href='http://www.rdocumentation.org/packages/RColorBrewer/topics/ColorBrewer'>brewer.pal</a></span>(<span class='fl'>8</span>, <span class='st'>"Paired"</span>))))</div></pre>
+  </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
-      <li><a href="#section-all-functions">All functions</a></li>
+      <li><a href="#arguments">Arguments</a></li>
+      
+      <li><a href="#value">Value</a></li>
+
+      <li><a href="#see-also">See also</a></li>
+      
+      <li><a href="#examples">Examples</a></li>
     </ul>
+
   </div>
 </div>
 

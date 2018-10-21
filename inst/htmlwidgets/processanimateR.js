@@ -12,6 +12,7 @@ HTMLWidgets.widget({
 
     var slider = null;
     var scales = null;
+    var tokens = null;
     var renderer = null;
 
     var repeatLoop = null;
@@ -47,15 +48,15 @@ HTMLWidgets.widget({
 
         // Fix data type for dates
         if (data.colors_scale === "time") {
-          data.colors.color = data.colors.color.map(function(x) { return moment(x).toDate(); });
+          data.colors.value = data.colors.value.map(function(x) { return moment(x).toDate(); });
         }
 
         if (data.sizes_scale === "time") {
-          data.sizes.size = data.sizes.size.map(function(x) { return moment(x).toDate(); });
+          data.sizes.value = data.sizes.value.map(function(x) { return moment(x).toDate(); });
         }
 
         scales = new Scales(el, data);
-        tokens = new Tokens(data, scales);
+        tokens = new Tokens(el, data, scales);
 
         // Render process map
         if (data.processmap_renderer === "map") {

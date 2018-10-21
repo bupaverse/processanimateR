@@ -1,10 +1,16 @@
-#' Render as a plain graph
+#' @title Render as a plain graph
 #'
 #' @return A rendering function to be used with \code{\link{animate_process}}
 #' @export
 #'
 #' @examples
-#' TODO
+#' data(example_log)
+#'
+#' # Animate the process with the default GraphViz DOT renderer
+#' animate_process(example_log, renderer = renderer_graphviz())
+#'
+#' @seealso animate_process
+#'
 renderer_graphviz <- function() {
   render <- function(processmap, width, height) {
     # Generate the DOT source
@@ -20,30 +26,69 @@ renderer_graphviz <- function() {
 
 #' Render as graph on a geographical map
 #'
-#' @param node_coordinates a data frame with node coordinates in the format `node`, `lat`, `lng`
-#' @param edge_coordinates an (optional) data frame with edge path coordinates format TBD
+#' @param node_coordinates A data frame with node coordinates in the format `act`, `lat`, `lng`.
+#' @param tile The URL to be used for the Leaflet TileLayer.
+#' @param center The latitude and longitude of the initial center of the map.
+#' @param zoom The initial zoom level.
+#' @param grayscale Whether to apply a grayscale filter to the map.
+#' @param act_icon The SVG code used for the activity icon.
+#' @param start_icon The SVG code used for the start icon.
+#' @param end_icon The SVG code used for the end icon.
 #'
 #' @return A rendering function to be used with \code{\link{animate_process}}
 #' @export
 #'
 #' @examples
-#' TODO
+#' data(example_log)
+#'
+#' # Animate the example process with activities placed in some locations
+#' animate_process(example_log,
+#'   renderer = renderer_leaflet(
+#'     node_coordinates = data.frame(
+#'       act = c("A", "B", "C", "D", "Start", "End"),
+#'       lat = c(63.44, 63.43, 63.435, 63.45, 63.44, 63.44),
+#'       lng = c(10.45, 10.47, 10.49, 10.48, 10.43, 10.51), stringsAsFactors = FALSE),
+#'       center = c(63.447112, 10.451175),
+#'       zoom = 13),
+#'   duration = 5, repeat_count = Inf)
+#'
+#' @seealso animate_process
+#'
 renderer_leaflet <- function(node_coordinates,
                          tile = "http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
                          center = c(37.8, -96.9),
                          zoom = 4,
                          grayscale = TRUE,
                          # Based on Material Design (Apache 2.0 License): https://material.io/
-                         act_icon = '<g transform="translate(-12,-22)"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/><path d="M0 0h24v24H0z" fill="none"/></g>',
-                         start_icon = '<g transform="translate(-12,-12)"><path fill="none" d="M0 0h24v24H0z"/><path d="M2 12C2 6.48 6.48 2 12 2s10 4.48 10 10-4.48 10-10 10S2 17.52 2 12zm10 6c3.31 0 6-2.69 6-6s-2.69-6-6-6-6 2.69-6 6 2.69 6 6 6z"/><path fill="none" d="M0 0h24v24H0z"/></g>',
-                         end_icon = '<g transform="translate(-12,-12)"><path fill="none" d="M0 0h24v24H0z"/><path d="M2 12C2 6.48 6.48 2 12 2s10 4.48 10 10-4.48 10-10 10S2 17.52 2 12zm10 6c3.31 0 6-2.69 6-6s-2.69-6-6-6-6 2.69-6 6 2.69 6 6 6z"/><path fill="none" d="M0 0h24v24H0z"/></g>') {
+                         act_icon = paste0('<g transform="translate(-12,-22)">',
+                          '<path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 ',
+                                  '7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 ',
+                                  '0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 ',
+                                  '2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>',
+                          '<path d="M0 0h24v24H0z" fill="none"/></g>'),
+                         start_icon = paste0('<g transform="translate(-12,-12)">',
+                          '<path fill="none" d="M0 0h24v24H0z"/>',
+                          '<path d="M2 12C2 6.48 6.48 2 12 2s10 4.48 10 10-4.48 10-10 ',
+                                '10S2 17.52 2 12zm10 6c3.31 0 6-2.69 6-6s-2.69-6-6-6-6 ',
+                                '2.69-6 6 2.69 6 6 6z"/>',
+                          '<path fill="none" d="M0 0h24v24H0z"/></g>'),
+                         end_icon = paste0('<g transform="translate(-12,-12)">',
+                          '<path fill="none" d="M0 0h24v24H0z"/>',
+                          '<path d="M2 12C2 6.48 6.48 2 12 2s10 4.48 10 10-4.48 10-10 ',
+                                '10S2 17.52 2 12zm10 6c3.31 0 6-2.69 6-6s-2.69-6-6-6-6 ',
+                                '2.69-6 6 2.69 6 6 6z"/>',
+                          '<path fill="none" d="M0 0h24v24H0z"/></g>')) {
 
   colConv <- function(color) {
-    c <- col2rgb(color)
-    rgb(c[1],c[2], c[3], maxColorValue = 255)
+    c <- grDevices::col2rgb(color)
+    grDevices::rgb(c[1],c[2], c[3], maxColorValue = 255)
   }
 
   render <- function(processmap, width, height) {
+    id <- shape <- label <- fillcolor <- fontcolor <- act <- from_id <- NULL
+    from_act <- from_lat <- from_lng <- to_act <- to_lat <- to_lng <- NULL
+    lng <- lat <- color <- penwidth <- from <- to <- . <- NULL
+
     precedence <- attr(processmap, "base_precedence")
     nodes <- processmap$nodes_df %>%
       select(id, shape, label, fillcolor, fontcolor) %>%

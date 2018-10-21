@@ -13,5 +13,12 @@ A rendering function to be used with \code{\link{animate_process}}
 Render as a plain graph
 }
 \examples{
-TODO
+data(example_log)
+
+# Animate the process with the default GraphViz DOT renderer
+animate_process(example_log, renderer = renderer_graphviz())
+
+}
+\seealso{
+animate_process
 }

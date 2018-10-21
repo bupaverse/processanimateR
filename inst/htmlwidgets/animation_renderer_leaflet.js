@@ -44,7 +44,7 @@ function RendererLeaflet(el, data) {
             </marker>');
 
       var actWrapper = selection.append("g")
-              .attr("class", "node")
+              .attr("class", "activities")
             .selectAll("g")
             .data(nodes).enter()
               // processmapR uses rectangles for activities
@@ -52,7 +52,7 @@ function RendererLeaflet(el, data) {
             .append("g");
 
       var actIcon = actWrapper.append('g')
-            .attr("class", "icon")
+            .attr("class", "node")
             .attr("id", function(d) { return "node"+d.id; })
             .attr("fill", function(d) { return d.fillcolor; })
             .html(mapData.act_icon);
@@ -79,7 +79,7 @@ function RendererLeaflet(el, data) {
                   var point = projection.latLngToLayerPoint( L.latLng(d.lat, d.lng) );
                   return "translate("+ point.x +","+ point.y +")";
                 })
-            .attr("class", "icon")
+            .attr("class", "node")
             .attr("id", function(d) { return "node"+d.id; })
             .html(function(d) {
               if (d.id === data.start_activity) {

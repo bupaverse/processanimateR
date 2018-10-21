@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Function reference • processanimateR</title>
+<title>Changelog • processanimateR</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -30,7 +30,7 @@
 
 
 
-<meta property="og:title" content="Function reference" />
+<meta property="og:title" content="Changelog" />
 
 
 
@@ -46,7 +46,7 @@
   </head>
 
   <body>
-    <div class="container template-reference-index">
+    <div class="container template-news">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -110,97 +110,67 @@
       </header>
 
 <div class="row">
-  <div class="contents col-md-9">
+  <div class="col-md-9 contents">
     <div class="page-header">
-      <h1>Reference</h1>
+      <h1>Changelog <small></small></h1>
+      <small>Source: <a href='https://github.com/fmannhardt/processanimateR//blob/master/NEWS.md'><code>NEWS.md</code></a></small>
     </div>
 
-    <table class="ref-index">
-
-    <colgroup>
-      
-      <col class="alias" />
-      <col class="title" />
-    </colgroup>
-
-    <tbody>
-      <tr>
-        <th colspan="2">
-          <h2 id="section-all-functions" class="hasAnchor"><a href="#section-all-functions" class="anchor"></a>All functions</h2>
-          <p class="section-desc"></p>
-        </th>
-      </tr>
-      <tr>
-        
-        <td>
-          <p><code><a href="activity_select_decoration.html">activity_select_decoration()</a></code> </p>
-        </td>
-        <td><p>Decoration callback for activity selection</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="animate_process.html">animate_process()</a></code> </p>
-        </td>
-        <td><p>Animate cases on a process map</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="example_log.html">example_log</a></code> </p>
-        </td>
-        <td><p>Example event log used in documentation</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="processanimaterOutput.html">processanimaterOutput()</a></code> </p>
-        </td>
-        <td><p>Create a process animation output element</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="renderer_graphviz.html">renderer_graphviz()</a></code> </p>
-        </td>
-        <td><p>Render as a plain graph</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="renderer_leaflet.html">renderer_leaflet()</a></code> </p>
-        </td>
-        <td><p>Render as graph on a geographical map</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="renderProcessanimater.html">renderProcessanimater()</a></code> </p>
-        </td>
-        <td><p>Renders process animation output</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="token_aes.html">token_aes()</a></code> </p>
-        </td>
-        <td><p>Tokens aesthetics mapping</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="token_scale.html">token_scale()</a></code> </p>
-        </td>
-        <td><p>Token scale to be used as aesthetics</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="token_select_decoration.html">token_select_decoration()</a></code> </p>
-        </td>
-        <td><p>Decoration callback for token selection</p></td>
-      </tr>
-    </tbody>
-    </table>
+    <div id="processanimater-1-0-0" class="section level2">
+<h2 class="hasAnchor">
+<a href="#processanimater-1-0-0" class="anchor"></a>processanimateR 1.0.0</h2>
+<div id="backwards-incompatible-changes" class="section level3">
+<h3 class="hasAnchor">
+<a href="#backwards-incompatible-changes" class="anchor"></a>Backwards incompatible changes</h3>
+<ul>
+<li>TBD</li>
+</ul>
+</div>
+<div id="new-features" class="section level3">
+<h3 class="hasAnchor">
+<a href="#new-features" class="anchor"></a>New features</h3>
+<ul>
+<li>TBD</li>
+</ul>
+</div>
+</div>
+    <div id="processanimater-0-3-0" class="section level2">
+<h2 class="hasAnchor">
+<a href="#processanimater-0-3-0" class="anchor"></a>processanimateR 0.3.0</h2>
+<ul>
+<li>Added legend using d3-legend</li>
+<li>Added Shiny selection event handlers</li>
+<li>Added animation_mode <code>off</code> to support use cases without animation but selection features.</li>
+<li>Changed to use d3-scales to support auto generation of legends. The use of the ggplot scales is deprecated and will be removed.</li>
+<li>Bugfix: Play/Pause button did not work with multiple widgets on one page</li>
+<li>Bugfix: 0 duration animation caused issues on Firefox and Safari</li>
+</ul>
+</div>
+    <div id="processanimater-0-2-0" class="section level2">
+<h2 class="hasAnchor">
+<a href="#processanimater-0-2-0" class="anchor"></a>processanimateR 0.2.0</h2>
+<ul>
+<li>Timeline slider</li>
+<li>Jitter option</li>
+<li>Opacity option</li>
+<li>Shape option</li>
+<li>Pass-through options to processmapR</li>
+<li>Re-use processmapR calculations (thanks for <a href='http://github.com/gertjanssenswillen'>@gertjanssenswillen</a>)</li>
+</ul>
+</div>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
-    <h2>Contents</h2>
-    <ul class="nav nav-pills nav-stacked">
-      <li><a href="#section-all-functions">All functions</a></li>
-    </ul>
+    <div id="tocnav">
+      <h2>Contents</h2>
+      <ul class="nav nav-pills nav-stacked">
+        <li><a href="#processanimater-1-0-0">1.0.0</a></li>
+        <li><a href="#processanimater-0-3-0">0.3.0</a></li>
+        <li><a href="#processanimater-0-2-0">0.2.0</a></li>
+      </ul>
+    </div>
   </div>
+
 </div>
 
       <footer>

@@ -4,14 +4,44 @@
 \alias{renderer_leaflet}
 \title{Render as graph on a geographical map}
 \usage{
-renderer_leaflet(node_coordinates, edge_coordinates = NULL,
+renderer_leaflet(node_coordinates,
   tile = "http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-  center = c(37.8, -96.9), zoom = 4)
+  center = c(37.8, -96.9), zoom = 4, grayscale = TRUE,
+  act_icon = paste0("<g transform=\\"translate(-12,-22)\\">",
+  "<path d=\\"M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 ",
+  "7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 ",
+  "0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 ",
+  "2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z\\"/>",
+  "<path d=\\"M0 0h24v24H0z\\" fill=\\"none\\"/></g>"),
+  start_icon = paste0("<g transform=\\"translate(-12,-12)\\">",
+  "<path fill=\\"none\\" d=\\"M0 0h24v24H0z\\"/>",
+  "<path d=\\"M2 12C2 6.48 6.48 2 12 2s10 4.48 10 10-4.48 10-10 ",
+  "10S2 17.52 2 12zm10 6c3.31 0 6-2.69 6-6s-2.69-6-6-6-6 ",
+  "2.69-6 6 2.69 6 6 6z\\"/>",
+  "<path fill=\\"none\\" d=\\"M0 0h24v24H0z\\"/></g>"),
+  end_icon = paste0("<g transform=\\"translate(-12,-12)\\">",
+  "<path fill=\\"none\\" d=\\"M0 0h24v24H0z\\"/>",
+  "<path d=\\"M2 12C2 6.48 6.48 2 12 2s10 4.48 10 10-4.48 10-10 ",
+  "10S2 17.52 2 12zm10 6c3.31 0 6-2.69 6-6s-2.69-6-6-6-6 ",
+  "2.69-6 6 2.69 6 6 6z\\"/>",
+  "<path fill=\\"none\\" d=\\"M0 0h24v24H0z\\"/></g>"))
 }
 \arguments{
-\item{node_coordinates}{a data frame with node coordinates in the format `node`, `lat`, `lng`}
+\item{node_coordinates}{A data frame with node coordinates in the format `act`, `lat`, `lng`.}
 
-\item{edge_coordinates}{an (optional) data frame with edge path coordinates format TBD}
+\item{tile}{The URL to be used for the Leaflet TileLayer.}
+
+\item{center}{The latitude and longitude of the initial center of the map.}
+
+\item{zoom}{The initial zoom level.}
+
+\item{grayscale}{Whether to apply a grayscale filter to the map.}
+
+\item{act_icon}{The SVG code used for the activity icon.}
+
+\item{start_icon}{The SVG code used for the start icon.}
+
+\item{end_icon}{The SVG code used for the end icon.}
 }
 \value{
 A rendering function to be used with \code{\link{animate_process}}
@@ -20,5 +50,20 @@ A rendering function to be used with \code{\link{animate_process}}
 Render as graph on a geographical map
 }
 \examples{
-TODO
+data(example_log)
+
+# Animate the example process with activities placed in some locations
+animate_process(example_log,
+  renderer = renderer_leaflet(
+    node_coordinates = data.frame(
+      act = c("A", "B", "C", "D", "Start", "End"),
+      lat = c(63.44, 63.43, 63.435, 63.45, 63.44, 63.44),
+      lng = c(10.45, 10.47, 10.49, 10.48, 10.43, 10.51), stringsAsFactors = FALSE),
+      center = c(63.447112, 10.451175),
+      zoom = 13),
+  duration = 5, repeat_count = Inf)
+
+}
+\seealso{
+animate_process
 }

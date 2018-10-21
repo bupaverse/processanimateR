@@ -30,7 +30,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">processanimateR</a>
-        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.3.0</span>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">1.0.0.9000</span>
       </span>
     </div>
 
@@ -60,6 +60,9 @@
     </li>
   </ul>
 </li>
+<li>
+  <a href="news/index.html">Changelog</a>
+</li>
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
@@ -85,7 +88,7 @@
 <blockquote>
 <p>Flexible token replay animation for process maps</p>
 </blockquote>
-<p><a href="https://cran.r-project.org/package=processanimateR"><img src="https://www.r-pkg.org/badges/version/processanimateR" alt="CRAN_Status_Badge"></a> <a href="https://www.tidyverse.org/lifecycle/#experimental"><img src="https://img.shields.io/badge/lifecycle-experimental-orange.svg" alt="lifecycle"></a> <a href="https://travis-ci.org/fmannhardt/processanimateR"><img src="https://travis-ci.org/fmannhardt/processanimateR.svg?branch=master" alt="Travis-CI Build Status"></a></p>
+<p><a href="https://cran.r-project.org/package=processanimateR"><img src="https://www.r-pkg.org/badges/version/processanimateR" alt="CRAN_Status_Badge"></a> <a href="https://www.tidyverse.org/lifecycle/#maturing"><img src="https://img.shields.io/badge/lifecycle-maturing-blue.svg" alt="lifecycle"></a> <a href="https://travis-ci.org/fmannhardt/processanimateR"><img src="https://travis-ci.org/fmannhardt/processanimateR.svg?branch=master" alt="Travis-CI Build Status"></a></p>
 <p><a href="https://fmannhardt.github.io/processanimateR/example/processanimateR-banner.html"><img src="reference/figures/processanimateR-banner.png" alt="processanimateR example"></a></p>
 <p>Flexible token replay animation for process maps created through the <a href="https://github.com/gertjanssenswillen/processmapR/">processmapR</a> package from the <a href="http://www.bupar.net">bupaR</a> suite, which uses <a href="https://github.com/rich-iannone/DiagrammeR/">DiagrammeR</a> and <a href="https://github.com/mdaines/viz.js">viz.js</a> library to render process maps using GraphViz. ProcessanimateR adds a <a href="https://www.htmlwidgets.org/">htmlwidget</a> that uses SVG animations (<a href="https://www.w3.org/standards/techs/smil#w3c_all">SMIL</a>) to create the animation. Sizes, colors, and the image used for tokens are customizable based on trace, event attributes, or a secondary data frame if an attribute does not change according to the original event log.</p>
 <div id="getting-started" class="section level2">
@@ -104,7 +107,7 @@
 <a class="sourceLine" id="cb2-5" data-line-number="5">remotes<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/remotes/topics/install_github">install_github</a></span>(<span class="st">"fmannhardt/processanimateR"</span>)</a>
 <a class="sourceLine" id="cb2-6" data-line-number="6"></a>
 <a class="sourceLine" id="cb2-7" data-line-number="7"><span class="co"># or install a specific tag</span></a>
-<a class="sourceLine" id="cb2-8" data-line-number="8">remotes<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/remotes/topics/install_github">install_github</a></span>(<span class="st">"fmannhardt/processanimateR@v0.2.0"</span>)</a></code></pre></div>
+<a class="sourceLine" id="cb2-8" data-line-number="8">remotes<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/remotes/topics/install_github">install_github</a></span>(<span class="st">"fmannhardt/processanimateR@v0.3.0"</span>)</a></code></pre></div>
 </div>
 <div id="warnings-and-limitations" class="section level3">
 <h3 class="hasAnchor">
@@ -126,48 +129,54 @@
 <p>A basic animation with static color and token size:</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1"><span class="kw"><a href="reference/animate_process.html">animate_process</a></span>(patients)</a></code></pre></div>
 <p>Default token color, size, or image can be changed as follows:</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1"><span class="kw"><a href="reference/animate_process.html">animate_process</a></span>(patients, <span class="dt">token_size =</span> <span class="dv">2</span>)</a>
-<a class="sourceLine" id="cb5-2" data-line-number="2"><span class="kw"><a href="reference/animate_process.html">animate_process</a></span>(patients, <span class="dt">token_color =</span> <span class="st">"red"</span>)</a>
-<a class="sourceLine" id="cb5-3" data-line-number="3"><span class="kw"><a href="reference/animate_process.html">animate_process</a></span>(patients, <span class="dt">token_shape =</span> <span class="st">"image"</span>, </a>
-<a class="sourceLine" id="cb5-4" data-line-number="4">                          <span class="dt">token_image =</span> <span class="st">"https://upload.wikimedia.org/wikipedia/en/5/5f/Pacman.gif"</span>, </a>
-<a class="sourceLine" id="cb5-5" data-line-number="5">                          <span class="dt">token_size =</span> <span class="dv">15</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1"><span class="kw"><a href="reference/animate_process.html">animate_process</a></span>(example_log, <span class="dt">mapping =</span> <span class="kw"><a href="reference/token_aes.html">token_aes</a></span>(<span class="dt">size =</span> <span class="kw"><a href="reference/token_scale.html">token_scale</a></span>(<span class="dv">12</span>), <span class="dt">shape =</span> <span class="st">"rect"</span>))</a>
+<a class="sourceLine" id="cb5-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb5-3" data-line-number="3"><span class="kw"><a href="reference/animate_process.html">animate_process</a></span>(example_log, <span class="dt">mapping =</span> <span class="kw"><a href="reference/token_aes.html">token_aes</a></span>(<span class="dt">color =</span> <span class="kw"><a href="reference/token_scale.html">token_scale</a></span>(<span class="st">"red"</span>)))</a></code></pre></div>
+<p>Tokens can also be assigned images, for example this Pacman GIF:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" data-line-number="1"><span class="kw"><a href="reference/animate_process.html">animate_process</a></span>(example_log,</a>
+<a class="sourceLine" id="cb6-2" data-line-number="2">   <span class="dt">mapping =</span> <span class="kw"><a href="reference/token_aes.html">token_aes</a></span>(<span class="dt">shape =</span> <span class="st">"image"</span>,</a>
+<a class="sourceLine" id="cb6-3" data-line-number="3">    <span class="dt">size =</span> <span class="kw"><a href="reference/token_scale.html">token_scale</a></span>(<span class="dv">10</span>),</a>
+<a class="sourceLine" id="cb6-4" data-line-number="4">    <span class="dt">image =</span> <span class="kw"><a href="reference/token_scale.html">token_scale</a></span>(<span class="st">"https://upload.wikimedia.org/wikipedia/en/5/5f/Pacman.gif"</span>)))</a></code></pre></div>
 <p>Dynamic token colors or sizes based on event attributes can be configured. Based on <code>ordinal</code> scales:</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" data-line-number="1"><span class="kw">library</span>(RColorBrewer)</a>
-<a class="sourceLine" id="cb6-2" data-line-number="2"><span class="kw"><a href="reference/animate_process.html">animate_process</a></span>(patients, </a>
-<a class="sourceLine" id="cb6-3" data-line-number="3">                <span class="dt">animation_legend =</span> <span class="st">"color"</span>, <span class="dt">token_color =</span> <span class="st">"employee"</span>, </a>
-<a class="sourceLine" id="cb6-4" data-line-number="4">                <span class="dt">token_color_scale =</span> <span class="st">"ordinal"</span>, <span class="dt">token_color_scale_range =</span> RColorBrewer<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/RColorBrewer/topics/ColorBrewer">brewer.pal</a></span>(<span class="dv">8</span>, <span class="st">"Paired"</span>))</a></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1"><span class="kw">library</span>(RColorBrewer)</a>
+<a class="sourceLine" id="cb7-2" data-line-number="2"><span class="kw"><a href="reference/animate_process.html">animate_process</a></span>(patients, </a>
+<a class="sourceLine" id="cb7-3" data-line-number="3">                <span class="dt">legend =</span> <span class="st">"color"</span>, </a>
+<a class="sourceLine" id="cb7-4" data-line-number="4">                <span class="dt">mapping =</span> <span class="kw"><a href="reference/token_aes.html">token_aes</a></span>(<span class="dt">color =</span> <span class="kw"><a href="reference/token_scale.html">token_scale</a></span>(<span class="st">"employee"</span>, <span class="dt">scale =</span> <span class="st">"ordinal"</span>, <span class="dt">range =</span> RColorBrewer<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/RColorBrewer/topics/ColorBrewer">brewer.pal</a></span>(<span class="dv">8</span>, <span class="st">"Paired"</span>))))</a></code></pre></div>
 <p>Based on <code>linear</code> scales:</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1"><span class="kw">library</span>(dplyr)</a>
-<a class="sourceLine" id="cb7-2" data-line-number="2"><span class="kw">library</span>(bupaR)</a>
-<a class="sourceLine" id="cb7-3" data-line-number="3"><span class="kw"><a href="reference/animate_process.html">animate_process</a></span>(<span class="kw">sample_n</span>(traffic_fines,<span class="dv">1000</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter_trace_frequency</span>(<span class="dt">percentage =</span> <span class="fl">0.95</span>),</a>
-<a class="sourceLine" id="cb7-4" data-line-number="4">                <span class="dt">animation_legend =</span> <span class="st">"color"</span>, <span class="dt">token_color =</span> <span class="st">"amount"</span>, </a>
-<a class="sourceLine" id="cb7-5" data-line-number="5">                <span class="dt">token_color_scale =</span> <span class="st">"linear"</span>, <span class="dt">token_color_scale_range =</span> <span class="kw">c</span>(<span class="st">"yellow"</span>,<span class="st">"red"</span>), <span class="dt">animation_mode =</span> <span class="st">"relative"</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" data-line-number="1"><span class="kw">library</span>(dplyr)</a>
+<a class="sourceLine" id="cb8-2" data-line-number="2"><span class="kw">library</span>(bupaR)</a>
+<a class="sourceLine" id="cb8-3" data-line-number="3"><span class="kw"><a href="reference/animate_process.html">animate_process</a></span>(<span class="kw">sample_n</span>(traffic_fines,<span class="dv">1000</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter_trace_frequency</span>(<span class="dt">percentage =</span> <span class="fl">0.95</span>),</a>
+<a class="sourceLine" id="cb8-4" data-line-number="4">                <span class="dt">mode =</span> <span class="st">"relative"</span>,</a>
+<a class="sourceLine" id="cb8-5" data-line-number="5">                <span class="dt">legend =</span> <span class="st">"color"</span>, </a>
+<a class="sourceLine" id="cb8-6" data-line-number="6">                <span class="dt">mapping =</span> <span class="kw"><a href="reference/token_aes.html">token_aes</a></span>(<span class="dt">color =</span> <span class="kw"><a href="reference/token_scale.html">token_scale</a></span>(<span class="st">"amount"</span>, <span class="dt">scale =</span> <span class="st">"linear"</span>, <span class="dt">range =</span> <span class="kw">c</span>(<span class="st">"yellow"</span>,<span class="st">"red"</span>))))</a></code></pre></div>
 <p>Based on <code>time</code> scales (no legend yet):</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" data-line-number="1"><span class="kw"><a href="reference/animate_process.html">animate_process</a></span>(patients, </a>
-<a class="sourceLine" id="cb8-2" data-line-number="2">                <span class="dt">animation_legend =</span> <span class="st">"color"</span>, <span class="dt">token_color =</span> <span class="st">"time"</span>, </a>
-<a class="sourceLine" id="cb8-3" data-line-number="3">                <span class="dt">token_color_scale =</span> <span class="st">"time"</span>, <span class="dt">token_color_scale_range =</span> <span class="kw">c</span>(<span class="st">"blue"</span>,<span class="st">"red"</span>))</a></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" data-line-number="1"><span class="kw"><a href="reference/animate_process.html">animate_process</a></span>(patients, </a>
+<a class="sourceLine" id="cb9-2" data-line-number="2">                <span class="dt">legend =</span> <span class="st">"color"</span>, </a>
+<a class="sourceLine" id="cb9-3" data-line-number="3">                <span class="dt">mapping =</span> <span class="kw"><a href="reference/token_aes.html">token_aes</a></span>(<span class="dt">color =</span> <span class="kw"><a href="reference/token_scale.html">token_scale</a></span>(<span class="st">"time"</span>, <span class="dt">scale =</span> <span class="st">"time"</span>, <span class="dt">range =</span> <span class="kw">c</span>(<span class="st">"blue"</span>,<span class="st">"red"</span>))))</a></code></pre></div>
 <p>It is also possible to use a secondary data frame to color the tokens irregardless of the event times. This can be useful if measurement are taken throughout a process, but the measurement event itself should not be included in the process map. For example, the lactic acid measurements of the <code>sepsis</code> data could be used in that way:</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" data-line-number="1"><span class="kw">library</span>(dplyr)</a>
-<a class="sourceLine" id="cb9-2" data-line-number="2"><span class="kw">library</span>(bupaR)</a>
-<a class="sourceLine" id="cb9-3" data-line-number="3"><span class="co"># Extract only the lacticacid measurements</span></a>
-<a class="sourceLine" id="cb9-4" data-line-number="4">lactic &lt;-<span class="st"> </span>sepsis <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb9-5" data-line-number="5"><span class="st">    </span><span class="kw">mutate</span>(<span class="dt">lacticacid =</span> <span class="kw">as.numeric</span>(lacticacid)) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb9-6" data-line-number="6"><span class="st">    </span><span class="kw">filter_activity</span>(<span class="kw">c</span>(<span class="st">"LacticAcid"</span>)) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb9-7" data-line-number="7"><span class="st">    </span><span class="kw">as.data.frame</span>() <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb9-8" data-line-number="8"><span class="st">    </span><span class="kw">select</span>(<span class="st">"case"</span> =<span class="st"> </span>case_id, </a>
-<a class="sourceLine" id="cb9-9" data-line-number="9">            <span class="st">"time"</span> =<span class="st">  </span>timestamp, </a>
-<a class="sourceLine" id="cb9-10" data-line-number="10">            <span class="dt">color =</span> lacticacid) <span class="co"># format needs to be 'case,time,color'</span></a>
-<a class="sourceLine" id="cb9-11" data-line-number="11"></a>
-<a class="sourceLine" id="cb9-12" data-line-number="12"><span class="co"># Remove the measurement events from the sepsis log</span></a>
-<a class="sourceLine" id="cb9-13" data-line-number="13">sepsisBase &lt;-<span class="st"> </span>sepsis <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb9-14" data-line-number="14"><span class="st">    </span><span class="kw">filter_activity</span>(<span class="kw">c</span>(<span class="st">"LacticAcid"</span>, <span class="st">"CRP"</span>, <span class="st">"Leucocytes"</span>, <span class="st">"Return ER"</span>,</a>
-<a class="sourceLine" id="cb9-15" data-line-number="15">                      <span class="st">"IV Liquid"</span>, <span class="st">"IV Antibiotics"</span>), <span class="dt">reverse =</span> T) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb9-16" data-line-number="16"><span class="st">    </span><span class="kw">filter_trace_frequency</span>(<span class="dt">percentage =</span> <span class="fl">0.95</span>)</a>
-<a class="sourceLine" id="cb9-17" data-line-number="17"></a>
-<a class="sourceLine" id="cb9-18" data-line-number="18"><span class="co"># Animate with the secondary data frame `lactic`</span></a>
-<a class="sourceLine" id="cb9-19" data-line-number="19"><span class="kw"><a href="reference/animate_process.html">animate_process</a></span>(sepsisBase, <span class="dt">animation_mode =</span> <span class="st">"relative"</span>, <span class="dt">animation_duration =</span> <span class="dv">600</span>,</a>
-<a class="sourceLine" id="cb9-20" data-line-number="20">                <span class="dt">animation_legend =</span> <span class="st">"color"</span>, <span class="dt">token_color =</span> lactic,</a>
-<a class="sourceLine" id="cb9-21" data-line-number="21">                <span class="dt">token_color_scale =</span> <span class="st">"linear"</span>, <span class="dt">token_color_scale_range =</span> <span class="kw">c</span>(<span class="st">"#fff5eb"</span>,<span class="st">"#7f2704"</span>))</a></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" data-line-number="1"><span class="kw">library</span>(dplyr)</a>
+<a class="sourceLine" id="cb10-2" data-line-number="2"><span class="kw">library</span>(bupaR)</a>
+<a class="sourceLine" id="cb10-3" data-line-number="3"><span class="co"># Extract only the lacticacid measurements</span></a>
+<a class="sourceLine" id="cb10-4" data-line-number="4">lactic &lt;-<span class="st"> </span>sepsis <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb10-5" data-line-number="5"><span class="st">    </span><span class="kw">mutate</span>(<span class="dt">lacticacid =</span> <span class="kw">as.numeric</span>(lacticacid)) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb10-6" data-line-number="6"><span class="st">    </span><span class="kw">filter_activity</span>(<span class="kw">c</span>(<span class="st">"LacticAcid"</span>)) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb10-7" data-line-number="7"><span class="st">    </span><span class="kw">as.data.frame</span>() <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb10-8" data-line-number="8"><span class="st">    </span><span class="kw">select</span>(<span class="st">"case"</span> =<span class="st"> </span>case_id, </a>
+<a class="sourceLine" id="cb10-9" data-line-number="9">            <span class="st">"time"</span> =<span class="st">  </span>timestamp, </a>
+<a class="sourceLine" id="cb10-10" data-line-number="10">            <span class="dt">value =</span> lacticacid) <span class="co"># format needs to be 'case,time,value'</span></a>
+<a class="sourceLine" id="cb10-11" data-line-number="11"></a>
+<a class="sourceLine" id="cb10-12" data-line-number="12"><span class="co"># Remove the measurement events from the sepsis log</span></a>
+<a class="sourceLine" id="cb10-13" data-line-number="13">sepsisBase &lt;-<span class="st"> </span>sepsis <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb10-14" data-line-number="14"><span class="st">    </span><span class="kw">filter_activity</span>(<span class="kw">c</span>(<span class="st">"LacticAcid"</span>, <span class="st">"CRP"</span>, <span class="st">"Leucocytes"</span>, <span class="st">"Return ER"</span>,</a>
+<a class="sourceLine" id="cb10-15" data-line-number="15">                      <span class="st">"IV Liquid"</span>, <span class="st">"IV Antibiotics"</span>), <span class="dt">reverse =</span> T) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb10-16" data-line-number="16"><span class="st">    </span><span class="kw">filter_trace_frequency</span>(<span class="dt">percentage =</span> <span class="fl">0.95</span>)</a>
+<a class="sourceLine" id="cb10-17" data-line-number="17"></a>
+<a class="sourceLine" id="cb10-18" data-line-number="18"><span class="co"># Animate with the secondary data frame `lactic`</span></a>
+<a class="sourceLine" id="cb10-19" data-line-number="19"><span class="kw"><a href="reference/animate_process.html">animate_process</a></span>(sepsisBase, </a>
+<a class="sourceLine" id="cb10-20" data-line-number="20">                <span class="dt">mode =</span> <span class="st">"relative"</span>, </a>
+<a class="sourceLine" id="cb10-21" data-line-number="21">                <span class="dt">duration =</span> <span class="dv">300</span>,</a>
+<a class="sourceLine" id="cb10-22" data-line-number="22">                <span class="dt">legend =</span> <span class="st">"color"</span>, </a>
+<a class="sourceLine" id="cb10-23" data-line-number="23">                <span class="dt">mapping =</span> <span class="kw"><a href="reference/token_aes.html">token_aes</a></span>(<span class="dt">color =</span> <span class="kw"><a href="reference/token_scale.html">token_scale</a></span>(lactic, <span class="dt">scale =</span> <span class="st">"linear"</span>, <span class="dt">range =</span> <span class="kw">c</span>(<span class="st">"#fff5eb"</span>,<span class="st">"#7f2704"</span>))))</a></code></pre></div>
 </div>
 <div id="more-usage-examples" class="section level3">
 <h3 class="hasAnchor">
@@ -196,7 +205,9 @@
 <li>
 <a href="https://github.com/ariutta/svg-pan-zoom">svg-pan-zoom</a>, for the panning/zooming option;</li>
 <li>
-<a href="https://github.com/moment/moment">MomentJS</a>, for parsing and formatting times and durations.</li>
+<a href="https://github.com/moment/moment">MomentJS</a>, for parsing and formatting times and durations;</li>
+<li>
+<a href="https://leafletjs.com/">Leaflet</a>, for rendering process maps on geographical maps.</li>
 </ul>
 </div>
 <div id="versioning" class="section level2">
@@ -207,17 +218,17 @@
 <div id="authors" class="section level2">
 <h2 class="hasAnchor">
 <a href="#authors" class="anchor"></a>Authors</h2>
-<p>Felix Mannhardt (<a href="https://www.sintef.no/sintef-teknologi-og-samfunn/arbeid_naringsliv/laring-og-beslutningsstotte/">SINTEF Læring og beslutningsstøtte</a>)</p>
+<p>Felix Mannhardt (<a href="https://www.sintef.no/digital/">SINTEF Digital – Technology Management Department</a>)</p>
 </div>
 <div id="license" class="section level2">
 <h2 class="hasAnchor">
 <a href="#license" class="anchor"></a>License</h2>
-<p>This software is licensed under the MIT License - see the <a href="LICENSE" class="uri">LICENSE</a> file for details</p>
+<p>This software is licensed under the MIT License - see the <a href="LICENSE.html">LICENSE</a> file for details</p>
 </div>
 <div id="acknowledgments" class="section level2">
 <h2 class="hasAnchor">
 <a href="#acknowledgments" class="anchor"></a>Acknowledgments</h2>
-<p>This software was partly developed in the <a href="http://www.humanmanufacturing.eu/">HUMAN project</a>, which has received funding from the European Union’s Horizon 2020 research and innovation programme under grant agreement no. 723737 (HUMAN)</p>
+<p>This software was partly supported by the <a href="http://www.humanmanufacturing.eu/">HUMAN project</a>, which has received funding from the European Union’s Horizon 2020 research and innovation programme under grant agreement no. 723737 (HUMAN)</p>
 </div>
 </div>
   </div>
@@ -237,9 +248,8 @@
 <div class="license">
 <h2>License</h2>
 <ul class="list-unstyled">
-<li>
-<a href="https://opensource.org/licenses/mit-license.php">MIT</a> + file <a href="LICENSE-text.html">LICENSE</a>
-</li>
+<li><a href="LICENSE.html">Full license</a></li>
+<li><small><a href="https://opensource.org/licenses/mit-license.php">MIT</a> + file <a href="LICENSE-text.html">LICENSE</a></small></li>
 </ul>
 </div>
 <div class="developers">

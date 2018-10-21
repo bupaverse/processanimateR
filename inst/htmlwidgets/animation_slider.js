@@ -86,6 +86,26 @@ function Slider(el, data, svg) {
         .append("path")
         .attr("d", pause);
 
+      var unpauseAnimation = function() {
+        svg.unpauseAnimations();
+        controlButton
+          .transition()
+          .duration(500)
+          .attr("d", pause);
+        animateSlider();
+      };
+
+      var pauseAnimation = function() {
+        svg.pauseAnimations();
+        controlButton
+          .transition()
+          .duration(500)
+          .attr("d", play);
+        if (sliderLoop) {
+          window.cancelAnimationFrame(sliderLoop);
+        }
+      };
+
       controlButton.on("click", function() {
         if (svg.animationsPaused()) {
           unpauseAnimation();
@@ -125,26 +145,6 @@ function Slider(el, data, svg) {
 
     }
 
-  };
-
-  this.unpauseAnimation = function() {
-    svg.unpauseAnimations();
-    controlButton
-      .transition()
-      .duration(500)
-      .attr("d", pause);
-    animateSlider();
-  };
-
-  this.pauseAnimation = function() {
-    svg.pauseAnimations();
-    controlButton
-      .transition()
-      .duration(500)
-      .attr("d", play);
-    if (sliderLoop) {
-      window.cancelAnimationFrame(sliderLoop);
-    }
   };
 
   function animateSlider() {

@@ -1,4 +1,4 @@
-function Tokens(data, scales) {
+function Tokens(el, data, scales) {
 
   var colorScale = scales.colorScale;
   var sizeScale = scales.sizeScale;
@@ -71,12 +71,12 @@ function Tokens(data, scales) {
 
     if (data.shape === "circle") {
       if (isSingle(customAttrs.sizes)) {
-        shape.attr("r", sizeScale(customAttrs.sizes[0].size));
+        shape.attr("r", sizeScale(customAttrs.sizes[0].value));
       } else {
         customAttrs.sizes.forEach(function(d){
           shape.append('set')
             .attr("attributeName", "r")
-            .attr("to", sizeScale(d.size))
+            .attr("to", sizeScale(d.value))
             .attr("begin", safeNumber(d.time) + "s")
             .attr("fill", "freeze");
         });
@@ -84,20 +84,20 @@ function Tokens(data, scales) {
 
     } else {
       if (isSingle(customAttrs.sizes)) {
-        shape.attr("height", sizeScale(customAttrs.sizes[0].size));
-        shape.attr("width", sizeScale(customAttrs.sizes[0].size));
+        shape.attr("height", sizeScale(customAttrs.sizes[0].value));
+        shape.attr("width", sizeScale(customAttrs.sizes[0].value));
       } else {
         customAttrs.sizes.forEach(function(d){
           shape.append('set')
             .attr("attributeName", "height")
-            .attr("to", sizeScale(d.size))
+            .attr("to", sizeScale(d.value))
             .attr("begin", safeNumber(d.time) + "s")
             .attr("fill", "freeze");
         });
         customAttrs.sizes.forEach(function(d){
           shape.append('set')
             .attr("attributeName", "width")
-            .attr("to", sizeScale(d.size))
+            .attr("to", sizeScale(d.value))
             .attr("begin", safeNumber(d.time) + "s")
             .attr("dur", "0")
             .attr("fill", "freeze");
@@ -106,25 +106,25 @@ function Tokens(data, scales) {
     }
 
     if (isSingle(customAttrs.colors)) {
-      shape.attr("fill", colorScale(customAttrs.colors[0].color));
+      shape.attr("fill", colorScale(customAttrs.colors[0].value));
     } else {
       customAttrs.colors.forEach(function(d){
         shape.append('set')
           .attr("attributeName", "fill")
-          .attr("to", colorScale(d.color) )
+          .attr("to", colorScale(d.value) )
           .attr("begin", safeNumber(d.time) + "s" )
           .attr("fill", "freeze");
       });
     }
 
     if (isSingle(customAttrs.images)) {
-      shape.attr("xlink:href", customAttrs.images[0].image);
+      shape.attr("xlink:href", customAttrs.images[0].value);
     } else {
       customAttrs.images.forEach(function(d,i){
         if (i > 0) {
           shape.append('set')
             .attr("attributeName", "xlink:href")
-            .attr("to", d.image )
+            .attr("to", d.value )
             .attr("begin", safeNumber(d.time) + "s" )
             .attr("fill", "freeze");
         }
@@ -132,12 +132,12 @@ function Tokens(data, scales) {
     }
 
     if (isSingle(customAttrs.opacities)) {
-      shape.attr("fill-opacity", customAttrs.opacities[0].opacity);
+      shape.attr("fill-opacity", customAttrs.opacities[0].value);
     } else {
       customAttrs.opacities.forEach(function(d){
         shape.append('set')
           .attr("attributeName", "fill-opacity")
-          .attr("to", d.opacity )
+          .attr("to", d.value )
           .attr("begin", safeNumber(d.time) + "s" )
           .attr("fill", "freeze");
       });
@@ -181,7 +181,7 @@ function Tokens(data, scales) {
                    .attr("transform", function(d) {
                       var size = sizes.filter(function(size) {
                         return(size.case == d);
-                      })[0].size;
+                      })[0].value;
                       return "translate("+-size/2+","+-size/2+")";
                    })
                    .attr("preserveAspectRatio", "xMinYMin");
@@ -193,7 +193,7 @@ function Tokens(data, scales) {
           		     .attr("transform", function(d) {
                       var size = sizes.filter(function(size) {
                         return(size.case == d);
-                      })[0].size;
+                      })[0].value;
                       return "translate("+-size/2+","+-size/2+")";
                    })
           		     .attr("stroke", "black")
@@ -280,7 +280,7 @@ function Tokens(data, scales) {
       toggleSelection(this);
 
       tokenElements.each(function(){
-        data.onclick_token_decorate(d3.select(this), isSelected(this));
+        data.onclick_token_select(d3.select(this), isSelected(this));
       });
 
       notifyShinyTokenInput(tokenElements);
@@ -310,7 +310,7 @@ function Tokens(data, scales) {
       toggleSelection(this);
 
       nodeElements.each(function() {
-        data.onclick_activity_decorate(d3.select(this), isSelected(this));
+        data.onclick_activity_select(d3.select(this).select("path"), isSelected(this));
       });
 
       notifyShinyNodeInput(nodeElements, data.activities);
@@ -322,15 +322,14 @@ function Tokens(data, scales) {
        d3.event.stopPropagation();
     });
 
-
     d3.select(svg).on("click", function() {
       tokenElements.each(function() {
         this.dataset.selected = "false";
-        data.onclick_token_decorate(d3.select(this), false);
+        data.onclick_token_select(d3.select(this), false);
       });
       nodeElements.each(function() {
         this.dataset.selected = "false";
-        data.onclick_activity_decorate(d3.select(this), false);
+        data.onclick_activity_select(d3.select(this).select("path"), false);
       });
       notifyShinyTokenInput(tokenElements);
       notifyShinyNodeInput(nodeElements, data.activities);

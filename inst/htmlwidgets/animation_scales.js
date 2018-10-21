@@ -1,19 +1,15 @@
 function Scales(el, data) {
 
   var legendSvg = null;
-  var colorScale = null;
-  var sizeScale = null;
 
   this.colorScale = buildScale(data.colors_scale,
-                            HTMLWidgets.dataframeToD3(data.colors)
-                              .map(function(x){ return(x.color); }),
-                            data.colors_scale_domain,
-                            data.colors_scale_range,
-                            "#FFFFFF");
+                               data.colors,
+                               data.colors_scale_domain,
+                               data.colors_scale_range,
+                               "#FFFFFF");
 
   this.sizeScale = buildScale(data.sizes_scale,
-                              HTMLWidgets.dataframeToD3(data.sizes)
-                                .map(function(x){ return(x.size); }),
+                              data.sizes,
                               data.sizes_scale_domain,
                               data.sizes_scale_range,
                               6);
@@ -33,15 +29,15 @@ function Scales(el, data) {
 
       switch(data.legend) {
         case "color":
-          legendSvg.call(d3.legendColor().scale(colorScale).shape("circle").shapeRadius(6));
+          legendSvg.call(d3.legendColor().scale(this.colorScale).shape("circle").shapeRadius(6));
         break;
         case "size":
-          legendSvg.call(d3.legendSize().scale(sizeScale).shape("circle"));
+          legendSvg.call(d3.legendSize().scale(this.sizeScale).shape("circle"));
         break;
         default:
       }
 
-      legendSvg.attr("transform", "translate("+(width-legendSvg.node().getBBox().width)+","+10+")");
+      legendSvg.attr("transform", "translate("+(width-legendSvg.node().getBBox().width)+","+15+")");
     }
   };
 
@@ -52,6 +48,10 @@ function Scales(el, data) {
                             return i == a.length - 1 || a[i+1] != x;
                           });
     }
+
+    values = HTMLWidgets.dataframeToD3(values).map(function(x){
+      return(x.value);
+    });
 
     var valDomain = computeDomain(values);
 
