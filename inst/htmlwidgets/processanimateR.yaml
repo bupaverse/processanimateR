@@ -1,4 +1,13 @@
 dependencies:
+  - name: processanimater-libs
+    version: 0.3.0
+    src: "htmlwidgets"
+    script:
+      - animation_slider.js
+      - animation_scales.js
+      - animation_tokens.js
+      - animation_renderer_graphviz.js
+      - animation_renderer_leaflet.js
   - name: d3
     version: 5.7.0
     src: "htmlwidgets/lib/d3"
@@ -24,7 +33,9 @@ dependencies:
   - name: leaflet
     version: 1.3.4
     src: "htmlwidgets/lib/leaflet"
-    stylesheet: leaflet.css
+    stylesheet:
+      - leaflet.css
+      - leaflet-grayscale.css
     script: leaflet.min.js
   - name: leaflet-d3-svg-overlay
     version: 2.2
