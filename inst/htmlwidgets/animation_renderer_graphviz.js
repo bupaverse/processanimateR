@@ -7,6 +7,10 @@ function RendererGraphviz(el, data) {
     return svg;
   };
 
+  this.getData = function() {
+    return data;
+  };
+
   this.render = function(postRender) {
 
     function fixEdgeIds(svg) {
@@ -77,7 +81,17 @@ function RendererGraphviz(el, data) {
         svgPan = svgPanZoom(svg, { dblClickZoomEnabled: false });
 
       }
-    );
+    ).catch(function(error) {
+      viz = new Viz();
+      var p = document.createElement("p");
+      var t = document.createTextNode(error);
+      p.appendChild(t);                                // Append the text to <button>
+      if (el.hasChildNodes()) {
+        el.replaceChild(p, el.childNodes[0]);
+      } else {
+        el.appendChild(p);
+      }
+    });
   };
 
   this.resize = function(width, height) {

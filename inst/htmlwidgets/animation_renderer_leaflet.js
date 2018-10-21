@@ -6,6 +6,10 @@ function RendererLeaflet(el, data) {
     return svg;
   };
 
+  this.getData = function() {
+    return data;
+  };
+
   this.render = function(postRender) {
 
     var mapData = data.rendered_process;

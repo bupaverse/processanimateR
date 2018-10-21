@@ -10,8 +10,8 @@ HTMLWidgets.widget({
 
   factory: function(el, width, height) {
 
-    var slider = null;
-    var scales = null;
+    var slider = new Slider(el);
+    var scales = new Scales(el);
     var tokens = null;
     var renderer = null;
 
@@ -46,16 +46,8 @@ HTMLWidgets.widget({
           Shiny.onInputChange(el.id + "_activities", []);
         }
 
-        // Fix data type for dates
-        if (data.colors_scale === "time") {
-          data.colors.value = data.colors.value.map(function(x) { return moment(x).toDate(); });
-        }
+        scales.update(data);
 
-        if (data.sizes_scale === "time") {
-          data.sizes.value = data.sizes.value.map(function(x) { return moment(x).toDate(); });
-        }
-
-        scales = new Scales(el, data);
         tokens = new Tokens(el, data, scales);
 
         // Render process map
@@ -71,10 +63,9 @@ HTMLWidgets.widget({
           var tokenGroup = tokens.insertTokens(svg);
           tokens.attachEventListeners(svg, tokenGroup);
 
-          slider = new Slider(el, data, svg);
-          slider.renderSlider(width);
+          slider.renderSlider(data, svg, width);
+          scales.renderLegend(data, svg, width);
 
-          scales.renderLegend(svg, width);
           repeatAnimation(data, svg);
 
           renderer.resize(width, Math.max(0, height - slider.getHeight()));
@@ -86,8 +77,8 @@ HTMLWidgets.widget({
       resize: function(width, height) {
 
         if (renderer) {
-          slider.renderSlider(width);
-          scales.renderLegend(renderer.getSvg(), width);
+          slider.renderSlider(renderer.getData(), renderer.getSvg(), width);
+          scales.renderLegend(renderer.getData(), renderer.getSvg(), width);
           renderer.resize(width, Math.max(0, height - slider.getHeight()));
         }
 

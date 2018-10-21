@@ -16,7 +16,7 @@ Sizes, colors, and the image used for tokens are customizable based on trace, ev
 
 ### Installing
 
-ProcessanimateR can be installed from CRAN:
+A stable version of ProcessanimateR can be installed from CRAN:
 ```r
 install.packages("processanimateR")
 ```
@@ -39,10 +39,9 @@ remotes::install_github("fmannhardt/processanimateR@v0.3.0")
 * Be aware that the perceived speed in which tokens travel depends on the length of edges in the process map, which is the result of an automatic layout algorithm and does not represent any kind of real distance between activities. 
 * Parallelism is still handled poorly as to be expected from a process map. In particular overlapping start and completion times of activities may result in tokens moving unexpectedly.
 * The timeline slider option cannot be used in Internet Explorer due to missing support for certain SVG animation functions.
+* There are breaking changes in the API of this package between v0.3.0 and v1.0.0
 
 ### Usage
-
-There are two main functions: `animate_process` and `ianimate_process` (interactive version).
 
 We use the `patients` event log provided by the `eventdataR` package. 
 ```r

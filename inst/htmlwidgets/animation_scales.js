@@ -1,20 +1,36 @@
-function Scales(el, data) {
+function Scales(el) {
 
   var legendSvg = null;
 
-  this.colorScale = buildScale(data.colors_scale,
-                               data.colors,
-                               data.colors_scale_domain,
-                               data.colors_scale_range,
-                               "#FFFFFF");
+  this.colorScale = null;
+  this.sizeScale = null;
 
-  this.sizeScale = buildScale(data.sizes_scale,
-                              data.sizes,
-                              data.sizes_scale_domain,
-                              data.sizes_scale_range,
-                              6);
+  this.update = function(data) {
 
-  this.renderLegend = function(svg, width) {
+    // Fix data type for dates
+    if (data.colors_scale === "time") {
+      data.colors.value = data.colors.value.map(function(x) { return moment(x).toDate(); });
+    }
+
+    if (data.sizes_scale === "time") {
+      data.sizes.value = data.sizes.value.map(function(x) { return moment(x).toDate(); });
+    }
+
+    this.colorScale = buildScale(data.colors_scale,
+                                 data.colors,
+                                 data.colors_scale_domain,
+                                 data.colors_scale_range,
+                                 "#FFFFFF");
+
+    this.sizeScale = buildScale(data.sizes_scale,
+                                data.sizes,
+                                data.sizes_scale_domain,
+                                data.sizes_scale_range,
+                                6);
+
+  };
+
+  this.renderLegend = function(data, svg, width) {
 
     // Clean-up
     if (legendSvg) {
@@ -37,8 +53,9 @@ function Scales(el, data) {
         default:
       }
 
-      legendSvg.attr("transform", "translate("+(width-legendSvg.node().getBBox().width)+","+15+")");
+      legendSvg.attr("transform", "translate("+(width-legendSvg.node().getBBox().width-5)+","+15+")");
     }
+
   };
 
   function buildScale(type, values, domain, range, defaultValue) {

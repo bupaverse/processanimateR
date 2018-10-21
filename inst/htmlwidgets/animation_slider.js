@@ -1,4 +1,4 @@
-function Slider(el, data, svg) {
+function Slider(el) {
 
   var smargin = {top:5, right:20, bottom:0, left:50};
   var sheight = 75 - smargin.top - smargin.bottom;
@@ -16,7 +16,7 @@ function Slider(el, data, svg) {
     }
   };
 
-  this.renderSlider = function(width) {
+  this.renderSlider = function(data, svg, width) {
 
     if (data.timeline &&
         // Polyfill fakesmile does not support pausing/unpausing for IE
@@ -141,13 +141,13 @@ function Slider(el, data, svg) {
         }
       });
 
-      animateSlider();
+      animateSlider(svg, data);
 
     }
 
   };
 
-  function animateSlider() {
+  function animateSlider(svg, data) {
     if (data.mode === "relative") {
       (function(){
           var time = svg.getCurrentTime();
