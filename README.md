@@ -1,6 +1,6 @@
 # processanimateR
 
-> Flexible token replay animation for process maps
+> Flexible token replay animation for process maps created by bupaR using GraphViz rendering or Leaflet rendering.
 
 [![CRAN\_Status\_Badge](https://www.r-pkg.org/badges/version/processanimateR)](https://cran.r-project.org/package=processanimateR)
 [![lifecycle](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://www.tidyverse.org/lifecycle/#maturing)
@@ -8,11 +8,13 @@
 
 [![processanimateR example](man/figures/processanimateR-banner.png)](https://fmannhardt.github.io/processanimateR/example/processanimateR-banner.html)
 
-Flexible token replay animation for process maps created through the [processmapR](https://github.com/gertjanssenswillen/processmapR/) package from the [bupaR](http://www.bupar.net) suite, which uses [DiagrammeR](https://github.com/rich-iannone/DiagrammeR/) and [viz.js](https://github.com/mdaines/viz.js) library to render process maps using GraphViz. 
-ProcessanimateR adds a [htmlwidget](https://www.htmlwidgets.org/) that uses SVG animations ([SMIL](https://www.w3.org/standards/techs/smil#w3c_all)) to create the animation. 
-Sizes, colors, and the image used for tokens are customizable based on trace, event attributes, or a secondary data frame if an attribute does not change according to the original event log.
+Flexible token replay animation for process maps created through the [processmapR](https://github.com/gertjanssenswillen/processmapR/) package from the [bupaR](http://www.bupar.net) suite, which uses [DiagrammeR](https://github.com/rich-iannone/DiagrammeR/) and [viz.js](https://github.com/mdaines/viz.js) library to render process maps using GraphViz. As alternative renderer [Leaflet](https://leafletjs.com/) with fixed coordinates for activities is also supported.
+
+ProcessanimateR provides a [htmlwidget](https://www.htmlwidgets.org/) using SVG animations ([SMIL](https://www.w3.org/standards/techs/smil#w3c_all)) to create the animation. Sizes, colors, and many more aspects of the token shapes are customizable based on trace, event attributes, or a secondary data frame if an attribute does not change according to the original event log.
 
 ## Getting Started
+
+**WARNING: There are breaking changes in the API of this package between v0.3.0 and v1.0. The documentation here is already updated to the new API in v1.0, which won't work with the released CRAN version!**
 
 ### Installing
 
@@ -39,7 +41,6 @@ remotes::install_github("fmannhardt/processanimateR@v0.3.0")
 * Be aware that the perceived speed in which tokens travel depends on the length of edges in the process map, which is the result of an automatic layout algorithm and does not represent any kind of real distance between activities. 
 * Parallelism is still handled poorly as to be expected from a process map. In particular overlapping start and completion times of activities may result in tokens moving unexpectedly.
 * The timeline slider option cannot be used in Internet Explorer due to missing support for certain SVG animation functions.
-* There are breaking changes in the API of this package between v0.3.0 and v1.0.0
 
 ### Usage
 

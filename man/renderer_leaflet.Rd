@@ -4,36 +4,20 @@
 \alias{renderer_leaflet}
 \title{Render as graph on a geographical map}
 \usage{
-renderer_leaflet(node_coordinates,
+renderer_leaflet(node_coordinates, layer = c(paste0("new L.TileLayer('",
+  tile, "',"), paste0("{ attribution : '", attribution_osm(), "'})")),
   tile = "http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-  center = c(37.8, -96.9), zoom = 4, grayscale = TRUE,
-  act_icon = paste0("<g transform=\\"translate(-12,-22)\\">",
-  "<path d=\\"M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 ",
-  "7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 ",
-  "0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 ",
-  "2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z\\"/>",
-  "<path d=\\"M0 0h24v24H0z\\" fill=\\"none\\"/></g>"),
-  start_icon = paste0("<g transform=\\"translate(-12,-12)\\">",
-  "<path fill=\\"none\\" d=\\"M0 0h24v24H0z\\"/>",
-  "<path d=\\"M2 12C2 6.48 6.48 2 12 2s10 4.48 10 10-4.48 10-10 ",
-  "10S2 17.52 2 12zm10 6c3.31 0 6-2.69 6-6s-2.69-6-6-6-6 ",
-  "2.69-6 6 2.69 6 6 6z\\"/>",
-  "<path fill=\\"none\\" d=\\"M0 0h24v24H0z\\"/></g>"),
-  end_icon = paste0("<g transform=\\"translate(-12,-12)\\">",
-  "<path fill=\\"none\\" d=\\"M0 0h24v24H0z\\"/>",
-  "<path d=\\"M2 12C2 6.48 6.48 2 12 2s10 4.48 10 10-4.48 10-10 ",
-  "10S2 17.52 2 12zm10 6c3.31 0 6-2.69 6-6s-2.69-6-6-6-6 ",
-  "2.69-6 6 2.69 6 6 6z\\"/>",
-  "<path fill=\\"none\\" d=\\"M0 0h24v24H0z\\"/></g>"))
+  options = list(), grayscale = TRUE, act_icon = icon_marker(),
+  start_icon = icon_circle(), end_icon = icon_circle())
 }
 \arguments{
 \item{node_coordinates}{A data frame with node coordinates in the format `act`, `lat`, `lng`.}
 
-\item{tile}{The URL to be used for the Leaflet TileLayer.}
+\item{layer}{The JavaScript code used to create a Leaflet layer. A TileLayer is used as default value.}
 
-\item{center}{The latitude and longitude of the initial center of the map.}
+\item{tile}{The URL to be used for the standard Leaflet TileLayer.}
 
-\item{zoom}{The initial zoom level.}
+\item{options}{A named list of leaflet options, such as the center point of the map and the initial zoom level.}
 
 \item{grayscale}{Whether to apply a grayscale filter to the map.}
 
@@ -56,11 +40,11 @@ data(example_log)
 animate_process(example_log,
   renderer = renderer_leaflet(
     node_coordinates = data.frame(
-      act = c("A", "B", "C", "D", "Start", "End"),
-      lat = c(63.44, 63.43, 63.435, 63.45, 63.44, 63.44),
-      lng = c(10.45, 10.47, 10.49, 10.48, 10.43, 10.51), stringsAsFactors = FALSE),
-      center = c(63.447112, 10.451175),
-      zoom = 13),
+       act = c("A", "B", "C", "D", "Start", "End"),
+       lat = c(63.443680, 63.426925, 63.409207, 63.422336, 63.450950, 63.419706),
+       lng = c(10.383625, 10.396972, 10.406418, 10.432119, 10.383368, 10.252347),
+       stringsAsFactors = FALSE),
+      options = list(center = c(63.412273, 10.399590), zoom = 12)),
   duration = 5, repeat_count = Inf)
 
 }

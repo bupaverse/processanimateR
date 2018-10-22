@@ -14,14 +14,9 @@ function RendererLeaflet(el, data) {
 
     var mapData = data.rendered_process;
 
-    var mapEl = d3.select(el)
-                  .append("div")
-                  .attr("style", "width: 100%; height: 100%")
-                  .node();
+    var mapEl = d3.select(el).append("div").attr("style", "width: 100%; height: 100%").node();
 
-    var map = new L.Map(mapEl, { center: mapData.center,
-                                 zoom: mapData.zoom })
-                    .addLayer(new L.TileLayer(mapData.tile));
+    var map = new L.Map(mapEl, mapData.options ).addLayer(mapData.layer);
 
     d3.select(map.getPanes().tilePane).classed("leaflet-grayscale", mapData.grayscale);
 
@@ -32,14 +27,15 @@ function RendererLeaflet(el, data) {
 
       var svg = selection.select(function() {
         return this.parentNode;
-      }).node();
+      }).attr("pointer-events", "visiblePainted").node();
+
       selection.classed("graph", true);
 
       d3.select(svg)
         .append("defs")
         .html('<filter x="-0.125" y="-0.125" width="1.25" height="1.25" id="box"> \
                 <feFlood flood-color="white" flood-opacity="0.7"/> \
-                <feComposite in="SourceGraphic"/> \
+                <feComposite in="SourceGraphic" /> \
               </filter> \
               <marker xmlns="http://www.w3.org/2000/svg" id="arrow" viewBox="0 0 10 10" \
                 refX="10" refY="5" markerUnits="strokeWidth" \

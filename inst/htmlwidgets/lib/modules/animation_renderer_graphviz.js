@@ -84,8 +84,8 @@ function RendererGraphviz(el, data) {
     ).catch(function(error) {
       viz = new Viz();
       var p = document.createElement("p");
-      var t = document.createTextNode(error);
-      p.appendChild(t);                                // Append the text to <button>
+      var t = document.createTextNode("Failed to render the graph. It is probably too large. Original error: "+error);
+      p.appendChild(t);
       if (el.hasChildNodes()) {
         el.replaceChild(p, el.childNodes[0]);
       } else {

@@ -1,7 +1,8 @@
 ^.*\.Rproj$
+^\.Rproj\.user$
+^.Rhistory$
 ^docs/
 ^\.travis\.yml$
+^LICENSE\.md$
 ^inst/htmlwidgets/lib/d3/node_modules/
 ^inst/htmlwidgets/lib/leaflet/node_modules/
-^LICENSE\.md$
-^\.Rproj\.user$

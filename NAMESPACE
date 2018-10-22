@@ -2,6 +2,9 @@
 
 export(activity_select_decoration)
 export(animate_process)
+export(attribution_osm)
+export(icon_circle)
+export(icon_marker)
 export(processanimaterOutput)
 export(renderProcessanimater)
 export(renderer_graphviz)

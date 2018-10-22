@@ -58,7 +58,8 @@ via input$elementId_tokens and input$elementId_activities when used in Shiny.}
 
 \item{preRenderHook}{passed through to \code{\link{createWidget}}.}
 
-\item{width, height}{Fixed size for widget (in css units). The default is NULL, which results in intelligent automatic sizing based on the widget's container.}
+\item{width, height}{Fixed size for widget (in css units).
+The default is NULL, which results in intelligent automatic sizing based on the widget's container.}
 
 \item{...}{Options passed on to \code{\link{process_map}}.}
 }

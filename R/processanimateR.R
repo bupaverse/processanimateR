@@ -26,7 +26,8 @@
 #' @param elementId passed through to \code{\link{createWidget}}. A custom elementId is useful to capture the selection events
 #'  via input$elementId_tokens and input$elementId_activities when used in Shiny.
 #' @param preRenderHook passed through to \code{\link{createWidget}}.
-#' @param width,height Fixed size for widget (in css units). The default is NULL, which results in intelligent automatic sizing based on the widget's container.
+#' @param width,height Fixed size for widget (in css units).
+#'  The default is NULL, which results in intelligent automatic sizing based on the widget's container.
 #' @param ... Options passed on to \code{\link{process_map}}.
 #'
 #' @examples
@@ -68,6 +69,10 @@ animate_process <- function(eventlog, processmap = process_map(eventlog, render 
                             width = NULL,
                             height = NULL,
                             ...) {
+
+  if (any(startsWith(as.character(names(list(...))), "animation_"))) {
+    stop("The old pre 1.0 API using `animation_` parameters is deprecated.")
+  }
 
   # Make CRAN happy about dplyr evaluation
   case_start <- log_end <- start_time <- end_time <- next_end_time <- next_start_time <- NULL

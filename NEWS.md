@@ -1,5 +1,7 @@
 ## processanimateR 1.0.0
 
+There are breaking changes in the API between v0.3.0 and v1.0.0. The old API was not maintainable and to avoid the list of parameters growing even more, the decision to move to a new API was made.
+
 ### Backwards incompatible changes
 
 * TBD
