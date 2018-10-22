@@ -150,17 +150,15 @@ animate_process <- function(eventlog, processmap = process_map(eventlog, render 
     activities = activities,
     tokens = tokens,
     sizes = sizes,
-    sizes_scale = mapping$size$scale,
-    sizes_scale_domain = mapping$size$domain,
-    sizes_scale_range = mapping$size$range,
+    sizes_scale = mapping$size,
     colors = colors,
-    colors_scale = mapping$color$scale,
-    colors_scale_domain = mapping$color$domain,
-    colors_scale_range = mapping$color$range,
+    colors_scale = mapping$color,
     opacities = opacities,
-    attributes = mapping$attributes,
+    opacities_scale = mapping$opacity,
     images = images,
-    shape = mapping$shape,
+    images_scale = mapping$image,
+    shape = mapping$shape, #TODO see if this can be a scale too
+    attributes = mapping$attributes,
     start_activity = start_activity,
     end_activity = end_activity,
     duration = duration,
@@ -314,7 +312,7 @@ transform_time <- function(data, cases, mode, a_factor, timeline_start, timeline
   col <- rlang::sym("value")
   data <- data %>%
     group_by(case) %>%
-    filter(row_number(!!col) == 1 | lag(!!col) != !!col) %>% # only keep changes in value
+    filter(row_number() == 1 | lag(!!col) != !!col) %>% # only keep changes in value
     left_join(cases, by = "case")
 
   if (mode == "absolute") {

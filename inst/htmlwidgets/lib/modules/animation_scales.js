@@ -4,6 +4,8 @@ function Scales(el) {
 
   this.colorScale = null;
   this.sizeScale = null;
+  this.opacityScale = null;
+  this.imageScale = null;
 
   this.update = function(data) {
 
@@ -18,15 +20,19 @@ function Scales(el) {
 
     this.colorScale = buildScale(data.colors_scale,
                                  data.colors,
-                                 data.colors_scale_domain,
-                                 data.colors_scale_range,
                                  "#FFFFFF");
 
     this.sizeScale = buildScale(data.sizes_scale,
                                 data.sizes,
-                                data.sizes_scale_domain,
-                                data.sizes_scale_range,
                                 6);
+
+    this.opacityScale = buildScale(data.opacities_scale,
+                                data.opacities,
+                                0.9);
+
+    this.imageScale = buildScale(data.images_scale,
+                                data.images,
+                                "");
 
   };
 
@@ -58,7 +64,7 @@ function Scales(el) {
 
   };
 
-  function buildScale(type, values, domain, range, defaultValue) {
+  function buildScale(scale, values, defaultValue) {
 
     function computeDomain(values) {
       return values.sort().filter(function(x, i, a) {
@@ -71,6 +77,9 @@ function Scales(el) {
     });
 
     var valDomain = computeDomain(values);
+    var domain = scale.domain;
+    var range = scale.range;
+    var type = scale.scale;
 
     // Guard against missing values
     if (domain === null) {

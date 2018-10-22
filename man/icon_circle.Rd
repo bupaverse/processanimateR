@@ -2,7 +2,7 @@
 % Please edit documentation in R/renderer.R
 \name{icon_circle}
 \alias{icon_circle}
-\title{Standard circle marker.}
+\title{Standard circle marker based on Material Design (Apache 2.0 License): https://material.io/}
 \usage{
 icon_circle()
 }
@@ -10,7 +10,7 @@ icon_circle()
 SVG code for a map  marker.
 }
 \description{
-Standard circle marker.
+Standard circle marker based on Material Design (Apache 2.0 License): https://material.io/
 }
 \examples{
 icon_circle()

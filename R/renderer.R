@@ -59,7 +59,6 @@ renderer_leaflet <- function(node_coordinates,
                          tile = "http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
                          options = list(),
                          grayscale = TRUE,
-                         # Based on Material Design (Apache 2.0 License): https://material.io/
                          act_icon = icon_marker(),
                          start_icon = icon_circle(),
                          end_icon = icon_circle()) {
@@ -122,7 +121,7 @@ attribution_osm <- function() {
   return('&copy; <a href=\"https://www.openstreetmap.org/copyright\">OpenStreetMap</a> contributors');
 }
 
-#' Standard map marker.
+#' Standard map marker based on Material Design (Apache 2.0 License): https://material.io/
 #'
 #' @return SVG code for a map  marker.
 #' @export
@@ -135,7 +134,7 @@ icon_marker <- function() {
    <path d="M0 0h24v24H0z" fill="none"/></g>'
 }
 
-#' Standard circle marker.
+#' Standard circle marker based on Material Design (Apache 2.0 License): https://material.io/
 #'
 #' @return SVG code for a map  marker.
 #' @export

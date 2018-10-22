@@ -2,6 +2,8 @@ function Tokens(el, data, scales) {
 
   var colorScale = scales.colorScale;
   var sizeScale = scales.sizeScale;
+  var opacityScale = scales.opacityScale;
+  var imageScale = scales.imageScale;
 
   function safeNumber(x) {
     return (parseFloat(x) || 0).toFixed(6);
@@ -118,13 +120,13 @@ function Tokens(el, data, scales) {
     }
 
     if (isSingle(customAttrs.images)) {
-      shape.attr("xlink:href", customAttrs.images[0].value);
+      shape.attr("xlink:href", imageScale(customAttrs.images[0].value));
     } else {
       customAttrs.images.forEach(function(d,i){
         if (i > 0) {
           shape.append('set')
             .attr("attributeName", "xlink:href")
-            .attr("to", d.value )
+            .attr("to", imageScale(d.value))
             .attr("begin", safeNumber(d.time) + "s" )
             .attr("fill", "freeze");
         }
@@ -132,12 +134,12 @@ function Tokens(el, data, scales) {
     }
 
     if (isSingle(customAttrs.opacities)) {
-      shape.attr("fill-opacity", customAttrs.opacities[0].value);
+      shape.attr("fill-opacity", opacityScale(customAttrs.opacities[0].value));
     } else {
       customAttrs.opacities.forEach(function(d){
         shape.append('set')
           .attr("attributeName", "fill-opacity")
-          .attr("to", d.value )
+          .attr("to", opacityScale(d.value))
           .attr("begin", safeNumber(d.time) + "s" )
           .attr("fill", "freeze");
       });
