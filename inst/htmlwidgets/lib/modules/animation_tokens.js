@@ -122,14 +122,12 @@ function Tokens(el, data, scales) {
     if (isSingle(customAttrs.images)) {
       shape.attr("xlink:href", imageScale(customAttrs.images[0].value));
     } else {
-      customAttrs.images.forEach(function(d,i){
-        if (i > 0) {
-          shape.append('set')
-            .attr("attributeName", "xlink:href")
-            .attr("to", imageScale(d.value))
-            .attr("begin", safeNumber(d.time) + "s" )
-            .attr("fill", "freeze");
-        }
+      customAttrs.images.forEach(function(d){
+        shape.append('set')
+          .attr("attributeName", "xlink:href")
+          .attr("to", imageScale(d.value))
+          .attr("begin", safeNumber(d.time) + "s" )
+          .attr("fill", "freeze");
       });
     }
 
