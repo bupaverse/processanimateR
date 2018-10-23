@@ -21,7 +21,12 @@ function RendererLeaflet(el, data) {
     d3.select(map.getPanes().tilePane).classed("leaflet-grayscale", mapData.grayscale);
 
     var nodes = HTMLWidgets.dataframeToD3(mapData.nodes);
+
     var edges = HTMLWidgets.dataframeToD3(mapData.edges);
+    edges.forEach(function(x) {
+      // Side effect!!
+      x.path = HTMLWidgets.dataframeToD3(x.path);
+    });
 
     var d3Overlay = L.d3SvgOverlay(function(selection, projection){
 
@@ -90,21 +95,25 @@ function RendererLeaflet(el, data) {
             });
 
       var lineFunction = d3.line()
-            .x(function(d) { return projection.latLngToLayerPoint( L.latLng(d[0], d[1]) ).x; })
-            .y(function(d) { return projection.latLngToLayerPoint( L.latLng(d[0], d[1]) ).y; })
+            .x(function(d) { return projection.latLngToLayerPoint( L.latLng(d.lat, d.lng) ).x; })
+            .y(function(d) { return projection.latLngToLayerPoint( L.latLng(d.lat, d.lng) ).y; })
             .curve(d3.curveNatural);
 
       selection.append("g")
           .attr("class", "edges")
-        .selectAll('path').data(edges).enter().append('path')
-          .attr("d", function(d) { return lineFunction(d.path); })
-          .attr("stroke", function(d) { return d.color; })
-          .attr("stroke-width", function(d) { return d.penwidth;  })
-          .attr("id", function(d) { return "edge" + d.id + "-path"; })
-          .attr("marker-end", "url(#arrow)")
+        .selectAll('path')
+          .data(edges)
+          .enter()
+          .append('path')
+            .attr("d", function(d) { return lineFunction(d.path); })
+            .attr("fill", "none")
+            .attr("stroke", function(d) { return d.color; })
+            .attr("stroke-width", function(d) { return d.penwidth;  })
+            .attr("id", function(d) { return "edge" + d.id + "-path"; })
+            .attr("marker-end", "url(#arrow)")
           .each(function(d) { d.totalLength = this.getTotalLength(); })
-          .attr("stroke-dasharray", function(d) { return d.totalLength; })
-          .attr("stroke-dashoffset", function(d) { return 5; });
+            .attr("stroke-dasharray", function(d) { return d.totalLength; })
+            .attr("stroke-dashoffset", function(d) { return 5; });
 
     }, { zoomDraw: false });
 

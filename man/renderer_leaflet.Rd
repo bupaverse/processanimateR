@@ -4,14 +4,19 @@
 \alias{renderer_leaflet}
 \title{Render as graph on a geographical map}
 \usage{
-renderer_leaflet(node_coordinates, layer = c(paste0("new L.TileLayer('",
-  tile, "',"), paste0("{ attribution : '", attribution_osm(), "'})")),
+renderer_leaflet(node_coordinates, edge_coordinates = data.frame(act_from
+  = character(0), act_to = character(0), lat = numeric(0), lng =
+  numeric(0), stringsAsFactors = FALSE),
+  layer = c(paste0("new L.TileLayer('", tile, "',"),
+  paste0("{ attribution : '", attribution_osm(), "'})")),
   tile = "http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
   options = list(), grayscale = TRUE, act_icon = icon_marker(),
   start_icon = icon_circle(), end_icon = icon_circle())
 }
 \arguments{
 \item{node_coordinates}{A data frame with node coordinates in the format `act`, `lat`, `lng`.}
+
+\item{edge_coordinates}{A data frame with additional edge coordinates in the format `act_from`, `act_to`, `lat`, `lng`.}
 
 \item{layer}{The JavaScript code used to create a Leaflet layer. A TileLayer is used as default value.}
 
@@ -44,7 +49,13 @@ animate_process(example_log,
        lat = c(63.443680, 63.426925, 63.409207, 63.422336, 63.450950, 63.419706),
        lng = c(10.383625, 10.396972, 10.406418, 10.432119, 10.383368, 10.252347),
        stringsAsFactors = FALSE),
-      options = list(center = c(63.412273, 10.399590), zoom = 12)),
+    edge_coordinates = data.frame(
+       act_from = c("B"),
+       act_to = c("C"),
+       lat = c(63.419207),
+       lng = c(10.386418),
+       stringsAsFactors = FALSE),
+    options = list(center = c(63.412273, 10.399590), zoom = 12)),
   duration = 5, repeat_count = Inf)
 
 }

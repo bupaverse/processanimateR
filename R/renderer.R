@@ -26,6 +26,7 @@ renderer_graphviz <- function() {
 #' Render as graph on a geographical map
 #'
 #' @param node_coordinates A data frame with node coordinates in the format `act`, `lat`, `lng`.
+#' @param edge_coordinates A data frame with additional edge coordinates in the format `act_from`, `act_to`, `lat`, `lng`.
 #' @param layer The JavaScript code used to create a Leaflet layer. A TileLayer is used as default value.
 #' @param tile The URL to be used for the standard Leaflet TileLayer.
 #' @param options A named list of leaflet options, such as the center point of the map and the initial zoom level.
@@ -48,12 +49,20 @@ renderer_graphviz <- function() {
 #'        lat = c(63.443680, 63.426925, 63.409207, 63.422336, 63.450950, 63.419706),
 #'        lng = c(10.383625, 10.396972, 10.406418, 10.432119, 10.383368, 10.252347),
 #'        stringsAsFactors = FALSE),
-#'       options = list(center = c(63.412273, 10.399590), zoom = 12)),
+#'     edge_coordinates = data.frame(
+#'        act_from = c("B"),
+#'        act_to = c("C"),
+#'        lat = c(63.419207),
+#'        lng = c(10.386418),
+#'        stringsAsFactors = FALSE),
+#'     options = list(center = c(63.412273, 10.399590), zoom = 12)),
 #'   duration = 5, repeat_count = Inf)
 #'
 #' @seealso animate_process
 #'
 renderer_leaflet <- function(node_coordinates,
+                         edge_coordinates = data.frame(act_from = character(0), act_to = character(0),
+                                                       lat = numeric(0), lng = numeric(0), stringsAsFactors = FALSE),
                          layer = c(paste0("new L.TileLayer('", tile ,"',"),
                                    paste0("{ attribution : '", attribution_osm() ,"'})")),
                          tile = "http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
@@ -81,23 +90,32 @@ renderer_leaflet <- function(node_coordinates,
       left_join(node_coordinates, by = c("act" = "act")) %>%
       mutate(fillcolor = sapply(fillcolor, colConv))
     if (any(is.na(nodes))) {
-      stop("Missing coordinates for one of the activities");
+      stop(paste0("Missing coordinates for activities", nodes$label(which(is.na(nodes)))));
     }
-    edges <- processmap$edges_df %>%
+
+    edges_from <- processmap$edges_df %>%
       left_join(nodes, by = c("from" = "id")) %>%
-      rename(from_act = act, from_lat = lat, from_lng = lng) %>%
+      rename(act_from = act) %>%
+      left_join(select(nodes, id, act), by = c("to" = "id")) %>%
+      rename(act_to = act)
+
+    edges_to <- processmap$edges_df %>%
       left_join(nodes, by = c("to" = "id")) %>%
-      rename(to_act = act, to_lat = lat, to_lng = lng) %>%
-      rowwise() %>%
-      do({
-        # TODO allows to customize path
-        path <- I(list(list(list(.$from_lat, .$from_lng),
-                            list(.$to_lat, .$to_lng))))
-        data.frame(., I(path), stringsAsFactors = F)
-      }) %>%
+      rename(act_to = act) %>%
+      left_join(select(nodes, id, act), by = c("from" = "id")) %>%
+      rename(act_from = act)
+
+    edges_extra <- edge_coordinates %>%
+      left_join(edges_from %>% select(-lat, -lng),
+                by = c("act_from" = "act_from", "act_to" = "act_to"))
+
+    edges <- bind_rows(edges_from, edges_extra, edges_to) %>%
       mutate(color = sapply(color, colConv)) %>%
-      select(id, from, to, path, label, penwidth, color)
-    list("nodes" = nodes, "edges" = edges,
+      select(id, from, to, lat, lng, label, penwidth, color) %>%
+      tidyr::nest(lat, lng, .key = "path")
+
+    list("nodes" = nodes,
+         "edges" = edges,
          "layer" = htmlwidgets::JS(layer),
          "options" = options,
          "grayscale" = grayscale,
