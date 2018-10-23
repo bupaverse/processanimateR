@@ -90,7 +90,8 @@ renderer_leaflet <- function(node_coordinates,
       left_join(node_coordinates, by = c("act" = "act")) %>%
       mutate(fillcolor = sapply(fillcolor, colConv))
     if (any(is.na(nodes))) {
-      stop(paste0("Missing coordinates for activities", nodes$label(which(is.na(nodes)))));
+      stop(paste0("Missing coordinates for activities",
+                  nodes$act[which(is.na(nodes$lat) | is.na(nodes$lng))]));
     }
 
     edges_from <- processmap$edges_df %>%
