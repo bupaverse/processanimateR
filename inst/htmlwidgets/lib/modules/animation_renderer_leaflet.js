@@ -12,11 +12,22 @@ function RendererLeaflet(el, data) {
 
   this.render = function(postRender) {
 
+    var element = d3.select(el).append("div").attr("style", "width: 100%; height: 100%").node();
+
+    if (el.hasChildNodes()) {
+      el.replaceChild(element, el.childNodes[0]);
+    } else {
+      el.appendChild(element);
+    }
+
     var mapData = data.rendered_process;
+    var map = new L.Map(element, mapData.options ).addLayer(mapData.layer);
 
-    var mapEl = d3.select(el).append("div").attr("style", "width: 100%; height: 100%").node();
-
-    var map = new L.Map(mapEl, mapData.options ).addLayer(mapData.layer);
+    // conveniance feature to easier map building by hand
+    map.on('click', function(e) {
+      var latlng = map.mouseEventToLatLng(e.originalEvent);
+      console.log(latlng.lat + ', ' + latlng.lng);
+    });
 
     d3.select(map.getPanes().tilePane).classed("leaflet-grayscale", mapData.grayscale);
 
@@ -28,7 +39,10 @@ function RendererLeaflet(el, data) {
       x.path = HTMLWidgets.dataframeToD3(x.path);
     });
 
-    var d3Overlay = L.d3SvgOverlay(function(selection, projection){
+    var d3Overlay = L.d3SvgOverlay(function(selection, projection) {
+
+      //TODO somehow adjust the level of detail to the zoom level
+      // - scale lines & icons
 
       var svg = selection.select(function() {
         return this.parentNode;
@@ -38,6 +52,7 @@ function RendererLeaflet(el, data) {
 
       d3.select(svg)
         .append("defs")
+        // text background box and arrow marker
         .html('<filter x="-0.125" y="-0.125" width="1.25" height="1.25" id="box"> \
                 <feFlood flood-color="white" flood-opacity="0.7"/> \
                 <feComposite in="SourceGraphic" /> \
@@ -67,11 +82,17 @@ function RendererLeaflet(el, data) {
                 return "translate("+point.x+","+point.y+")";
               });
 
+      //TODO split on more than two lines
       actWrapper.append("text")
-            .text(function(d) { return d.label; })
-            .attr("x", 12)
-            .attr('fill', "black")
-            .attr('filter', "url(#box)");
+            .text(function(d) { return d.label.split('\n')[0]; })
+              .attr("x", 20)
+              .attr("y", -20)
+              .attr('fill', "black")
+              .attr('filter', "url(#box)")
+            .append('tspan')
+              .text(function(d) { return d.label.split('\n')[1].trim() })
+              .attr("x", 20)
+              .attr("y", -8);
 
       var startEndWrapper = selection.append("g")
               .attr("class", "startend")
@@ -111,6 +132,7 @@ function RendererLeaflet(el, data) {
             .attr("stroke-width", function(d) { return d.penwidth;  })
             .attr("id", function(d) { return "edge" + d.id + "-path"; })
             .attr("marker-end", "url(#arrow)")
+          // paint the edge a bit shorter than it actually is to have a smooth ending at the arrow tip
           .each(function(d) { d.totalLength = this.getTotalLength(); })
             .attr("stroke-dasharray", function(d) { return d.totalLength; })
             .attr("stroke-dashoffset", function(d) { return 5; });
