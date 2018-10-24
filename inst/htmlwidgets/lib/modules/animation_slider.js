@@ -92,7 +92,7 @@ function Slider(el) {
           .transition()
           .duration(500)
           .attr("d", pause);
-        animateSlider();
+        animateSlider(svg, data);
       };
 
       var pauseAnimation = function() {
@@ -142,9 +142,7 @@ function Slider(el) {
       });
 
       animateSlider(svg, data);
-
     }
-
   };
 
   function animateSlider(svg, data) {

@@ -9,9 +9,10 @@ function Tokens(el, data, scales) {
     return (parseFloat(x) || 0).toFixed(6);
   }
 
-  function insertAnimation(svg, shape, caseTokens, customAttrs) {
+  function insertAnimation(svg, group, shape, caseTokens, customAttrs) {
 
-    var motions = shape.selectAll("animateMotion")
+    // group is moving
+    var motions = group.selectAll("animateMotion")
                        .data(caseTokens).enter();
 
     motions.append("animateMotion")
@@ -63,6 +64,8 @@ function Tokens(el, data, scales) {
     	      return getEdgePoint(caseTokens[i+1].edge_id, 0);
     	    }
     	});
+
+    // shape is changed
 
     var setAnimations = shape.selectAll("set").data(caseTokens).enter();
 
@@ -165,12 +168,14 @@ function Tokens(el, data, scales) {
     var images = HTMLWidgets.dataframeToD3(data.images);
     var opacities = HTMLWidgets.dataframeToD3(data.opacities);
 
-    var tokenShapes;
+    var tokenShapes = tokenGroup.selectAll("g")
+      .data(cases)
+      .enter()
+      .append("g")
+      .attr("class", "token");
+
     if (data.shape === "image") {
-      tokenShapes = tokenGroup.selectAll(data.shape)
-          		     .data(cases)
-          		     .enter()
-          		     .append(data.shape)
+      tokenShapes = tokenShapes.append(data.shape)
           		     .attr("width", 0)
           		     .attr("height", 0)
                    .attr("xlink:href", function(d) {
@@ -186,10 +191,7 @@ function Tokens(el, data, scales) {
                    })
                    .attr("preserveAspectRatio", "xMinYMin");
     } else if (data.shape === "rect") {
-      tokenShapes = tokenGroup.selectAll(data.shape)
-          		     .data(cases)
-          		     .enter()
-          		     .append(data.shape)
+      tokenShapes = tokenShapes.append(data.shape)
           		     .attr("transform", function(d) {
                       var size = sizes.filter(function(size) {
                         return(size.case == d);
@@ -199,10 +201,7 @@ function Tokens(el, data, scales) {
           		     .attr("stroke", "black")
           		     .attr("fill", "white");
     } else {
-      tokenShapes = tokenGroup.selectAll(data.shape)
-          		     .data(cases)
-          		     .enter()
-          		     .append(data.shape)
+      tokenShapes = tokenShapes.append(data.shape)
           		     .attr("stroke", "black")
           		     .attr("fill", "white");
     }
@@ -222,6 +221,7 @@ function Tokens(el, data, scales) {
 
     tokenShapes.each(function(d, i) {
 
+        var group = d3.select(this.parentNode);
         var tokenShape = d3.select(this);
         var caseTokens = tokens.filter(function(token) {
           return(token.case == d);
@@ -233,7 +233,7 @@ function Tokens(el, data, scales) {
           images: images.filter(function(x) { return(x.case === d); }),
           opacities: opacities.filter(function(x) { return(x.case === d); })
         };
-        insertAnimation(svg, tokenShape, caseTokens, customAttrs);
+        insertAnimation(svg, group, tokenShape, caseTokens, customAttrs);
 
     });
 

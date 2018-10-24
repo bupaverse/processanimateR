@@ -51,6 +51,9 @@ function RendererLeaflet(el, data) {
       selection.classed("graph", true);
 
       d3.select(svg)
+        .selectAll("defs")
+        .data(["header"])
+        .enter()
         .append("defs")
         // text background box and arrow marker
         .html('<filter x="-0.125" y="-0.125" width="1.25" height="1.25" id="box"> \
@@ -63,10 +66,15 @@ function RendererLeaflet(el, data) {
               <path d="M 0 0 L 10 5 L 0 10 z"/> \
             </marker>');
 
-      var actWrapper = selection.append("g")
+      var actWrapper = selection
+            .selectAll(".activities")
+            .data(["acts"])
+            .enter()
+            .append("g")
               .attr("class", "activities")
             .selectAll("g")
-            .data(nodes).enter()
+            .data(nodes)
+            .enter()
               // processmapR uses rectangles for activities
               .filter(function(d) { return d.shape === "rectangle"; })
             .append("g");
@@ -94,50 +102,74 @@ function RendererLeaflet(el, data) {
               .attr("x", 20)
               .attr("y", -8);
 
-      var startEndWrapper = selection.append("g")
-              .attr("class", "startend")
-            .selectAll('g')
-            .data(nodes).enter()
-              // processmapR uses rectangles for start/end
-              .filter(function(d) { return d.shape === "circle"; })
-            .append("g")
-              .attr("transform", function(d) {
-                  var point = projection.latLngToLayerPoint( L.latLng(d.lat, d.lng) );
-                  return "translate("+ point.x +","+ point.y +")";
-                })
-            .attr("class", "node")
-            .attr("id", function(d) { return "node"+d.id; })
-            .html(function(d) {
-              if (d.id === data.start_activity) {
-                return mapData.start_icon;
-              } else {
-                return mapData.end_icon;
-              }
-            });
+      var startEndWrapper = selection
+              .selectAll(".startend")
+              .data(["startend"])
+              .enter()
+              .append("g")
+                .attr("class", "startend")
+              .selectAll('g')
+              .data(nodes).enter()
+                // processmapR uses rectangles for start/end
+                .filter(function(d) { return d.shape === "circle"; })
+              .append("g")
+                .attr("transform", function(d) {
+                    var point = projection.latLngToLayerPoint( L.latLng(d.lat, d.lng) );
+                    return "translate("+ point.x +","+ point.y +")";
+                  })
+              .append("g")
+              .attr("class", "node")
+              .attr("id", function(d) { return "node"+d.id; })
+              .html(function(d) {
+                if (d.id === data.start_activity) {
+                  return mapData.start_icon;
+                } else {
+                  return mapData.end_icon;
+                }
+              });
 
       var lineFunction = d3.line()
             .x(function(d) { return projection.latLngToLayerPoint( L.latLng(d.lat, d.lng) ).x; })
             .y(function(d) { return projection.latLngToLayerPoint( L.latLng(d.lat, d.lng) ).y; })
             .curve(d3.curveNatural);
 
-      selection.append("g")
+      var edgeSel = selection
+        .selectAll(".edges")
+        .data(["edges"])
+        .enter()
+        .append("g")
           .attr("class", "edges")
         .selectAll('path')
-          .data(edges)
-          .enter()
-          .append('path')
-            .attr("d", function(d) { return lineFunction(d.path); })
-            .attr("fill", "none")
-            .attr("stroke", function(d) { return d.color; })
-            .attr("stroke-width", function(d) { return d.penwidth;  })
-            .attr("id", function(d) { return "edge" + d.id + "-path"; })
-            .attr("marker-end", "url(#arrow)")
-          // paint the edge a bit shorter than it actually is to have a smooth ending at the arrow tip
-          .each(function(d) { d.totalLength = this.getTotalLength(); })
-            .attr("stroke-dasharray", function(d) { return d.totalLength; })
-            .attr("stroke-dashoffset", function(d) { return 5; });
+          .data(edges);
 
-    }, { zoomDraw: false });
+      edgeSel.enter()
+              .append('path')
+              .attr("d", function(d) { return lineFunction(d.path); })
+              .attr("fill", "none")
+              .attr("stroke", function(d) { return d.color; })
+              .attr("stroke-width", function(d) { return d.penwidth;  })
+              .attr("id", function(d) { return "edge" + d.id + "-path"; })
+              .attr("marker-end", "url(#arrow)")
+              // paint the edge a bit shorter than it actually is to have a smooth ending at the arrow tip
+              .each(function(d) { d.totalLength = this.getTotalLength(); })
+                .attr("stroke-dasharray", function(d) { return d.totalLength; })
+                .attr("stroke-dashoffset", function(d) { return 5; });
+
+      // Update according to zoom level
+
+      selection.selectAll(".node")
+        .attr("transform", "scale(" + 1/projection.scale + ")");
+
+      selection.selectAll("text")
+        .attr("transform", "scale(" + 1/projection.scale + ")");
+
+      selection.selectAll(".edges > path")
+        .attr("stroke-width", function(d) { return d.penwidth / projection.scale;  });
+
+      selection.selectAll(".token")
+        .attr("transform", "scale(" + 1/projection.scale + ")");
+
+    }, { zoomDraw: true, zoomHide: true });
 
     d3Overlay.addTo(map);
 
