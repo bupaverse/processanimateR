@@ -41,12 +41,10 @@ function RendererLeaflet(el, data) {
 
     var d3Overlay = L.d3SvgOverlay(function(selection, projection) {
 
-      //TODO somehow adjust the level of detail to the zoom level
-      // - scale lines & icons
-
       var svg = selection.select(function() {
         return this.parentNode;
-      }).attr("pointer-events", "visiblePainted").node();
+      }).attr("pointer-events", "visiblePainted")
+        .node();
 
       selection.classed("graph", true);
 
@@ -83,7 +81,7 @@ function RendererLeaflet(el, data) {
             .attr("class", "node")
             .attr("id", function(d) { return "node"+d.id; })
             .attr("fill", function(d) { return d.fillcolor; })
-            .html(mapData.act_icon);
+            .html(mapData.icon_act);
 
       actWrapper.attr("transform", function(d) {
                 var point = projection.latLngToLayerPoint( L.latLng(d.lat, d.lng) );
@@ -122,9 +120,9 @@ function RendererLeaflet(el, data) {
               .attr("id", function(d) { return "node"+d.id; })
               .html(function(d) {
                 if (d.id === data.start_activity) {
-                  return mapData.start_icon;
+                  return mapData.icon_start;
                 } else {
-                  return mapData.end_icon;
+                  return mapData.icon_end;
                 }
               });
 
@@ -155,19 +153,22 @@ function RendererLeaflet(el, data) {
                 .attr("stroke-dasharray", function(d) { return d.totalLength; })
                 .attr("stroke-dashoffset", function(d) { return 5; });
 
-      // Update according to zoom level
+      // Update process map and animations according to zoom level
+
+      var scaleFactor = 1 / Math.max(mapData.scale_min, Math.min(mapData.scale_max, projection.scale));
 
       selection.selectAll(".node")
-        .attr("transform", "scale(" + 1/projection.scale + ")");
+        .attr("transform", "scale(" + scaleFactor + ")");
 
       selection.selectAll("text")
-        .attr("transform", "scale(" + 1/projection.scale + ")");
+        .attr("transform", "scale(" + scaleFactor + ")");
 
+      //TODO look at the strok-dashoffset property
       selection.selectAll(".edges > path")
-        .attr("stroke-width", function(d) { return d.penwidth / projection.scale;  });
+        .attr("stroke-width", function(d) { return d.penwidth * scaleFactor;  });
 
       selection.selectAll(".token")
-        .attr("transform", "scale(" + 1/projection.scale + ")");
+        .attr("transform", "scale(" + scaleFactor + ")");
 
     }, { zoomDraw: true, zoomHide: true });
 

@@ -31,9 +31,11 @@ renderer_graphviz <- function() {
 #' @param tile The URL to be used for the standard Leaflet TileLayer.
 #' @param options A named list of leaflet options, such as the center point of the map and the initial zoom level.
 #' @param grayscale Whether to apply a grayscale filter to the map.
-#' @param act_icon The SVG code used for the activity icon.
-#' @param start_icon The SVG code used for the start icon.
-#' @param end_icon The SVG code used for the end icon.
+#' @param icon_act The SVG code used for the activity icon.
+#' @param icon_start The SVG code used for the start icon.
+#' @param icon_end The SVG code used for the end icon.
+#' @param scale_max The maximum factor to be used to scale the process map with when zooming out.
+#' @param scale_min The minimum factor to be used to scale the process map with when zooming in.
 #'
 #' @return A rendering function to be used with \code{\link{animate_process}}
 #' @export
@@ -68,9 +70,11 @@ renderer_leaflet <- function(node_coordinates,
                          tile = "http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
                          options = list(),
                          grayscale = TRUE,
-                         act_icon = icon_marker(),
-                         start_icon = icon_circle(),
-                         end_icon = icon_circle()) {
+                         icon_act = icon_marker(),
+                         icon_start = icon_circle(),
+                         icon_end = icon_circle(),
+                         scale_max = 4,
+                         scale_min = 0.25) {
 
   # GraphViz colors are not understood by SVG
   colConv <- function(color) {
@@ -120,9 +124,11 @@ renderer_leaflet <- function(node_coordinates,
          "layer" = htmlwidgets::JS(layer),
          "options" = options,
          "grayscale" = grayscale,
-         "act_icon" = act_icon,
-         "start_icon" = start_icon,
-         "end_icon" = end_icon)
+         "icon_act" = icon_act,
+         "icon_start" = icon_start,
+         "icon_end" = icon_end,
+         "scale_max" = scale_max,
+         "scale_min" = scale_min)
   }
   attr(render, "name") <- "map"
 

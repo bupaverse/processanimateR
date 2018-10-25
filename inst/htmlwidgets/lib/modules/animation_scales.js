@@ -45,21 +45,33 @@ function Scales(el) {
 
     if (data.legend && !(data.colors_scale === "time" || data.sizes_scale === "time")) {
 
-      legendSvg = d3.select(svg).append("g")
+      legendSvg = d3.select(el).append("svg")
+        .attr("style", "position: absolute; top: 0; right: 0; z-index: 999;");
+
+      legendSvg.append("defs")
+        // text background box and arrow marker
+        .html('<filter x="-0.125" y="-0.125" width="1.25" height="1.25" id="box"> \
+                <feFlood flood-color="white" flood-opacity="0.7"/> \
+                <feComposite in="SourceGraphic" /> \
+              </filter>');
+
+      var legendGroup = legendSvg.append("g")
         .attr("class", "processanimater-legend")
-        .attr("style", "outline: thin solid black; outline-offset: 5px;");
+        .attr("style", "outline: thin solid black;")
+        .attr("filter", "url(#box)")
+        .attr("transform", "translate(20,25)");
 
       switch(data.legend) {
         case "color":
-          legendSvg.call(d3.legendColor().scale(this.colorScale).shape("circle").shapeRadius(6));
+          legendGroup.call(d3.legendColor().scale(this.colorScale).shape("circle").shapeRadius(6));
         break;
         case "size":
-          legendSvg.call(d3.legendSize().scale(this.sizeScale).shape("circle"));
+          legendGroup.call(d3.legendSize().scale(this.sizeScale).shape("circle"));
         break;
         default:
       }
 
-      legendSvg.attr("transform", "translate("+(width-legendSvg.node().getBBox().width-5)+","+15+")");
+      legendSvg.attr("width", legendGroup.node().getBBox().width + 25);
     }
 
   };
