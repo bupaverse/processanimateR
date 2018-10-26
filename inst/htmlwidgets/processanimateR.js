@@ -69,7 +69,6 @@ HTMLWidgets.widget({
           repeatAnimation(data, svg);
 
           renderer.resize(width, Math.max(0, height - slider.getHeight()));
-
         });
 
       },
@@ -78,7 +77,7 @@ HTMLWidgets.widget({
 
         if (renderer) {
           slider.renderSlider(renderer.getData(), renderer.getSvg(), width);
-          scales.renderLegend(renderer.getData(), renderer.getSvg(), width, height);
+          scales.resizeLegend(renderer.getSvg(), width, height);
           renderer.resize(width, Math.max(0, height - slider.getHeight()));
         }
 

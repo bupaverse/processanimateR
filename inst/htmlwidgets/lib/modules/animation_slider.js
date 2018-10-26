@@ -10,7 +10,7 @@ function Slider(el) {
 
   this.getHeight = function() {
     if (slider) {
-      return sheight - smargin.top - smargin.bottom;
+      return sheight + smargin.top + smargin.bottom;
     } else {
       return 0;
     }
