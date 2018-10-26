@@ -9,6 +9,10 @@ function Tokens(el, data, scales) {
     return (parseFloat(x) || 0).toFixed(6);
   }
 
+  function generateEdgeId(id) {
+    return el.id+"-edge" + id + "-path";
+  }
+
   function insertAnimation(svg, group, shape, caseTokens, customAttrs) {
 
     // group is moving
@@ -21,13 +25,13 @@ function Tokens(el, data, scales) {
     	.attr("fill", "freeze")
     	.attr("rotate", "auto")
       .append("mpath")
-        .attr("xlink:href", function(d) { return "#edge" + d.edge_id + "-path"; });
+        .attr("href", function(d) { return "#"+generateEdgeId(d.edge_id); });
 
     var startNode = svg.querySelector("#node"+data.start_activity+" * ellipse");
     var endNode = svg.querySelector("#node"+data.end_activity+" * ellipse");
 
     function getEdgePoint(id, length) {
-      var edge = svg.querySelector("#edge" + id + "-path");
+      var edge = svg.querySelector("#"+ generateEdgeId(id));
       var point;
       if (length === Infinity) {
         point = edge.getPointAtLength(edge.getTotalLength());

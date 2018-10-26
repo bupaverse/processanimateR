@@ -2,7 +2,7 @@
 % Please edit documentation in R/renderer.R
 \name{attribution_osm}
 \alias{attribution_osm}
-\title{Standard attribution advised for OpenStreetMap tiles.}
+\title{Standard attribution}
 \usage{
 attribution_osm()
 }
@@ -10,7 +10,7 @@ attribution_osm()
 The attribution character vector.
 }
 \description{
-Standard attribution advised for OpenStreetMap tiles.
+This is the standard attribution advised for OPenStreetMap tiles.
 }
 \examples{
 attribution_osm()

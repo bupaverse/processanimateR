@@ -1,5 +1,7 @@
 #' @title Render as a plain graph
 #'
+#' This renderer uses viz.js to render the process map using the DOT layout.
+#'
 #' @return A rendering function to be used with \code{\link{animate_process}}
 #' @export
 #'
@@ -24,6 +26,8 @@ renderer_graphviz <- function() {
 
 
 #' Render as graph on a geographical map
+#'
+#' This renderer uses Leaflet to draw the nodes and egdes of the process map on a geographical map.
 #'
 #' @param node_coordinates A data frame with node coordinates in the format `act`, `lat`, `lng`.
 #' @param edge_coordinates A data frame with additional edge coordinates in the format `act_from`, `act_to`, `lat`, `lng`.
@@ -135,7 +139,9 @@ renderer_leaflet <- function(node_coordinates,
   return(render)
 }
 
-#' Standard attribution advised for OpenStreetMap tiles.
+#' Standard attribution
+#'
+#' This is the standard attribution advised for OPenStreetMap tiles.
 #'
 #' @return The attribution character vector.
 #' @export
@@ -146,7 +152,9 @@ attribution_osm <- function() {
   return('&copy; <a href=\"https://www.openstreetmap.org/copyright\">OpenStreetMap</a> contributors');
 }
 
-#' Standard map marker based on Material Design (Apache 2.0 License): https://material.io/
+#' Standard map marker
+#'
+#' The marker is based on Material Design (Apache 2.0 License): https://material.io/
 #'
 #' @return SVG code for a map  marker.
 #' @export
@@ -159,7 +167,9 @@ icon_marker <- function() {
    <path d="M0 0h24v24H0z" fill="none"/></g>'
 }
 
-#' Standard circle marker based on Material Design (Apache 2.0 License): https://material.io/
+#' Standard circle marker
+#'
+#' The marker is based on Material Design (Apache 2.0 License): https://material.io/
 #'
 #' @return SVG code for a map  marker.
 #' @export

@@ -10,8 +10,9 @@ renderer_leaflet(node_coordinates, edge_coordinates = data.frame(act_from
   layer = c(paste0("new L.TileLayer('", tile, "',"),
   paste0("{ attribution : '", attribution_osm(), "'})")),
   tile = "http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-  options = list(), grayscale = TRUE, act_icon = icon_marker(),
-  start_icon = icon_circle(), end_icon = icon_circle())
+  options = list(), grayscale = TRUE, icon_act = icon_marker(),
+  icon_start = icon_circle(), icon_end = icon_circle(),
+  scale_max = 4, scale_min = 0.25)
 }
 \arguments{
 \item{node_coordinates}{A data frame with node coordinates in the format `act`, `lat`, `lng`.}
@@ -26,17 +27,21 @@ renderer_leaflet(node_coordinates, edge_coordinates = data.frame(act_from
 
 \item{grayscale}{Whether to apply a grayscale filter to the map.}
 
-\item{act_icon}{The SVG code used for the activity icon.}
+\item{icon_act}{The SVG code used for the activity icon.}
 
-\item{start_icon}{The SVG code used for the start icon.}
+\item{icon_start}{The SVG code used for the start icon.}
 
-\item{end_icon}{The SVG code used for the end icon.}
+\item{icon_end}{The SVG code used for the end icon.}
+
+\item{scale_max}{The maximum factor to be used to scale the process map with when zooming out.}
+
+\item{scale_min}{The minimum factor to be used to scale the process map with when zooming in.}
 }
 \value{
 A rendering function to be used with \code{\link{animate_process}}
 }
 \description{
-Render as graph on a geographical map
+This renderer uses Leaflet to draw the nodes and egdes of the process map on a geographical map.
 }
 \examples{
 data(example_log)

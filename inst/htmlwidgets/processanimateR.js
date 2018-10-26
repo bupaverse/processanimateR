@@ -63,10 +63,8 @@ HTMLWidgets.widget({
           var tokenGroup = tokens.insertTokens(svg);
           tokens.attachEventListeners(svg, tokenGroup);
 
-          //TODO legend relies on being direct sibling of SVG for positioning
-          scales.renderLegend(data, svg, width);
-
           slider.renderSlider(data, svg, width);
+          scales.renderLegend(data, svg, width, height);
 
           repeatAnimation(data, svg);
 
@@ -80,6 +78,7 @@ HTMLWidgets.widget({
 
         if (renderer) {
           slider.renderSlider(renderer.getData(), renderer.getSvg(), width);
+          scales.renderLegend(renderer.getData(), renderer.getSvg(), width, height);
           renderer.resize(width, Math.max(0, height - slider.getHeight()));
         }
 

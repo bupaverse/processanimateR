@@ -146,7 +146,7 @@ function RendererLeaflet(el, data) {
               .attr("fill", "none")
               .attr("stroke", function(d) { return d.color; })
               .attr("stroke-width", function(d) { return d.penwidth;  })
-              .attr("id", function(d) { return "edge" + d.id + "-path"; })
+              .attr("id", function(d) { return el.id + "-edge" + d.id + "-path"; })
               .attr("marker-end", "url(#arrow)")
               // paint the edge a bit shorter than it actually is to have a smooth ending at the arrow tip
               .each(function(d) { d.totalLength = this.getTotalLength(); })

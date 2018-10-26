@@ -58,11 +58,10 @@ animate_process(patients)
 Default token color, size, or image can be changed as follows:
 ```r
 animate_process(example_log, mapping = token_aes(size = token_scale(12), shape = "rect"))
-
 animate_process(example_log, mapping = token_aes(color = token_scale("red")))
 ```
 
-Tokens can also be assigned images, for example this Pacman GIF:
+Tokens can also be assigned images, for example:
 ```r
 animate_process(example_log,
    mapping = token_aes(shape = "image",
@@ -70,64 +69,11 @@ animate_process(example_log,
     image = token_scale("https://upload.wikimedia.org/wikipedia/en/5/5f/Pacman.gif")))
 ```
 
-Dynamic token colors or sizes based on event attributes can be configured. 
-Based on `ordinal` scales:
-```r
-library(RColorBrewer)
-animate_process(patients, 
-                legend = "color", 
-                mapping = token_aes(color = token_scale("employee", scale = "ordinal", range = RColorBrewer::brewer.pal(8, "Paired"))))
-```
-Based on `linear` scales:
-```r
-library(dplyr)
-library(bupaR)
-animate_process(sample_n(traffic_fines,1000) %>% filter_trace_frequency(percentage = 0.95),
-                mode = "relative",
-                legend = "color", 
-                mapping = token_aes(color = token_scale("amount", scale = "linear", range = c("yellow","red"))))
-```
-
-Based on `time` scales (no legend yet):
-```r
-animate_process(patients, 
-                legend = "color", 
-                mapping = token_aes(color = token_scale("time", scale = "time", range = c("blue","red"))))
-```
-
-It is also possible to use a secondary data frame to color the tokens irregardless of the event times. This can be useful if measurement are taken throughout a process, but the measurement event itself should not be included in the process map. For example, the lactic acid measurements of the `sepsis` data could be used in that way: 
-```r
-library(dplyr)
-library(bupaR)
-# Extract only the lacticacid measurements
-lactic <- sepsis %>%
-    mutate(lacticacid = as.numeric(lacticacid)) %>%
-    filter_activity(c("LacticAcid")) %>%
-    as.data.frame() %>%
-    select("case" = case_id, 
-            "time" =  timestamp, 
-            value = lacticacid) # format needs to be 'case,time,value'
-
-# Remove the measurement events from the sepsis log
-sepsisBase <- sepsis %>%
-    filter_activity(c("LacticAcid", "CRP", "Leucocytes", "Return ER",
-                      "IV Liquid", "IV Antibiotics"), reverse = T) %>%
-    filter_trace_frequency(percentage = 0.95)
-
-# Animate with the secondary data frame `lactic`
-animate_process(sepsisBase, 
-                mode = "relative", 
-                duration = 300,
-                legend = "color", 
-                mapping = token_aes(color = token_scale(lactic, scale = "linear", range = c("#fff5eb","#7f2704"))))
-```
-
-### More usage examples:
-* [Shiny application with processanimateR](articles/use-with-shiny.html)
-* [Use processanimateR selection as Shiny inputs](articles/use-shiny-selections.html)
+More advanced usage examples can be found [here](https://fmannhardt.github.io/processanimateR/articles/).
 
 ## Libraries Used
 This package makes use of the following libraries:
+
 * [bupaR](https://github.com/gertjanssenswillen/bupaR), for the base process mining functions in R.
 * [viz.js](https://github.com/mdaines/viz.js), for the GraphViz layout;
 * [d3](https://d3js.org), for SVG management;

@@ -32,7 +32,7 @@
 
 <meta property="og:title" content="Render as graph on a geographical map — renderer_leaflet" />
 
-<meta property="og:description" content="Render as graph on a geographical map" />
+<meta property="og:description" content="This renderer uses Leaflet to draw the nodes and egdes of the process map on a geographical map." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -84,7 +84,13 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
+      <a href="../articles/use-external-data-to-change-tokens.html">Use external data (process context) to change token aesthetics</a>
+    </li>
+    <li>
       <a href="../articles/use-shiny-selections.html">Use processanimateR selection as Shiny inputs</a>
+    </li>
+    <li>
+      <a href="../articles/use-token_scales.html">Use token scales</a>
     </li>
     <li>
       <a href="../articles/use-with-shiny.html">Use processanimateR and Shiny</a>
@@ -122,31 +128,19 @@
 
     <div class="ref-description">
     
-    <p>Render as graph on a geographical map</p>
+    <p>This renderer uses Leaflet to draw the nodes and egdes of the process map on a geographical map.</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>renderer_leaflet</span>(<span class='no'>node_coordinates</span>,
+    <pre class="usage"><span class='fu'>renderer_leaflet</span>(<span class='no'>node_coordinates</span>, <span class='kw'>edge_coordinates</span> <span class='kw'>=</span> <span class='fu'>data.frame</span>(<span class='kw'>act_from</span>
+  <span class='kw'>=</span> <span class='fu'>character</span>(<span class='fl'>0</span>), <span class='kw'>act_to</span> <span class='kw'>=</span> <span class='fu'>character</span>(<span class='fl'>0</span>), <span class='kw'>lat</span> <span class='kw'>=</span> <span class='fu'>numeric</span>(<span class='fl'>0</span>), <span class='kw'>lng</span> <span class='kw'>=</span>
+  <span class='fu'>numeric</span>(<span class='fl'>0</span>), <span class='kw'>stringsAsFactors</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>),
+  <span class='kw'>layer</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fu'>paste0</span>(<span class='st'>"new L.TileLayer('"</span>, <span class='no'>tile</span>, <span class='st'>"',"</span>),
+  <span class='fu'>paste0</span>(<span class='st'>"{ attribution : '"</span>, <span class='fu'><a href='attribution_osm.html'>attribution_osm</a></span>(), <span class='st'>"'})"</span>)),
   <span class='kw'>tile</span> <span class='kw'>=</span> <span class='st'>"http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"</span>,
-  <span class='kw'>center</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>37.8</span>, -<span class='fl'>96.9</span>), <span class='kw'>zoom</span> <span class='kw'>=</span> <span class='fl'>4</span>, <span class='kw'>grayscale</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>act_icon</span> <span class='kw'>=</span> <span class='fu'>paste0</span>(<span class='st'>"&lt;g transform=\"translate(-12,-22)\"&gt;"</span>,
-  <span class='st'>"&lt;path d=\"M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 "</span>,
-  <span class='st'>"7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 "</span>,
-  <span class='st'>"0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 "</span>,
-  <span class='st'>"2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z\"/&gt;"</span>,
-  <span class='st'>"&lt;path d=\"M0 0h24v24H0z\" fill=\"none\"/&gt;&lt;/g&gt;"</span>),
-  <span class='kw'>start_icon</span> <span class='kw'>=</span> <span class='fu'>paste0</span>(<span class='st'>"&lt;g transform=\"translate(-12,-12)\"&gt;"</span>,
-  <span class='st'>"&lt;path fill=\"none\" d=\"M0 0h24v24H0z\"/&gt;"</span>,
-  <span class='st'>"&lt;path d=\"M2 12C2 6.48 6.48 2 12 2s10 4.48 10 10-4.48 10-10 "</span>,
-  <span class='st'>"10S2 17.52 2 12zm10 6c3.31 0 6-2.69 6-6s-2.69-6-6-6-6 "</span>,
-  <span class='st'>"2.69-6 6 2.69 6 6 6z\"/&gt;"</span>,
-  <span class='st'>"&lt;path fill=\"none\" d=\"M0 0h24v24H0z\"/&gt;&lt;/g&gt;"</span>),
-  <span class='kw'>end_icon</span> <span class='kw'>=</span> <span class='fu'>paste0</span>(<span class='st'>"&lt;g transform=\"translate(-12,-12)\"&gt;"</span>,
-  <span class='st'>"&lt;path fill=\"none\" d=\"M0 0h24v24H0z\"/&gt;"</span>,
-  <span class='st'>"&lt;path d=\"M2 12C2 6.48 6.48 2 12 2s10 4.48 10 10-4.48 10-10 "</span>,
-  <span class='st'>"10S2 17.52 2 12zm10 6c3.31 0 6-2.69 6-6s-2.69-6-6-6-6 "</span>,
-  <span class='st'>"2.69-6 6 2.69 6 6 6z\"/&gt;"</span>,
-  <span class='st'>"&lt;path fill=\"none\" d=\"M0 0h24v24H0z\"/&gt;&lt;/g&gt;"</span>))</pre>
+  <span class='kw'>options</span> <span class='kw'>=</span> <span class='fu'>list</span>(), <span class='kw'>grayscale</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>icon_act</span> <span class='kw'>=</span> <span class='fu'><a href='icon_marker.html'>icon_marker</a></span>(),
+  <span class='kw'>icon_start</span> <span class='kw'>=</span> <span class='fu'><a href='icon_circle.html'>icon_circle</a></span>(), <span class='kw'>icon_end</span> <span class='kw'>=</span> <span class='fu'><a href='icon_circle.html'>icon_circle</a></span>(),
+  <span class='kw'>scale_max</span> <span class='kw'>=</span> <span class='fl'>4</span>, <span class='kw'>scale_min</span> <span class='kw'>=</span> <span class='fl'>0.25</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -156,32 +150,44 @@
       <td><p>A data frame with node coordinates in the format `act`, `lat`, `lng`.</p></td>
     </tr>
     <tr>
+      <th>edge_coordinates</th>
+      <td><p>A data frame with additional edge coordinates in the format `act_from`, `act_to`, `lat`, `lng`.</p></td>
+    </tr>
+    <tr>
+      <th>layer</th>
+      <td><p>The JavaScript code used to create a Leaflet layer. A TileLayer is used as default value.</p></td>
+    </tr>
+    <tr>
       <th>tile</th>
-      <td><p>The URL to be used for the Leaflet TileLayer.</p></td>
+      <td><p>The URL to be used for the standard Leaflet TileLayer.</p></td>
     </tr>
     <tr>
-      <th>center</th>
-      <td><p>The latitude and longitude of the initial center of the map.</p></td>
-    </tr>
-    <tr>
-      <th>zoom</th>
-      <td><p>The initial zoom level.</p></td>
+      <th>options</th>
+      <td><p>A named list of leaflet options, such as the center point of the map and the initial zoom level.</p></td>
     </tr>
     <tr>
       <th>grayscale</th>
       <td><p>Whether to apply a grayscale filter to the map.</p></td>
     </tr>
     <tr>
-      <th>act_icon</th>
+      <th>icon_act</th>
       <td><p>The SVG code used for the activity icon.</p></td>
     </tr>
     <tr>
-      <th>start_icon</th>
+      <th>icon_start</th>
       <td><p>The SVG code used for the start icon.</p></td>
     </tr>
     <tr>
-      <th>end_icon</th>
+      <th>icon_end</th>
       <td><p>The SVG code used for the end icon.</p></td>
+    </tr>
+    <tr>
+      <th>scale_max</th>
+      <td><p>The maximum factor to be used to scale the process map with when zooming out.</p></td>
+    </tr>
+    <tr>
+      <th>scale_min</th>
+      <td><p>The minimum factor to be used to scale the process map with when zooming in.</p></td>
     </tr>
     </table>
     
@@ -201,11 +207,17 @@
 <span class='fu'><a href='animate_process.html'>animate_process</a></span>(<span class='no'>example_log</span>,
   <span class='kw'>renderer</span> <span class='kw'>=</span> <span class='fu'>renderer_leaflet</span>(
     <span class='kw'>node_coordinates</span> <span class='kw'>=</span> <span class='fu'>data.frame</span>(
-      <span class='kw'>act</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"A"</span>, <span class='st'>"B"</span>, <span class='st'>"C"</span>, <span class='st'>"D"</span>, <span class='st'>"Start"</span>, <span class='st'>"End"</span>),
-      <span class='kw'>lat</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>63.44</span>, <span class='fl'>63.43</span>, <span class='fl'>63.435</span>, <span class='fl'>63.45</span>, <span class='fl'>63.44</span>, <span class='fl'>63.44</span>),
-      <span class='kw'>lng</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>10.45</span>, <span class='fl'>10.47</span>, <span class='fl'>10.49</span>, <span class='fl'>10.48</span>, <span class='fl'>10.43</span>, <span class='fl'>10.51</span>), <span class='kw'>stringsAsFactors</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>),
-      <span class='kw'>center</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>63.447112</span>, <span class='fl'>10.451175</span>),
-      <span class='kw'>zoom</span> <span class='kw'>=</span> <span class='fl'>13</span>),
+       <span class='kw'>act</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"A"</span>, <span class='st'>"B"</span>, <span class='st'>"C"</span>, <span class='st'>"D"</span>, <span class='st'>"Start"</span>, <span class='st'>"End"</span>),
+       <span class='kw'>lat</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>63.443680</span>, <span class='fl'>63.426925</span>, <span class='fl'>63.409207</span>, <span class='fl'>63.422336</span>, <span class='fl'>63.450950</span>, <span class='fl'>63.419706</span>),
+       <span class='kw'>lng</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>10.383625</span>, <span class='fl'>10.396972</span>, <span class='fl'>10.406418</span>, <span class='fl'>10.432119</span>, <span class='fl'>10.383368</span>, <span class='fl'>10.252347</span>),
+       <span class='kw'>stringsAsFactors</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>),
+    <span class='kw'>edge_coordinates</span> <span class='kw'>=</span> <span class='fu'>data.frame</span>(
+       <span class='kw'>act_from</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"B"</span>),
+       <span class='kw'>act_to</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"C"</span>),
+       <span class='kw'>lat</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>63.419207</span>),
+       <span class='kw'>lng</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>10.386418</span>),
+       <span class='kw'>stringsAsFactors</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>),
+    <span class='kw'>options</span> <span class='kw'>=</span> <span class='fu'>list</span>(<span class='kw'>center</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>63.412273</span>, <span class='fl'>10.399590</span>), <span class='kw'>zoom</span> <span class='kw'>=</span> <span class='fl'>12</span>)),
   <span class='kw'>duration</span> <span class='kw'>=</span> <span class='fl'>5</span>, <span class='kw'>repeat_count</span> <span class='kw'>=</span> <span class='fl'>Inf</span>)</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">

@@ -9,13 +9,21 @@ function Scales(el) {
 
   this.update = function(data) {
 
-    // Fix data type for dates
-    if (data.colors_scale === "time") {
+    // Workaround for data type for dates
+    if (data.colors_scale.scale === "time") {
       data.colors.value = data.colors.value.map(function(x) { return moment(x).toDate(); });
     }
 
-    if (data.sizes_scale === "time") {
+    if (data.sizes_scale.scale === "time") {
       data.sizes.value = data.sizes.value.map(function(x) { return moment(x).toDate(); });
+    }
+
+    if (data.opacities_scale.scale === "time") {
+      data.opacities.value = data.opacities.value.map(function(x) { return moment(x).toDate(); });
+    }
+
+    if (data.images_scale.scale === "time") {
+      data.images.value = data.images.value.map(function(x) { return moment(x).toDate(); });
     }
 
     this.colorScale = buildScale(data.colors_scale,
@@ -36,22 +44,16 @@ function Scales(el) {
 
   };
 
-  this.renderLegend = function(data, svg, width) {
+  this.renderLegend = function(data, svg, width, height) {
 
-    // Clean-up
-    if (legendSvg) {
-      legendSvg.remove();
-    }
+    if (!legendSvg && data.legend && !(data.colors_scale === "time" || data.sizes_scale === "time")) {
 
-    if (data.legend && !(data.colors_scale === "time" || data.sizes_scale === "time")) {
-
-      legendSvg = d3.select(el).append("svg")
-        .attr("style", "position: absolute; top: 0; right: 0; z-index: 999;");
+      legendSvg = d3.select(el).append("svg");
 
       legendSvg.append("defs")
         // text background box and arrow marker
-        .html('<filter x="-0.125" y="-0.125" width="1.25" height="1.25" id="box"> \
-                <feFlood flood-color="white" flood-opacity="0.7"/> \
+        .html('<filter x="-0.125" y="-0.05" width="1.25" height="1.1" id="box"> \
+                <feFlood flood-color="white" flood-opacity="0.8"/> \
                 <feComposite in="SourceGraphic" /> \
               </filter>');
 
@@ -72,6 +74,11 @@ function Scales(el) {
       }
 
       legendSvg.attr("width", legendGroup.node().getBBox().width + 25);
+    }
+
+    // Only adjust position on re-render
+    if (legendSvg) {
+      legendSvg.attr("style", "position: relative; bottom: "+height+"; left: "+(width - legendSvg.attr("width")) +"; z-index: 999;");
     }
 
   };

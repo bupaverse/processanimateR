@@ -19,7 +19,8 @@ function RendererGraphviz(el, data) {
       	var id = edges[i].id;
       	var paths = edges[i].getElementsByTagName("path");
       	for(var j = 0; j < paths.length; j++) {
-      		paths[j].id = id + "-path";
+      	  //TODO refactor!!
+      		paths[j].id = el.id + "-" + id + "-path";
       	}
       }
     }

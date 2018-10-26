@@ -184,6 +184,9 @@ animate_process <- function(eventlog, processmap = process_map(eventlog, render 
                             sizingPolicy = htmlwidgets::sizingPolicy(
                               defaultWidth = 800,
                               defaultHeight = 600,
+                              knitr.figure = FALSE,
+                              knitr.defaultWidth = 700,
+                              knitr.defaultHeight = 400,
                               browser.fill = TRUE
                             ),
                             preRenderHook = preRenderHook)

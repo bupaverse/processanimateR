@@ -2,6 +2,8 @@ pandoc: 2.2.1
 pkgdown: 1.1.0
 pkgdown_sha: ~
 articles:
+  use-external-data-to-change-tokens: use-external-data-to-change-tokens.html
   use-shiny-selections: use-shiny-selections.html
+  use-token_scales: use-token_scales.html
   use-with-shiny: use-with-shiny.html
 

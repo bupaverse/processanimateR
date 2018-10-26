@@ -2,7 +2,7 @@
 % Please edit documentation in R/renderer.R
 \name{icon_marker}
 \alias{icon_marker}
-\title{Standard map marker based on Material Design (Apache 2.0 License): https://material.io/}
+\title{Standard map marker}
 \usage{
 icon_marker()
 }
@@ -10,7 +10,7 @@ icon_marker()
 SVG code for a map  marker.
 }
 \description{
-Standard map marker based on Material Design (Apache 2.0 License): https://material.io/
+The marker is based on Material Design (Apache 2.0 License): https://material.io/
 }
 \examples{
 icon_marker()
