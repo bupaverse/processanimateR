@@ -46,10 +46,8 @@ token_aes <- function(size = token_scale(),
                       color = token_scale(),
                       image = token_scale(),
                       opacity = token_scale(),
-                      shape = c("circle","rect","image"),
+                      shape = "circle",
                       attributes = list()) {
-
-  shape <- match.arg(shape)
 
   return(c(as.list(environment())))
 

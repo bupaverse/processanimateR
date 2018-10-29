@@ -15,6 +15,7 @@
 #' @param legend Whether to show a legend for the `size` or the `color`` scale.
 #' @param repeat_count The number of times the process animation is repeated.
 #' @param repeat_delay The seconds to wait before one repetition of the animation.
+#' @param epsilon_time A (small) time to be added to every animation to ensure that tokens are visible.
 #' @param mapping An aesthetic mapping from event log attributes to certain visual parameters of the tokens.
 #'  Use \code{\link{token_aes}} to create the mapping `list`.
 #' @param token_callback_onclick A JavaScript function that is called when a token is clicked.
@@ -59,6 +60,7 @@ animate_process <- function(eventlog, processmap = process_map(eventlog, render 
                             legend = NULL,
                             repeat_count = 1,
                             repeat_delay = 0.5,
+                            epsilon_time = 0.0001,
                             mapping = token_aes(),
                             token_callback_onclick = c("function(svg_root, svg_element, case_id) {","}"),
                             token_callback_select = token_select_decoration(),
@@ -78,6 +80,7 @@ animate_process <- function(eventlog, processmap = process_map(eventlog, render 
   case_start <- log_end <- start_time <- end_time <- next_end_time <- next_start_time <- NULL
   case <- case_end <- log_start <- log_duration <- case_duration <- from_id <- to_id <- NULL
   label <- act <- NULL
+  token_start <- token_end <- activity_duration <- token_duration <- NULL
 
   mode <- match.arg(mode)
 
@@ -105,6 +108,17 @@ animate_process <- function(eventlog, processmap = process_map(eventlog, render 
       a_factor =  timeline_end / duration
     }
 
+    tokens <- generate_tokens(cases, precedence, processmap, mode, a_factor,
+                              timeline_start, timeline_end, epsilon_time)
+
+    adjust <- max(tokens$token_end) / duration
+
+    tokens <- tokens %>%
+      mutate(token_start = token_start / adjust,
+             token_duration = token_duration / adjust,
+             activity_duration = activity_duration / adjust) %>%
+      select(-token_end)
+
     sizes <- generate_animation_attribute(eventlog, mapping$size$attribute, 6)
     sizes <- transform_time(sizes, cases, mode, a_factor, timeline_start, timeline_end)
 
@@ -115,13 +129,11 @@ animate_process <- function(eventlog, processmap = process_map(eventlog, render 
     images <- transform_time(images, cases, mode, a_factor, timeline_start, timeline_end)
 
     if (mapping$shape == "image" && nrow(images) == 0) {
-      stop("Need to supply image URLs in parameter 'token_images' to use shape 'image'.");
+      stop("Need to supply image URLs in parameter 'mapping' to use shape 'image'.");
     }
 
     opacities <- generate_animation_attribute(eventlog, mapping$opacity$attribute, 0.9)
     opacities <- transform_time(opacities, cases, mode, a_factor, timeline_start, timeline_end)
-
-    tokens <- generate_tokens(cases, precedence, processmap, mode, a_factor, timeline_start, timeline_end)
 
   } else {
     # No animation mode, for using activity selection features only
@@ -139,7 +151,11 @@ animate_process <- function(eventlog, processmap = process_map(eventlog, render 
 
   start_activity <- processmap$nodes_df %>% filter(label == "Start") %>% pull(id)
   end_activity <- processmap$nodes_df %>% filter(label == "End") %>% pull(id)
-  activities <- precedence %>% select(act, id = from_id) %>% stats::na.omit() %>% distinct() %>% arrange(id)
+  activities <- precedence %>%
+    select(act, id = from_id) %>%
+    stats::na.omit() %>%
+    distinct() %>%
+    arrange(id)
 
   # actually render the process
   rendered_process <- renderer(processmap, width, height)
@@ -223,7 +239,10 @@ renderProcessanimater <- function(expr, env = parent.frame(), quoted = FALSE) {
 # Private helper functions
 #
 
-generate_tokens <- function(cases, precedence, processmap, mode, a_factor, timeline_start, timeline_end) {
+generate_tokens <- function(cases, precedence, processmap, mode, a_factor,
+                            timeline_start, timeline_end,
+                            # SVG animations seem to not like events starting at the same time caused by 0s durations
+                            epsilon = 0.00001) {
 
   case <- end_time <- start_time <- next_end_time <- next_start_time <- case_start <- token_duration <- NULL
   min_order <- token_start <- activity_duration <- token_end <- from_id <- to_id <- case_duration <- NULL
@@ -232,9 +251,6 @@ generate_tokens <- function(cases, precedence, processmap, mode, a_factor, timel
     left_join(cases, by = c("case")) %>%
     left_join(processmap$edges_df, by = c("from_id" = "from", "to_id" = "to")) %>%
     filter(!is.na(id) & !is.na(case))
-
-  # SVG animations seem to not like events starting at the same time caused by 0s durations
-  EPSILON = 0.00001
 
   if (mode == "absolute") {
     tokens <- mutate(tokens,
@@ -252,17 +268,15 @@ generate_tokens <- function(cases, precedence, processmap, mode, a_factor, timel
     # Filter all negative durations caused by parallelism (TODO, deal with it in a better way)
     # Also, SMIL does not like 0 duration animateMotion
     filter(token_duration >= 0, activity_duration >= 0) %>%
-    mutate(token_duration = EPSILON + token_duration,
-           activity_duration = EPSILON + activity_duration) %>%
+    mutate(token_duration = epsilon + token_duration,
+           activity_duration = epsilon + activity_duration) %>%
     arrange(case, start_time, min_order) %>%
     group_by(case) %>%
     # Ensure start times are not overlapping SMIL does not fancy this
-    mutate(token_start = token_start + ((row_number(token_start) - min_rank(token_start)) * EPSILON)) %>%
-    # Ensure consecutive start times
-    mutate(token_end = min(token_start) + cumsum(token_duration + activity_duration) + EPSILON) %>%
+    mutate(token_start = token_start + ((row_number(token_start) - min_rank(token_start)) * epsilon)) %>%
+    # Ensure consecutive start times, this epsilon just needs to be small
+    mutate(token_end = min(token_start) + cumsum(token_duration + activity_duration) + 0.000001) %>%
     mutate(token_start = lag(token_end, default = min(token_start))) %>%
-    # Adjust case duration
-    mutate(case_duration = max(token_end)) %>%
     ungroup()
 
   tokens %>%
@@ -270,7 +284,8 @@ generate_tokens <- function(cases, precedence, processmap, mode, a_factor, timel
            edge_id = id,
            token_start,
            token_duration,
-           activity_duration)
+           activity_duration,
+           token_end)
 
 }
 

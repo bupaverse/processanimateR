@@ -8,7 +8,7 @@ animate_process(eventlog, processmap = process_map(eventlog, render = F,
   ...), renderer = renderer_graphviz(), mode = c("absolute",
   "relative", "off"), duration = 60, jitter = 0, timeline = TRUE,
   legend = NULL, repeat_count = 1, repeat_delay = 0.5,
-  mapping = token_aes(),
+  epsilon_time = 1e-04, mapping = token_aes(),
   token_callback_onclick = c("function(svg_root, svg_element, case_id) {",
   "}"), token_callback_select = token_select_decoration(),
   activity_callback_onclick = c("function(svg_root, svg_element, activity_id) {",
@@ -39,6 +39,8 @@ Adding jitter can help to disambiguate tokens traveling on top of each other.}
 \item{repeat_count}{The number of times the process animation is repeated.}
 
 \item{repeat_delay}{The seconds to wait before one repetition of the animation.}
+
+\item{epsilon_time}{A (small) time to be added to every animation to ensure that tokens are visible.}
 
 \item{mapping}{An aesthetic mapping from event log attributes to certain visual parameters of the tokens.
 Use \code{\link{token_aes}} to create the mapping `list`.}

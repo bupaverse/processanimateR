@@ -29,3 +29,4 @@ export { line,
   curveMonotoneY, 
   curveNatural,
   curveStep } from "d3-shape";
+export {transform } from "d3-transform";
