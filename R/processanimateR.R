@@ -60,7 +60,7 @@ animate_process <- function(eventlog, processmap = process_map(eventlog, render 
                             legend = NULL,
                             repeat_count = 1,
                             repeat_delay = 0.5,
-                            epsilon_time = 0.0001,
+                            epsilon_time = duration / 1000,
                             mapping = token_aes(),
                             token_callback_onclick = c("function(svg_root, svg_element, case_id) {","}"),
                             token_callback_select = token_select_decoration(),
@@ -240,9 +240,7 @@ renderProcessanimater <- function(expr, env = parent.frame(), quoted = FALSE) {
 #
 
 generate_tokens <- function(cases, precedence, processmap, mode, a_factor,
-                            timeline_start, timeline_end,
-                            # SVG animations seem to not like events starting at the same time caused by 0s durations
-                            epsilon = 0.00001) {
+                            timeline_start, timeline_end, epsilon) {
 
   case <- end_time <- start_time <- next_end_time <- next_start_time <- case_start <- token_duration <- NULL
   min_order <- token_start <- activity_duration <- token_end <- from_id <- to_id <- case_duration <- NULL
@@ -265,9 +263,10 @@ generate_tokens <- function(cases, precedence, processmap, mode, a_factor,
   }
 
   tokens <- tokens %>%
-    # Filter all negative durations caused by parallelism (TODO, deal with it in a better way)
-    # Also, SMIL does not like 0 duration animateMotion
+    # TODO improve handling of parallelism
+    # Filter all negative durations caused by parallelism
     filter(token_duration >= 0, activity_duration >= 0) %>%
+    # SVG animations seem to not like events starting at the same time caused by 0s durations
     mutate(token_duration = epsilon + token_duration,
            activity_duration = epsilon + activity_duration) %>%
     arrange(case, start_time, min_order) %>%
