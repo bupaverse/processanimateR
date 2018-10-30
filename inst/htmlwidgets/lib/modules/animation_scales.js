@@ -82,7 +82,7 @@ function Scales(el) {
 
   this.resizeLegend = function(svg, width, height) {
     if (legendSvg) {
-      legendSvg.attr("style", "position: relative; bottom: "+height+"; left: "+(width - legendSvg.attr("width")) +"; z-index: 999;");
+      legendSvg.attr("style", "position: relative; bottom: "+height+"px; left: "+(width - legendSvg.attr("width")) +"px; z-index: 999;");
       el.insertBefore(legendSvg.node(), null); // keep as last child!
     }
   };
