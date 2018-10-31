@@ -61,7 +61,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">processanimateR</a>
-        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.2.0</span>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.3.1</span>
       </span>
     </div>
 
@@ -83,6 +83,9 @@
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../articles/use-shiny-selections.html">Use processanimateR selection as Shiny inputs</a>
+    </li>
     <li>
       <a href="../articles/use-with-shiny.html">Use processanimateR and Shiny</a>
     </li>
@@ -121,11 +124,22 @@
     </div>
 
     <pre class="usage"><span class='fu'>animate_process</span>(<span class='no'>eventlog</span>, <span class='kw'>processmap</span> <span class='kw'>=</span> <span class='fu'>process_map</span>(<span class='no'>eventlog</span>, <span class='kw'>render</span> <span class='kw'>=</span> <span class='no'>F</span>,
-  <span class='no'>...</span>), <span class='kw'>animation_mode</span> <span class='kw'>=</span> <span class='st'>"absolute"</span>, <span class='kw'>animation_duration</span> <span class='kw'>=</span> <span class='fl'>60</span>,
-  <span class='kw'>animation_jitter</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>animation_timeline</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>token_size</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>token_color</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>token_image</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>token_opacity</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>token_shape</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"circle"</span>, <span class='st'>"rect"</span>), <span class='kw'>token_options</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>width</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>height</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)</pre>
+  <span class='no'>...</span>), <span class='kw'>animation_mode</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"absolute"</span>, <span class='st'>"relative"</span>, <span class='st'>"off"</span>),
+  <span class='kw'>animation_duration</span> <span class='kw'>=</span> <span class='fl'>60</span>, <span class='kw'>animation_jitter</span> <span class='kw'>=</span> <span class='fl'>0</span>,
+  <span class='kw'>animation_timeline</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>animation_legend</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>token_size</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>token_size_scale</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"identity"</span>, <span class='st'>"linear"</span>, <span class='st'>"sqrt"</span>,
+  <span class='st'>"log"</span>, <span class='st'>"quantize"</span>, <span class='st'>"ordinal"</span>, <span class='st'>"time"</span>), <span class='kw'>token_size_scale_domain</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>token_size_scale_range</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>token_color</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>token_color_scale</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"identity"</span>, <span class='st'>"linear"</span>, <span class='st'>"sqrt"</span>, <span class='st'>"log"</span>, <span class='st'>"quantize"</span>,
+  <span class='st'>"ordinal"</span>, <span class='st'>"time"</span>), <span class='kw'>token_color_scale_domain</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>token_color_scale_range</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>token_image</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>token_opacity</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>token_shape</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"circle"</span>, <span class='st'>"rect"</span>, <span class='st'>"image"</span>),
+  <span class='kw'>token_attributes</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>token_callback_onclick</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"function(svg_root, svg_element, case_id) {"</span>,
+  <span class='st'>"}"</span>),
+  <span class='kw'>activity_callback_onclick</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"function(svg_root, svg_element, activity_id) {"</span>,
+  <span class='st'>"}"</span>), <span class='kw'>elementId</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>preRenderHook</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>width</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>height</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -156,14 +170,42 @@ if not provided a standard process map will be generated by using processmapR::p
       <td><p>Whether to render a timeline slider in supported browsers (Recent versions of Chrome and Firefox only).</p></td>
     </tr>
     <tr>
+      <th>animation_legend</th>
+      <td><p>Whether to show a legend for the 'size' or the 'color' scale.</p></td>
+    </tr>
+    <tr>
       <th>token_size</th>
       <td><p>The event attribute (character) or alternatively a data frame with three columns (case, time, size) matching the case identifier of the supplied event log.
 The token size is scaled accordingly during the animation (default size is 4). You may use <code><a href='add_token_size.html'>add_token_size</a></code> to add a suitable attribute to the event log.</p></td>
     </tr>
     <tr>
+      <th>token_size_scale</th>
+      <td><p>Which D3 scale function to use for generating the size scale.</p></td>
+    </tr>
+    <tr>
+      <th>token_size_scale_domain</th>
+      <td><p>The domain of the D3 scale function. Can be left NULL in which case it will be automatically determined.</p></td>
+    </tr>
+    <tr>
+      <th>token_size_scale_range</th>
+      <td><p>The range of the D3 scale function. Should be a vector of two or more numerical values.</p></td>
+    </tr>
+    <tr>
       <th>token_color</th>
       <td><p>The event attribute (character) or alternatively a data frame with three columns (case, time, color) matching the case identifier of the supplied event log.
 The token color is change accordingly during the animation (default color is orange). You may use <code><a href='add_token_color.html'>add_token_color</a></code> to add a suitable attribute to the event log.</p></td>
+    </tr>
+    <tr>
+      <th>token_color_scale</th>
+      <td><p>Which D3 scale function to use for generating the color scale.</p></td>
+    </tr>
+    <tr>
+      <th>token_color_scale_domain</th>
+      <td><p>The domain of the D3 scale function. Can be left NULL in which case it will be automatically determined.</p></td>
+    </tr>
+    <tr>
+      <th>token_color_scale_range</th>
+      <td><p>The range of the D3 scale function. Should be a vector of two or more numerical values.</p></td>
     </tr>
     <tr>
       <th>token_image</th>
@@ -173,15 +215,31 @@ The token image is change accordingly during the animation (by default a SVG sha
     <tr>
       <th>token_opacity</th>
       <td><p>The event attribute (character) or alternatively a data frame with three columns (case, time, transparency) matching the case identifier of the supplied event log.
-The token fill-opacity is change accordingly during the animation (by default the token is dranw with 0.9 opacity).</p></td>
+The token fill-opacity is change accordingly during the animation (by default the token is drawn with 0.9 opacity).</p></td>
     </tr>
     <tr>
       <th>token_shape</th>
-      <td><p>The (fixed) SVG shape to be used to draw tokens. Can be either 'circle' (default) or 'rect'.</p></td>
+      <td><p>The (fixed) SVG shape to be used to draw tokens. Can be either 'circle' (default), 'rect' or 'image'. In the latter case the image URL needs to be specified as parameter 'token_image'.</p></td>
     </tr>
     <tr>
-      <th>token_options</th>
-      <td><p>A list of additional (fixed) SVG properties to be added to each token.</p></td>
+      <th>token_attributes</th>
+      <td><p>A list of additional (fixed) SVG attributes to be added to each token.</p></td>
+    </tr>
+    <tr>
+      <th>token_callback_onclick</th>
+      <td><p>A javascript function that is called when a token is clicked. The function is parsed by <code>JS</code> and received three parameters: 'svg_root', 'svg_element', and 'case_id'.</p></td>
+    </tr>
+    <tr>
+      <th>activity_callback_onclick</th>
+      <td><p>A javascript function that is called when an activity is clicked. The function is parsed by <code>JS</code> and received three parameters: 'svg_root', 'svg_element', and 'activity_id'.</p></td>
+    </tr>
+    <tr>
+      <th>elementId</th>
+      <td><p>passed through to <code>createWidget</code>. A custom elementId is useful to capture the selection events via input$elementId_tokens and input$elementId_activities when used in Shiny.</p></td>
+    </tr>
+    <tr>
+      <th>preRenderHook</th>
+      <td><p>passed through to <code>createWidget</code>.</p></td>
     </tr>
     <tr>
       <th>width, height</th>
@@ -199,60 +257,61 @@ The token fill-opacity is change accordingly during the animation (by default th
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'># Load example event log</span>
-<span class='fu'>library</span>(<span class='no'>eventdataR</span>)
+    <pre class="examples"><div class='input'><span class='co'># Create small example event log</span>
+<span class='fu'>library</span>(<span class='no'>bupaR</span>)</div><div class='output co'>#&gt; <span class='message'>Loading required package: edeaR</span></div><div class='output co'>#&gt; <span class='message'>Loading required package: processmapR</span></div><div class='output co'>#&gt; <span class='message'>Loading required package: xesreadR</span></div><div class='output co'>#&gt; <span class='message'>Loading required package: processmonitR</span></div><div class='output co'>#&gt; <span class='message'>Loading required package: petrinetR</span></div><div class='output co'>#&gt; <span class='message'></span>
+#&gt; <span class='message'>Attaching package: 'bupaR'</span></div><div class='output co'>#&gt; <span class='message'>The following object is masked from 'package:stats':</span>
+#&gt; <span class='message'></span>
+#&gt; <span class='message'>    filter</span></div><div class='output co'>#&gt; <span class='message'>The following object is masked from 'package:utils':</span>
+#&gt; <span class='message'></span>
+#&gt; <span class='message'>    timestamp</span></div><div class='input'><span class='no'>example_log</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>bupaR</span><span class='kw ns'>::</span><span class='fu'><a href='http://www.rdocumentation.org/packages/bupaR/topics/eventlog'>eventlog</a></span>(
+                 <span class='kw'>eventlog</span> <span class='kw'>=</span> <span class='fu'>data.frame</span>(
+                   <span class='kw'>case</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fu'>rep</span>(<span class='fl'>1</span>,<span class='fl'>6</span>),<span class='fu'>rep</span>(<span class='fl'>2</span>,<span class='fl'>6</span>),<span class='fu'>rep</span>(<span class='fl'>3</span>,<span class='fl'>8</span>)),
+                   <span class='kw'>act</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fu'>rep</span>(<span class='fu'>c</span>(<span class='st'>"A"</span>,<span class='st'>"A"</span>,<span class='st'>"B"</span>,<span class='st'>"B"</span>,<span class='st'>"C"</span>,<span class='st'>"C"</span>),<span class='fl'>2</span>),
+                           <span class='fu'>rep</span>(<span class='fu'>c</span>(<span class='st'>"A"</span>, <span class='st'>"B"</span>, <span class='st'>"D"</span>, <span class='st'>"C"</span>), <span class='kw'>each</span> <span class='kw'>=</span> <span class='fl'>2</span>)),
+                   <span class='kw'>act_id</span> <span class='kw'>=</span> <span class='fu'>rep</span>(<span class='fu'>c</span>(<span class='fl'>1</span>:<span class='fl'>10</span>),<span class='kw'>each</span><span class='kw'>=</span><span class='fl'>2</span>),
+                   <span class='kw'>lifecycle</span> <span class='kw'>=</span> <span class='fu'>rep</span>(<span class='fu'>c</span>(<span class='st'>"start"</span>, <span class='st'>"complete"</span>),<span class='fl'>10</span>),
+                   <span class='kw'>res</span> <span class='kw'>=</span> <span class='fu'>rep</span>(<span class='fu'>sample</span>(<span class='no'>LETTERS</span>[<span class='fl'>1</span>:<span class='fl'>3</span>], <span class='fl'>10</span>, <span class='kw'>replace</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>), <span class='kw'>each</span> <span class='kw'>=</span> <span class='fl'>2</span>),
+                   <span class='kw'>time</span> <span class='kw'>=</span> <span class='fu'>as.POSIXct</span>(<span class='fu'>c</span>(<span class='fl'>0</span>,<span class='fl'>5</span>,<span class='fl'>10</span>,<span class='fl'>15</span>,<span class='fl'>20</span>,<span class='fl'>25</span>,
+                                       <span class='fl'>5</span>,<span class='fl'>10</span>,<span class='fl'>15</span>,<span class='fl'>20</span>,<span class='fl'>25</span>,<span class='fl'>30</span>,
+                                       <span class='fl'>10</span>,<span class='fl'>20</span>,<span class='fl'>30</span>,<span class='fl'>40</span>,<span class='fl'>50</span>,<span class='fl'>60</span>,<span class='fl'>70</span>,<span class='fl'>80</span>) * <span class='fl'>600</span>, <span class='kw'>origin</span> <span class='kw'>=</span> <span class='st'>"2018/10/03"</span>)),
+                 <span class='kw'>case_id</span> <span class='kw'>=</span> <span class='st'>"case"</span>,
+                 <span class='kw'>activity_id</span> <span class='kw'>=</span> <span class='st'>"act"</span>,
+                 <span class='kw'>timestamp</span> <span class='kw'>=</span> <span class='st'>"time"</span>,
+                 <span class='kw'>activity_instance_id</span> <span class='kw'>=</span> <span class='st'>"act_id"</span>,
+                 <span class='kw'>lifecycle_id</span> <span class='kw'>=</span> <span class='st'>"lifecycle"</span>,
+                 <span class='kw'>resource_id</span> <span class='kw'>=</span> <span class='st'>"res"</span>)
 
 <span class='co'># Animate the process with default options (absolute time and 60s duration)</span>
-<span class='fu'>animate_process</span>(<span class='no'>patients</span>)
-
-<span class='co'># Animate the process with default options (relative time and with jitter)</span>
-<span class='fu'>animate_process</span>(<span class='no'>patients</span>, <span class='kw'>animation_mode</span> <span class='kw'>=</span> <span class='st'>"relative"</span>, <span class='kw'>animation_jitter</span> <span class='kw'>=</span> <span class='fl'>10</span>)
+<span class='fu'>animate_process</span>(<span class='no'>example_log</span>)</div><div class='input'><span class='co'># Animate the process with default options (relative time and with jitter)</span>
+<span class='fu'>animate_process</span>(<span class='no'>example_log</span>, <span class='kw'>animation_mode</span> <span class='kw'>=</span> <span class='st'>"relative"</span>, <span class='kw'>animation_jitter</span> <span class='kw'>=</span> <span class='fl'>10</span>)
 
 <span class='co'># Change default token sizes</span>
-<span class='fu'>animate_process</span>(<span class='no'>patients</span>, <span class='kw'>token_size</span> <span class='kw'>=</span> <span class='fl'>2</span>)
+<span class='fu'>animate_process</span>(<span class='no'>example_log</span>, <span class='kw'>token_size</span> <span class='kw'>=</span> <span class='fl'>2</span>)
 
 <span class='co'># Change default token color</span>
-<span class='fu'>animate_process</span>(<span class='no'>patients</span>, <span class='kw'>token_color</span> <span class='kw'>=</span> <span class='st'>"red"</span>)
+<span class='fu'>animate_process</span>(<span class='no'>example_log</span>, <span class='kw'>token_color</span> <span class='kw'>=</span> <span class='st'>"red"</span>)
 
 <span class='co'># Change default token opacity</span>
-<span class='fu'>animate_process</span>(<span class='no'>patients</span>, <span class='kw'>token_opacity</span> <span class='kw'>=</span> <span class='fl'>0.5</span>)</div><div class='input'><span class='co'># Change default token image (GIFs work too)</span>
-<span class='fu'>animate_process</span>(<span class='no'>patients</span>, <span class='kw'>token_image</span> <span class='kw'>=</span> <span class='st'>"https://upload.wikimedia.org/wikipedia/en/5/5f/Pacman.gif"</span>)
+<span class='fu'>animate_process</span>(<span class='no'>example_log</span>, <span class='kw'>token_opacity</span> <span class='kw'>=</span> <span class='fl'>0.5</span>)
 
-<span class='co'># Change token color based on a numeric attribute, here the nonsensical 'time' of an event</span>
-<span class='fu'>animate_process</span>(<span class='fu'><a href='add_token_color.html'>add_token_color</a></span>(<span class='no'>patients</span>, <span class='st'>"time"</span>, <span class='st'>"color"</span>), <span class='kw'>token_color</span> <span class='kw'>=</span> <span class='st'>"color"</span>)
+<span class='co'># Change default token image (GIFs work too)</span>
+<span class='fu'>animate_process</span>(<span class='no'>example_log</span>, <span class='kw'>token_shape</span> <span class='kw'>=</span> <span class='st'>"image"</span>, <span class='kw'>token_size</span> <span class='kw'>=</span> <span class='fl'>10</span>,
+                <span class='kw'>token_image</span> <span class='kw'>=</span> <span class='st'>"https://upload.wikimedia.org/wikipedia/en/5/5f/Pacman.gif"</span>)
 
 <span class='co'># Change token color based on a factor attribute</span>
-<span class='fu'>animate_process</span>(<span class='fu'><a href='add_token_color.html'>add_token_color</a></span>(<span class='no'>patients</span>, <span class='st'>"employee"</span>, <span class='st'>"color"</span>,
-                <span class='kw'>color_mapping</span> <span class='kw'>=</span> <span class='kw pkg'>scales</span><span class='kw ns'>::</span><span class='fu'><a href='http://www.rdocumentation.org/packages/scales/topics/col_numeric'>col_factor</a></span>(<span class='st'>"Set3"</span>, <span class='no'>patients</span>$<span class='no'>employee</span>)),
-                <span class='kw'>token_color</span> <span class='kw'>=</span> <span class='st'>"color"</span>)
+<span class='fu'>animate_process</span>(<span class='no'>example_log</span>,
+                <span class='kw'>animation_legend</span> <span class='kw'>=</span> <span class='st'>"color"</span>, <span class='kw'>token_color</span> <span class='kw'>=</span> <span class='st'>"res"</span>,
+                <span class='kw'>token_color_scale</span> <span class='kw'>=</span> <span class='st'>"ordinal"</span>,
+                <span class='kw'>token_color_scale_range</span> <span class='kw'>=</span> <span class='kw pkg'>RColorBrewer</span><span class='kw ns'>::</span><span class='fu'><a href='http://www.rdocumentation.org/packages/RColorBrewer/topics/ColorBrewer'>brewer.pal</a></span>(<span class='fl'>8</span>, <span class='st'>"Paired"</span>))
 
-<span class='co'># Next example requires the 'dplyr' and 'edeaR' packages</span>
-<span class='fu'>library</span>(<span class='no'>dplyr</span>)</div><div class='output co'>#&gt; <span class='message'></span>
-#&gt; <span class='message'>Attaching package: 'dplyr'</span></div><div class='output co'>#&gt; <span class='message'>The following objects are masked from 'package:stats':</span>
-#&gt; <span class='message'></span>
-#&gt; <span class='message'>    filter, lag</span></div><div class='output co'>#&gt; <span class='message'>The following objects are masked from 'package:base':</span>
-#&gt; <span class='message'></span>
-#&gt; <span class='message'>    intersect, setdiff, setequal, union</span></div><div class='input'><span class='fu'>library</span>(<span class='no'>edeaR</span>)
-
-<span class='co'># Change token_color based on colors in a second data frame</span>
-<span class='co'># Extract only the lacticacid measurements</span>
-<span class='no'>lactic</span> <span class='kw'>&lt;-</span> <span class='no'>sepsis</span> <span class='kw'>%&gt;%</span>
-    <span class='fu'><a href='http://dplyr.tidyverse.org/reference/mutate.html'>mutate</a></span>(<span class='kw'>lacticacid</span> <span class='kw'>=</span> <span class='fu'>as.numeric</span>(<span class='no'>lacticacid</span>)) <span class='kw'>%&gt;%</span>
-    <span class='fu'><a href='http://www.rdocumentation.org/packages/edeaR/topics/filter_activity'>filter_activity</a></span>(<span class='fu'>c</span>(<span class='st'>"LacticAcid"</span>)) <span class='kw'>%&gt;%</span>
-    <span class='fu'>as.data.frame</span>() <span class='kw'>%&gt;%</span>
-    <span class='fu'><a href='http://dplyr.tidyverse.org/reference/select.html'>select</a></span>(<span class='st'>"case"</span> <span class='kw'>=</span> <span class='no'>case_id</span>, <span class='st'>"time"</span> <span class='kw'>=</span>  <span class='no'>timestamp</span>, <span class='no'>lacticacid</span>)
-<span class='co'># Create a numeric color scale</span>
-<span class='no'>cscale</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>scales</span><span class='kw ns'>::</span><span class='fu'><a href='http://www.rdocumentation.org/packages/scales/topics/col_numeric'>col_numeric</a></span>(<span class='st'>"Oranges"</span>, <span class='no'>lactic</span>$<span class='no'>lacticacid</span> , <span class='kw'>na.color</span> <span class='kw'>=</span> <span class='st'>"white"</span>)
-<span class='co'># Create colors data frame for animate_process</span>
-<span class='no'>lacticColors</span> <span class='kw'>&lt;-</span> <span class='no'>lactic</span> <span class='kw'>%&gt;%</span>
-    <span class='fu'><a href='http://dplyr.tidyverse.org/reference/mutate.html'>mutate</a></span>(<span class='kw'>color</span> <span class='kw'>=</span> <span class='fu'>cscale</span>(<span class='no'>lacticacid</span>))
-<span class='no'>sepsisBase</span> <span class='kw'>&lt;-</span> <span class='no'>sepsis</span> <span class='kw'>%&gt;%</span>
-    <span class='fu'><a href='http://www.rdocumentation.org/packages/edeaR/topics/filter_activity'>filter_activity</a></span>(<span class='fu'>c</span>(<span class='st'>"LacticAcid"</span>, <span class='st'>"CRP"</span>, <span class='st'>"Leucocytes"</span>, <span class='st'>"Return ER"</span>,
-                      <span class='st'>"IV Liquid"</span>, <span class='st'>"IV Antibiotics"</span>), <span class='kw'>reverse</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>) <span class='kw'>%&gt;%</span>
-    <span class='fu'><a href='http://www.rdocumentation.org/packages/edeaR/topics/filter_trace_frequency'>filter_trace_frequency</a></span>(<span class='kw'>percentage</span> <span class='kw'>=</span> <span class='fl'>0.95</span>)
-<span class='fu'>animate_process</span>(<span class='no'>sepsisBase</span>, <span class='kw'>token_color</span> <span class='kw'>=</span> <span class='no'>lacticColors</span>, <span class='kw'>animation_mode</span> <span class='kw'>=</span> <span class='st'>"relative"</span>,
-                <span class='kw'>animation_duration</span> <span class='kw'>=</span> <span class='fl'>600</span>)</div><div class='input'>
-
+<span class='co'># This requires example data</span>
+<span class='fu'>library</span>(<span class='no'>eventdataR</span>)
+<span class='fu'>data</span>(<span class='no'>traffic_fines</span>)
+<span class='co'># Change token color based on a numeric attribute, here the nonsensical 'time' of an event</span>
+<span class='fu'>animate_process</span>(<span class='kw pkg'>edeaR</span><span class='kw ns'>::</span><span class='fu'><a href='http://www.rdocumentation.org/packages/edeaR/topics/filter_trace_frequency'>filter_trace_frequency</a></span>(<span class='kw pkg'>bupaR</span><span class='kw ns'>::</span><span class='fu'><a href='http://www.rdocumentation.org/packages/bupaR/topics/sample_n'>sample_n</a></span>(<span class='no'>traffic_fines</span>,<span class='fl'>1000</span>),<span class='kw'>percentage</span><span class='kw'>=</span><span class='fl'>0.95</span>),
+               <span class='kw'>animation_legend</span> <span class='kw'>=</span> <span class='st'>"color"</span>, <span class='kw'>token_color</span> <span class='kw'>=</span> <span class='st'>"amount"</span>,
+               <span class='kw'>token_color_scale</span> <span class='kw'>=</span> <span class='st'>"linear"</span>, <span class='kw'>token_color_scale_range</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"yellow"</span>,<span class='st'>"red"</span>),
+               <span class='kw'>animation_mode</span> <span class='kw'>=</span> <span class='st'>"relative"</span>)</div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
