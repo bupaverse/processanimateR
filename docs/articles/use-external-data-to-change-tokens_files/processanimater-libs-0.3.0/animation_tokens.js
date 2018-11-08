@@ -1,3 +1,8 @@
+/*
+processanimateR 1.0.0
+Copyright (c) 2018 Felix Mannhardt
+Licensed under MIT license
+*/
 function Tokens(el, data, scales) {
 
   var colorScale = scales.colorScale;
@@ -45,12 +50,8 @@ function Tokens(el, data, scales) {
       .attr("begin", function(d) {
           return safeNumber(d.token_start + d.token_duration) + "s";
       })
-    	.attr("dur", function(d, i) {
-    	  if (i == caseTokens.length-1) { // last node
-          return "0.5s";
-    	  } else  {
+    	.attr("dur", function(d) {
     	    return safeNumber(d.activity_duration) + "s";
-    	  }
     	})
       .attr("fill", "freeze")
     	.attr("from", function(d) {
@@ -69,13 +70,54 @@ function Tokens(el, data, scales) {
     	    }
     	});
 
-    // shape is changed
+    // Reveal token
+    if (caseTokens[0].token_start === 0) {
+      group.attr("display", "block");
+    } else {
+      group.append('set')
+        .attr("attributeName", "display")
+        .attr("to", "block")
+        .attr("begin", safeNumber(caseTokens[0].token_start) + "s")
+        .attr("fill", "freeze");
+    }
 
-    var setAnimations = shape.selectAll("set").data(caseTokens).enter();
+    // Hide token after reaching end
+    var hideTime = caseTokens[caseTokens.length-1].token_start +
+                   caseTokens[caseTokens.length-1].token_duration +
+                   caseTokens[caseTokens.length-1].activity_duration + 0.5;
+    group.append('set')
+      .attr("attributeName", "display")
+      .attr("to", "none")
+      .attr("begin", safeNumber(hideTime) + "s")
+      .attr("fill", "freeze");
 
     // Improve the rendering performance by avoiding animations if not necessary
     function isSingle(attr) {
-      return attr.length === 1 && attr[0].time === 0;
+      return attr.length === 1;
+    }
+
+    if (isSingle(customAttrs.colors)) {
+      group.attr("fill", colorScale(customAttrs.colors[0].value));
+    } else {
+      customAttrs.colors.forEach(function(d){
+        group.append('set')
+          .attr("attributeName", "fill")
+          .attr("to", colorScale(d.value) )
+          .attr("begin", safeNumber(d.time) + "s" )
+          .attr("fill", "freeze");
+      });
+    }
+
+    if (isSingle(customAttrs.opacities)) {
+      group.attr("fill-opacity", opacityScale(customAttrs.opacities[0].value));
+    } else {
+      customAttrs.opacities.forEach(function(d){
+        group.append('set')
+          .attr("attributeName", "fill-opacity")
+          .attr("to", opacityScale(d.value))
+          .attr("begin", safeNumber(d.time) + "s" )
+          .attr("fill", "freeze");
+      });
     }
 
     if (data.shape === "circle") {
@@ -90,8 +132,7 @@ function Tokens(el, data, scales) {
             .attr("fill", "freeze");
         });
       }
-
-    } else {
+    } else if (data.shape === "rect" || data.shape === "image") {
       if (isSingle(customAttrs.sizes)) {
         shape.attr("height", sizeScale(customAttrs.sizes[0].value));
         shape.attr("width", sizeScale(customAttrs.sizes[0].value));
@@ -114,37 +155,13 @@ function Tokens(el, data, scales) {
       }
     }
 
-    if (isSingle(customAttrs.colors)) {
-      shape.attr("fill", colorScale(customAttrs.colors[0].value));
-    } else {
-      customAttrs.colors.forEach(function(d){
-        shape.append('set')
-          .attr("attributeName", "fill")
-          .attr("to", colorScale(d.value) )
-          .attr("begin", safeNumber(d.time) + "s" )
-          .attr("fill", "freeze");
-      });
-    }
-
     if (isSingle(customAttrs.images)) {
-      shape.attr("xlink:href", imageScale(customAttrs.images[0].value));
+      shape.attr("href", imageScale(customAttrs.images[0].value));
     } else {
       customAttrs.images.forEach(function(d){
         shape.append('set')
-          .attr("attributeName", "xlink:href")
+          .attr("attributeName", "href")
           .attr("to", imageScale(d.value))
-          .attr("begin", safeNumber(d.time) + "s" )
-          .attr("fill", "freeze");
-      });
-    }
-
-    if (isSingle(customAttrs.opacities)) {
-      shape.attr("fill-opacity", opacityScale(customAttrs.opacities[0].value));
-    } else {
-      customAttrs.opacities.forEach(function(d){
-        shape.append('set')
-          .attr("attributeName", "fill-opacity")
-          .attr("to", opacityScale(d.value))
           .attr("begin", safeNumber(d.time) + "s" )
           .attr("fill", "freeze");
       });
@@ -176,52 +193,62 @@ function Tokens(el, data, scales) {
       .data(cases)
       .enter()
       .append("g")
-      .attr("class", "token");
+      .attr("display", "none")
+      .attr("class", "token")
+      .attr("stroke", "black")
+      .attr("fill", "white");
 
     if (data.shape === "image") {
       tokenShapes = tokenShapes.append(data.shape)
           		     .attr("width", 0)
           		     .attr("height", 0)
-                   .attr("xlink:href", function(d) {
-                      return images.filter(function(image) {
+                   .attr("href", function(d) {
+                      var imgValue = images.filter(function(image) {
                         return(image.case == d);
-                      })[0].image;
-                   })
-                   .attr("transform", function(d) {
-                      var size = sizes.filter(function(size) {
-                        return(size.case == d);
                       })[0].value;
-                      return "translate("+-size/2+","+-size/2+")";
+                      return imageScale(imgValue);
                    })
                    .attr("preserveAspectRatio", "xMinYMin");
     } else if (data.shape === "rect") {
-      tokenShapes = tokenShapes.append(data.shape)
-          		     .attr("transform", function(d) {
-                      var size = sizes.filter(function(size) {
-                        return(size.case == d);
-                      })[0].value;
-                      return "translate("+-size/2+","+-size/2+")";
-                   })
-          		     .attr("stroke", "black")
-          		     .attr("fill", "white");
+      tokenShapes = tokenShapes.append(data.shape);
+    } else if (data.shape === "circle") {
+      tokenShapes = tokenShapes.append(data.shape);
     } else {
-      tokenShapes = tokenShapes.append(data.shape)
-          		     .attr("stroke", "black")
-          		     .attr("fill", "white");
+      tokenShapes = tokenShapes.append("g")
+                    .html(data.shape);
     }
 
-    // add tooltip
+    // Tooltip
     tokenShapes.append("title").text(function(d) { return d; });
 
+    // User defined attributes
     if (data.attributes !== null) {
       tokenShapes.attrs(data.attributes);
     }
 
-    if (data.jitter > 0) {
-      tokenShapes.attr("transform", function(d) {
-        return "translate(0," + (Math.random() - 0.5) * data.jitter + ")";
+    // Transform for jitter and images
+    var transform = d3.transform()
+      .translate(function(d) {
+        var translateX = 0;
+        var translateY = 0;
+
+        if (data.jitter) {
+          translateY = (Math.random() - 0.5) * data.jitter;
+        }
+
+        if (data.shape !== "circle") {
+          var size = sizeScale(sizes.filter(function(size) {
+            return(size.case == d);
+          })[0].value);
+          translateX -= size/2;
+          translateY -= size/2;
+        }
+
+        return [translateX, translateY];
+
       });
-    }
+
+    tokenShapes.attr("transform", transform);
 
     tokenShapes.each(function(d, i) {
 
@@ -261,11 +288,22 @@ function Tokens(el, data, scales) {
       }
     }
 
+    function deselectAll(tokenElements, nodeElements) {
+      tokenElements.each(function() {
+        this.dataset.selected = "false";
+        data.onclick_token_select(d3.select(this), false);
+      });
+      nodeElements.each(function() {
+        this.dataset.selected = "false";
+        data.onclick_activity_select(d3.select(this).select("path"), false);
+      });
+    }
+
     function isSelected(element) {
       return "selected" in element.dataset && element.dataset.selected === "true";
     }
 
-    var tokenElements = tokenGroup.selectAll(data.shape);
+    var tokenElements = tokenGroup.selectAll(".token");
     var nodeElements = d3.select(svg)
       .selectAll(".node")
       .filter(function() {
@@ -278,23 +316,6 @@ function Tokens(el, data, scales) {
         Shiny.onInputChange(el.id + "_tokens", selectedTokens.data());
       }
     }
-
-    tokenElements.on("click", function(d) {
-
-      toggleSelection(this);
-
-      tokenElements.each(function(){
-        data.onclick_token_select(d3.select(this), isSelected(this));
-      });
-
-      notifyShinyTokenInput(tokenElements);
-
-      if (data.onclick_token_callback) {
-        data.onclick_token_callback(svg, d3.select(this), d);
-      }
-
-      d3.event.stopPropagation();
-    });
 
     function notifyShinyNodeInput(nodeElements, activities) {
       if ('Shiny' in window) {
@@ -309,7 +330,42 @@ function Tokens(el, data, scales) {
       }
     }
 
+    // Token listener
+
+    tokenElements.on("click", function(d) {
+
+      var evt = d3.event;
+
+      if (!evt.ctrlKey) {
+        // Single selection mode
+        deselectAll(tokenElements, nodeElements);
+      }
+
+      toggleSelection(this);
+
+      tokenElements.each(function(){
+        data.onclick_token_select(d3.select(this), isSelected(this));
+      });
+
+      notifyShinyTokenInput(tokenElements);
+
+      if (data.onclick_token_callback) {
+        data.onclick_token_callback(svg, d3.select(this), d);
+      }
+
+      evt.stopPropagation();
+    });
+
+    // Node listener
+
     nodeElements.on("click", function() {
+
+      var evt = d3.event;
+
+      if (!evt.ctrlKey) {
+        // Single selection mode
+        deselectAll(tokenElements, nodeElements);
+      }
 
       toggleSelection(this);
 
@@ -323,20 +379,30 @@ function Tokens(el, data, scales) {
         data.onclick_activity_callback(svg, d3.select(this));
       }
 
-       d3.event.stopPropagation();
+       evt.stopPropagation();
     });
 
-    d3.select(svg).on("click", function() {
-      tokenElements.each(function() {
-        this.dataset.selected = "false";
-        data.onclick_token_select(d3.select(this), false);
-      });
-      nodeElements.each(function() {
-        this.dataset.selected = "false";
-        data.onclick_activity_select(d3.select(this).select("path"), false);
-      });
-      notifyShinyTokenInput(tokenElements);
-      notifyShinyNodeInput(nodeElements, data.activities);
+    // Deselect when clicking on white space
+
+    var mousePos = [];
+
+    d3.select(svg).on("mousedown", function() {
+      mousePos = d3.mouse(this);
+    });
+
+    d3.select(svg).on("mouseup", function() {
+      var mouseDelta = 5;
+      var curPos = d3.mouse(this);
+
+      if (d3.event.target === svg && // check whether the click was on blank space
+          Math.abs(mousePos[0] - curPos[0]) < mouseDelta &&
+          Math.abs(mousePos[1] - curPos[1]) < mouseDelta) {
+
+        deselectAll(tokenElements, nodeElements);
+        notifyShinyTokenInput(tokenElements);
+        notifyShinyNodeInput(nodeElements, data.activities);
+
+      }
     });
 
   };

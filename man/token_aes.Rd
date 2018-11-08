@@ -13,9 +13,9 @@ token_aes(size = token_scale(), color = token_scale(),
 
 \item{color}{The scale used for the token color,}
 
-\item{image}{The scale used for the token image. Currently, image legends / D3 scales are not supported, only the `attribute` part of the scale is used.}
+\item{image}{The scale used for the token image.}
 
-\item{opacity}{The scale used for the token opacity. Currently, opacity legends / D3 scales are not supported, only the `attribute` part of the scale is used.}
+\item{opacity}{The scale used for the token opacity.}
 
 \item{shape}{The (fixed) SVG shape to be used to draw tokens. Can be either 'circle' (default), 'rect' or 'image'.
 In the latter case the image URL needs to be specified as parameter 'token_image'.}
@@ -59,5 +59,5 @@ animate_process(edeaR::filter_trace_frequency(bupaR::sample_n(traffic_fines,1000
 
 }
 \seealso{
-animate_process
+\code{\link{animate_process}}, \code{\link{token_scale}}
 }

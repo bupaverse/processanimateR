@@ -61,6 +61,14 @@ animate_process(example_log, mapping = token_aes(size = token_scale(12), shape =
 animate_process(example_log, mapping = token_aes(color = token_scale("red")))
 ```
 
+The example animation on the top of this site:
+```r
+animate_process(patients, mode = "relative", jitter = 10, legend = "color",
+  mapping = token_aes(color = token_scale("employee", 
+    scale = "ordinal", 
+    range = RColorBrewer::brewer.pal(7, "Paired"))))
+```
+
 Tokens can also be assigned images, for example:
 ```r
 animate_process(example_log,

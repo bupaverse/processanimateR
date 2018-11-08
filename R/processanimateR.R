@@ -1,6 +1,6 @@
 #' @title Animate cases on a process map
 #'
-#' @description A function for creating a SVG animation of an event log on a process map created by processmapR.
+#' @description A function for creating a SVG animation of an event log on a process map created by \code{\link{process_map}} from the processmapR package.
 #'
 #' @param eventlog The event log object that should be animated
 #' @param processmap The process map created with processmapR that the event log should be animated on,
@@ -16,8 +16,8 @@
 #' @param repeat_count The number of times the process animation is repeated.
 #' @param repeat_delay The seconds to wait before one repetition of the animation.
 #' @param epsilon_time A (small) time to be added to every animation to ensure that tokens are visible.
-#' @param mapping An aesthetic mapping from event log attributes to certain visual parameters of the tokens.
-#'  Use \code{\link{token_aes}} to create the mapping `list`.
+#' @param mapping A list of aesthetic mappings from event log attributes to certain visual parameters of the tokens.
+#'  Use \code{\link{token_aes}} to create a suitable mapping list.
 #' @param token_callback_onclick A JavaScript function that is called when a token is clicked.
 #'  The function is parsed by \code{\link{JS}} and received three parameters: 'svg_root', 'svg_element', and 'case_id'.
 #' @param token_callback_select A JavaScript callback function called when token selection changes.
@@ -41,7 +41,7 @@
 #' animate_process(example_log, mode = "relative", jitter = 10, repeat_count = Inf)
 #' }
 #'
-#' @seealso processmapR:process_map
+#' @seealso \code{\link{process_map}}, \code{\link{token_aes}}
 #'
 #' @import dplyr
 #' @import bupaR

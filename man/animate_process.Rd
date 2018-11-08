@@ -42,8 +42,8 @@ Adding jitter can help to disambiguate tokens traveling on top of each other.}
 
 \item{epsilon_time}{A (small) time to be added to every animation to ensure that tokens are visible.}
 
-\item{mapping}{An aesthetic mapping from event log attributes to certain visual parameters of the tokens.
-Use \code{\link{token_aes}} to create the mapping `list`.}
+\item{mapping}{A list of aesthetic mappings from event log attributes to certain visual parameters of the tokens.
+Use \code{\link{token_aes}} to create a suitable mapping list.}
 
 \item{token_callback_onclick}{A JavaScript function that is called when a token is clicked.
 The function is parsed by \code{\link{JS}} and received three parameters: 'svg_root', 'svg_element', and 'case_id'.}
@@ -66,7 +66,7 @@ The default is NULL, which results in intelligent automatic sizing based on the 
 \item{...}{Options passed on to \code{\link{process_map}}.}
 }
 \description{
-A function for creating a SVG animation of an event log on a process map created by processmapR.
+A function for creating a SVG animation of an event log on a process map created by \code{\link{process_map}} from the processmapR package.
 }
 \examples{
 data(example_log)
@@ -80,5 +80,5 @@ animate_process(example_log, mode = "relative", jitter = 10, repeat_count = Inf)
 
 }
 \seealso{
-processmapR:process_map
+\code{\link{process_map}}, \code{\link{token_aes}}
 }

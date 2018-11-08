@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Token scale to be used as aesthetics — token_scale • processanimateR</title>
+<title>Token scale mapping values to aesthetics — token_scale • processanimateR</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -30,9 +30,10 @@
 
 
 
-<meta property="og:title" content="Token scale to be used as aesthetics — token_scale" />
+<meta property="og:title" content="Token scale mapping values to aesthetics — token_scale" />
 
-<meta property="og:description" content="Token scale to be used as aesthetics" />
+<meta property="og:description" content="Creates a `list` of parameters suitable to be used as token scale in (token_aes) for mapping values to certain aesthetics of the tokens in a process map animation.
+ Refer to the d3-scale documentation (https://github.com/d3/d3-scale) for more information about how to set `domain` and `range` properly." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -121,14 +122,15 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Token scale to be used as aesthetics</h1>
+    <h1>Token scale mapping values to aesthetics</h1>
     <small class="dont-index">Source: <a href='https://github.com/fmannhardt/processanimateR//blob/master/R/scale.R'><code>R/scale.R</code></a></small>
     <div class="hidden name"><code>token_scale.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>Token scale to be used as aesthetics</p>
+    <p>Creates a `list` of parameters suitable to be used as token scale in (<code><a href='token_aes.html'>token_aes</a></code>) for mapping values to certain aesthetics of the tokens in a process map animation.
+ Refer to the d3-scale documentation (https://github.com/d3/d3-scale) for more information about how to set `domain` and `range` properly.</p>
     
     </div>
 
@@ -140,16 +142,17 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>attribute</th>
-      <td><p>The event attribute (character) or alternatively a data frame with three columns (case, time, value)
-matching the case identifier of the supplied event log.</p></td>
+      <td><p>This may be (1) the name of the event attribute to be used as values,
+(2) a data frame with three columns (case, time, value) in which the values in the case column are matching the case identifier of the supplied event log, or
+(3) a constant value that does not change over time.</p></td>
     </tr>
     <tr>
       <th>scale</th>
-      <td><p>Which D3 scale function to be used.</p></td>
+      <td><p>Which D3 scale function to be used out of `identity`, `linear`, `sqrt`, `log`, `quantize`, `ordinal`, or `time`.</p></td>
     </tr>
     <tr>
       <th>domain</th>
-      <td><p>The domain of the D3 scale function. Can be left NULL in which case it will be automatically determined.</p></td>
+      <td><p>The domain of the D3 scale function. Can be left NULL in which case it will be automatically determined based on the values.</p></td>
     </tr>
     <tr>
       <th>range</th>
@@ -163,17 +166,37 @@ matching the case identifier of the supplied event log.</p></td>
     
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <div class='dont-index'><p>animate_process</p></div>
+    <div class='dont-index'><p><code><a href='animate_process.html'>animate_process</a></code>, <code><a href='token_aes.html'>token_aes</a></code></p></div>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='fu'>data</span>(<span class='no'>example_log</span>)
 
-<span class='co'># Change token color based on a factor attribute</span>
+<span class='co'># (1) Change token color based on a factor attribute</span>
 <span class='fu'><a href='animate_process.html'>animate_process</a></span>(<span class='no'>example_log</span>,
  <span class='kw'>legend</span> <span class='kw'>=</span> <span class='st'>"color"</span>,
  <span class='kw'>mapping</span> <span class='kw'>=</span> <span class='fu'><a href='token_aes.html'>token_aes</a></span>(<span class='kw'>color</span> <span class='kw'>=</span> <span class='fu'>token_scale</span>(<span class='st'>"res"</span>, <span class='kw'>scale</span> <span class='kw'>=</span> <span class='st'>"ordinal"</span>,
-  <span class='kw'>range</span> <span class='kw'>=</span> <span class='kw pkg'>RColorBrewer</span><span class='kw ns'>::</span><span class='fu'><a href='http://www.rdocumentation.org/packages/RColorBrewer/topics/ColorBrewer'>brewer.pal</a></span>(<span class='fl'>8</span>, <span class='st'>"Paired"</span>))))</div></pre>
+  <span class='kw'>range</span> <span class='kw'>=</span> <span class='kw pkg'>RColorBrewer</span><span class='kw ns'>::</span><span class='fu'><a href='http://www.rdocumentation.org/packages/RColorBrewer/topics/ColorBrewer'>brewer.pal</a></span>(<span class='fl'>8</span>, <span class='st'>"Paired"</span>))))
+
+<span class='co'># (2) Change token color based on second data frame</span>
+<span class='no'>x</span> <span class='kw'>&lt;-</span> <span class='fu'>data.frame</span>(<span class='kw'>case</span> <span class='kw'>=</span> <span class='fu'>as.character</span>(<span class='fu'>rep</span>(<span class='fu'>c</span>(<span class='fl'>1</span>,<span class='fl'>2</span>,<span class='fl'>3</span>), <span class='fl'>2</span>)),
+                <span class='kw'>time</span> <span class='kw'>=</span> <span class='fu'>seq</span>(<span class='kw'>from</span> <span class='kw'>=</span> <span class='fu'>as.POSIXct</span>(<span class='st'>"2018-10-03 03:41:00"</span>),
+                           <span class='kw'>to</span> <span class='kw'>=</span> <span class='fu'>as.POSIXct</span>(<span class='st'>"2018-10-03 06:00:00"</span>),
+                           <span class='kw'>length.out</span> <span class='kw'>=</span> <span class='fl'>6</span>),
+                <span class='kw'>value</span> <span class='kw'>=</span> <span class='fu'>rep</span>(<span class='fu'>c</span>(<span class='st'>"orange"</span>, <span class='st'>"green"</span>), <span class='fl'>3</span>),
+                <span class='kw'>stringsAsFactors</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
+
+<span class='fu'><a href='animate_process.html'>animate_process</a></span>(<span class='no'>example_log</span>,
+                <span class='kw'>mode</span> <span class='kw'>=</span> <span class='st'>"relative"</span>,
+                <span class='kw'>jitter</span> <span class='kw'>=</span> <span class='fl'>10</span>,
+                <span class='kw'>legend</span> <span class='kw'>=</span> <span class='st'>"color"</span>,
+                <span class='kw'>mapping</span> <span class='kw'>=</span> <span class='fu'><a href='token_aes.html'>token_aes</a></span>(<span class='kw'>color</span> <span class='kw'>=</span> <span class='fu'>token_scale</span>(<span class='no'>x</span>)))
+
+
+<span class='co'># (3) Constant token color</span>
+<span class='fu'><a href='animate_process.html'>animate_process</a></span>(<span class='no'>example_log</span>,
+ <span class='kw'>legend</span> <span class='kw'>=</span> <span class='st'>"color"</span>,
+ <span class='kw'>mapping</span> <span class='kw'>=</span> <span class='fu'><a href='token_aes.html'>token_aes</a></span>(<span class='kw'>color</span> <span class='kw'>=</span> <span class='fu'>token_scale</span>(<span class='st'>"red"</span>)))</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

@@ -3,7 +3,8 @@ export {
   selection,
   select,
   selectAll,
-  create
+  create,
+  mouse
 } from "d3-selection";
 import "d3-selection-multi";
 export { scaleLinear, 

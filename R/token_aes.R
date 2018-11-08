@@ -2,8 +2,8 @@
 #'
 #' @param size The scale used for the token size.
 #' @param color The scale used for the token color,
-#' @param image The scale used for the token image. Currently, image legends / D3 scales are not supported, only the `attribute` part of the scale is used.
-#' @param opacity The scale used for the token opacity. Currently, opacity legends / D3 scales are not supported, only the `attribute` part of the scale is used.
+#' @param image The scale used for the token image.
+#' @param opacity The scale used for the token opacity.
 #' @param shape The (fixed) SVG shape to be used to draw tokens. Can be either 'circle' (default), 'rect' or 'image'.
 #'  In the latter case the image URL needs to be specified as parameter 'token_image'.
 #' @param attributes A list of additional (fixed) SVG attributes to be added to each token.
@@ -40,7 +40,7 @@
 #'                                           range = c("yellow","red"))))
 #' }
 #'
-#' @seealso animate_process
+#' @seealso \code{\link{animate_process}}, \code{\link{token_scale}}
 #'
 token_aes <- function(size = token_scale(),
                       color = token_scale(),

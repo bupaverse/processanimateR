@@ -1,3 +1,8 @@
+/*
+processanimateR 1.0.0
+Copyright (c) 2018 Felix Mannhardt
+Licensed under MIT license
+*/
 function Scales(el) {
 
   var legendSvg = null;
@@ -73,14 +78,18 @@ function Scales(el) {
         default:
       }
 
-      legendSvg.attr("width", legendGroup.node().getBBox().width + 25);
+      legendSvg.attr("width", legendGroup.node().getBBox().width + 30);
     }
 
-    // Only adjust position on re-render
+    this.resizeLegend(svg, width, height);
+
+  };
+
+  this.resizeLegend = function(svg, width, height) {
     if (legendSvg) {
-      legendSvg.attr("style", "position: relative; bottom: "+height+"; left: "+(width - legendSvg.attr("width")) +"; z-index: 999;");
+      legendSvg.attr("style", "position: relative; bottom: "+height+"px; left: "+(width - legendSvg.attr("width")) +"px; z-index: 999;");
+      el.insertBefore(legendSvg.node(), null); // keep as last child!
     }
-
   };
 
   function buildScale(scale, values, defaultValue) {

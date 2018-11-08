@@ -1,3 +1,8 @@
+/*
+processanimateR 1.0.0
+Copyright (c) 2018 Felix Mannhardt
+Licensed under MIT license
+*/
 function Tokens(el, data, scales) {
 
   var colorScale = scales.colorScale;
@@ -283,6 +288,17 @@ function Tokens(el, data, scales) {
       }
     }
 
+    function deselectAll(tokenElements, nodeElements) {
+      tokenElements.each(function() {
+        this.dataset.selected = "false";
+        data.onclick_token_select(d3.select(this), false);
+      });
+      nodeElements.each(function() {
+        this.dataset.selected = "false";
+        data.onclick_activity_select(d3.select(this).select("path"), false);
+      });
+    }
+
     function isSelected(element) {
       return "selected" in element.dataset && element.dataset.selected === "true";
     }
@@ -301,23 +317,6 @@ function Tokens(el, data, scales) {
       }
     }
 
-    tokenElements.on("click", function(d) {
-
-      toggleSelection(this);
-
-      tokenElements.each(function(){
-        data.onclick_token_select(d3.select(this), isSelected(this));
-      });
-
-      notifyShinyTokenInput(tokenElements);
-
-      if (data.onclick_token_callback) {
-        data.onclick_token_callback(svg, d3.select(this), d);
-      }
-
-      d3.event.stopPropagation();
-    });
-
     function notifyShinyNodeInput(nodeElements, activities) {
       if ('Shiny' in window) {
         var sel = nodeElements.filter(function(d) { return(isSelected(this)); })
@@ -331,7 +330,42 @@ function Tokens(el, data, scales) {
       }
     }
 
+    // Token listener
+
+    tokenElements.on("click", function(d) {
+
+      var evt = d3.event;
+
+      if (!evt.ctrlKey) {
+        // Single selection mode
+        deselectAll(tokenElements, nodeElements);
+      }
+
+      toggleSelection(this);
+
+      tokenElements.each(function(){
+        data.onclick_token_select(d3.select(this), isSelected(this));
+      });
+
+      notifyShinyTokenInput(tokenElements);
+
+      if (data.onclick_token_callback) {
+        data.onclick_token_callback(svg, d3.select(this), d);
+      }
+
+      evt.stopPropagation();
+    });
+
+    // Node listener
+
     nodeElements.on("click", function() {
+
+      var evt = d3.event;
+
+      if (!evt.ctrlKey) {
+        // Single selection mode
+        deselectAll(tokenElements, nodeElements);
+      }
 
       toggleSelection(this);
 
@@ -345,20 +379,30 @@ function Tokens(el, data, scales) {
         data.onclick_activity_callback(svg, d3.select(this));
       }
 
-       d3.event.stopPropagation();
+       evt.stopPropagation();
     });
 
-    d3.select(svg).on("click", function() {
-      tokenElements.each(function() {
-        this.dataset.selected = "false";
-        data.onclick_token_select(d3.select(this), false);
-      });
-      nodeElements.each(function() {
-        this.dataset.selected = "false";
-        data.onclick_activity_select(d3.select(this).select("path"), false);
-      });
-      notifyShinyTokenInput(tokenElements);
-      notifyShinyNodeInput(nodeElements, data.activities);
+    // Deselect when clicking on white space
+
+    var mousePos = [];
+
+    d3.select(svg).on("mousedown", function() {
+      mousePos = d3.mouse(this);
+    });
+
+    d3.select(svg).on("mouseup", function() {
+      var mouseDelta = 5;
+      var curPos = d3.mouse(this);
+
+      if (d3.event.target === svg && // check whether the click was on blank space
+          Math.abs(mousePos[0] - curPos[0]) < mouseDelta &&
+          Math.abs(mousePos[1] - curPos[1]) < mouseDelta) {
+
+        deselectAll(tokenElements, nodeElements);
+        notifyShinyTokenInput(tokenElements);
+        notifyShinyNodeInput(nodeElements, data.activities);
+
+      }
     });
 
   };
