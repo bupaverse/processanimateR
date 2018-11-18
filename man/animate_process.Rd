@@ -7,7 +7,8 @@
 animate_process(eventlog, processmap = process_map(eventlog, render = F,
   ...), renderer = renderer_graphviz(), mode = c("absolute",
   "relative", "off"), duration = 60, jitter = 0, timeline = TRUE,
-  legend = NULL, repeat_count = 1, repeat_delay = 0.5,
+  legend = NULL, initial_state = c("playing", "paused"),
+  initial_time = 0, repeat_count = 1, repeat_delay = 0.5,
   epsilon_time = duration/1000, mapping = token_aes(),
   token_callback_onclick = c("function(svg_root, svg_element, case_id) {",
   "}"), token_callback_select = token_select_decoration(),
@@ -34,7 +35,11 @@ Adding jitter can help to disambiguate tokens traveling on top of each other.}
 
 \item{timeline}{Whether to render a timeline slider in supported browsers (Recent versions of Chrome and Firefox only).}
 
-\item{legend}{Whether to show a legend for the `size` or the `color`` scale.}
+\item{legend}{Whether to show a legend for the `size` or the `color` scale.}
+
+\item{initial_state}{Whether the initial playback state is `playing` or `paused`.}
+
+\item{initial_time}{Sets the initial time of the animation. The default is to start at the beginning (0).}
 
 \item{repeat_count}{The number of times the process animation is repeated.}
 

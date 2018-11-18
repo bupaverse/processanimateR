@@ -31,7 +31,7 @@ Suggests:
   rmarkdown,
   shiny,
   RColorBrewer
-RoxygenNote: 6.1.0
+RoxygenNote: 6.1.1
 URL: https://github.com/fmannhardt/processanimateR/
 BugReports: https://github.com/fmannhardt/processanimateR/issues
 VignetteBuilder: knitr

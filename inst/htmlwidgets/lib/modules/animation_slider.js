@@ -147,6 +147,12 @@ function Slider(el) {
       });
 
       animateSlider(svg, data);
+
+      // TODO the playback control should be factored out from the slider, but I leave this for later
+      if (data.initial_state === "paused") {
+        pauseAnimation();
+      }
+      svg.setCurrentTime(Math.max(0,Math.min(data.duration, data.initial_time)));
     }
   };
 

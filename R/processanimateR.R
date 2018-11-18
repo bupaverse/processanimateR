@@ -12,7 +12,9 @@
 #' @param jitter The magnitude of a random coordinate translation, known as jitter in scatterplots, which is added to each token.
 #'  Adding jitter can help to disambiguate tokens traveling on top of each other.
 #' @param timeline Whether to render a timeline slider in supported browsers (Recent versions of Chrome and Firefox only).
-#' @param legend Whether to show a legend for the `size` or the `color`` scale.
+#' @param initial_state Whether the initial playback state is `playing` or `paused`.
+#' @param initial_time Sets the initial time of the animation. The default is to start at the beginning (0).
+#' @param legend Whether to show a legend for the `size` or the `color` scale.
 #' @param repeat_count The number of times the process animation is repeated.
 #' @param repeat_delay The seconds to wait before one repetition of the animation.
 #' @param epsilon_time A (small) time to be added to every animation to ensure that tokens are visible.
@@ -58,6 +60,8 @@ animate_process <- function(eventlog, processmap = process_map(eventlog, render 
                             jitter = 0,
                             timeline = TRUE,
                             legend = NULL,
+                            initial_state = c("playing", "paused"),
+                            initial_time = 0,
                             repeat_count = 1,
                             repeat_delay = 0.5,
                             epsilon_time = duration / 1000,
@@ -83,6 +87,11 @@ animate_process <- function(eventlog, processmap = process_map(eventlog, render 
   token_start <- token_end <- activity_duration <- token_duration <- NULL
 
   mode <- match.arg(mode)
+  initial_state <- match.arg(initial_state)
+
+  if (initial_time > duration) {
+    stop("The 'initial_time' parameter should be less or equal than the specified 'duration'.")
+  }
 
   precedence <- attr(processmap, "base_precedence") %>%
     mutate_at(vars(start_time, end_time, next_start_time, next_end_time), as.numeric, units = "secs")
@@ -180,6 +189,8 @@ animate_process <- function(eventlog, processmap = process_map(eventlog, render 
     duration = duration,
     timeline = timeline,
     mode = mode,
+    initial_state = initial_state,
+    initial_time = initial_time,
     repeat_count = repeat_count,
     repeat_delay = repeat_delay,
     jitter = jitter,
