@@ -71,7 +71,8 @@ The default is NULL, which results in intelligent automatic sizing based on the 
 \item{...}{Options passed on to \code{\link{process_map}}.}
 }
 \description{
-A function for creating a SVG animation of an event log on a process map created by \code{\link{process_map}} from the processmapR package.
+A function for creating a SVG animation of an event log on a process map created by
+ \code{\link{process_map}} from the processmapR package.
 }
 \examples{
 data(example_log)

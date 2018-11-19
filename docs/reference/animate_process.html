@@ -135,7 +135,8 @@
     <pre class="usage"><span class='fu'>animate_process</span>(<span class='no'>eventlog</span>, <span class='kw'>processmap</span> <span class='kw'>=</span> <span class='fu'>process_map</span>(<span class='no'>eventlog</span>, <span class='kw'>render</span> <span class='kw'>=</span> <span class='no'>F</span>,
   <span class='no'>...</span>), <span class='kw'>renderer</span> <span class='kw'>=</span> <span class='fu'><a href='renderer_graphviz.html'>renderer_graphviz</a></span>(), <span class='kw'>mode</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"absolute"</span>,
   <span class='st'>"relative"</span>, <span class='st'>"off"</span>), <span class='kw'>duration</span> <span class='kw'>=</span> <span class='fl'>60</span>, <span class='kw'>jitter</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>timeline</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>legend</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>repeat_count</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>repeat_delay</span> <span class='kw'>=</span> <span class='fl'>0.5</span>,
+  <span class='kw'>legend</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>initial_state</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"playing"</span>, <span class='st'>"paused"</span>),
+  <span class='kw'>initial_time</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>repeat_count</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>repeat_delay</span> <span class='kw'>=</span> <span class='fl'>0.5</span>,
   <span class='kw'>epsilon_time</span> <span class='kw'>=</span> <span class='no'>duration</span>/<span class='fl'>1000</span>, <span class='kw'>mapping</span> <span class='kw'>=</span> <span class='fu'><a href='token_aes.html'>token_aes</a></span>(),
   <span class='kw'>token_callback_onclick</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"function(svg_root, svg_element, case_id) {"</span>,
   <span class='st'>"}"</span>), <span class='kw'>token_callback_select</span> <span class='kw'>=</span> <span class='fu'><a href='token_select_decoration.html'>token_select_decoration</a></span>(),
@@ -180,7 +181,15 @@ Adding jitter can help to disambiguate tokens traveling on top of each other.</p
     </tr>
     <tr>
       <th>legend</th>
-      <td><p>Whether to show a legend for the `size` or the `color`` scale.</p></td>
+      <td><p>Whether to show a legend for the `size` or the `color` scale.</p></td>
+    </tr>
+    <tr>
+      <th>initial_state</th>
+      <td><p>Whether the initial playback state is `playing` or `paused`.</p></td>
+    </tr>
+    <tr>
+      <th>initial_time</th>
+      <td><p>Sets the initial time of the animation. The default is to start at the beginning (0).</p></td>
     </tr>
     <tr>
       <th>repeat_count</th>
