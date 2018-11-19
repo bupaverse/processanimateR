@@ -10,32 +10,10 @@ HTMLWidgets.widget({
 
   factory: function(el, width, height) {
 
-    var slider = new Slider(el);
+    var control = new PlaybackControl(el);
     var scales = new Scales(el);
     var tokens = null;
     var renderer = null;
-
-    var repeatLoop = null;
-    var repeatCount = 1;
-
-    function repeatAnimation(data, svg) {
-      if (data.repeat_count === null) {
-        data.repeat_count = Infinity;
-      }
-      if (repeatLoop) {
-        window.cancelAnimationFrame(repeatLoop);
-      }
-      (function(){
-        var time = svg.getCurrentTime();
-        if (time > (data.duration + data.repeat_delay) && repeatCount < data.repeat_count) {
-          svg.setCurrentTime(0);
-          repeatCount++;
-        }
-        if (repeatCount < data.repeat_count) {
-          repeatLoop = window.requestAnimationFrame(arguments.callee);
-        }
-      })();
-    }
 
     return {
 
@@ -63,12 +41,10 @@ HTMLWidgets.widget({
           var tokenGroup = tokens.insertTokens(svg);
           tokens.attachEventListeners(svg, tokenGroup);
 
-          slider.renderSlider(data, svg, width);
+          control.renderPlaybackControl(data, svg, width);
           scales.renderLegend(data, svg, width, height);
 
-          repeatAnimation(data, svg);
-
-          renderer.resize(width, Math.max(0, height - slider.getHeight()));
+          renderer.resize(width, Math.max(0, height - control.getHeight()));
         });
 
       },
@@ -76,11 +52,15 @@ HTMLWidgets.widget({
       resize: function(width, height) {
 
         if (renderer) {
-          slider.renderSlider(renderer.getData(), renderer.getSvg(), width);
+          control.renderPlaybackControl(renderer.getData(), renderer.getSvg(), width);
           scales.resizeLegend(renderer.getSvg(), width, height);
-          renderer.resize(width, Math.max(0, height - slider.getHeight()));
+          renderer.resize(width, Math.max(0, height - control.getHeight()));
         }
 
+      },
+
+      getPlaybackControl: function() {
+        return control;
       }
 
     };

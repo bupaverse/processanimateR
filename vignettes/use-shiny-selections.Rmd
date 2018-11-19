@@ -36,7 +36,9 @@ shinyAnimation <- function(eventlog, min.time = 30, max.time = 600, default.time
       h4("Selected cases"),
       textOutput(ns("token_selection")),
       h4("Selected activities"),
-      textOutput(ns("activity_selection"))
+      textOutput(ns("activity_selection")),
+      h4("Current time"),
+      textOutput(ns("activity_time"))
     )
   }
 
@@ -58,6 +60,14 @@ shinyAnimation <- function(eventlog, min.time = 30, max.time = 600, default.time
         paste0("(", activities$id, ",", activities$activity, ")", collapse = ",")
       }
     })
+    
+    output$activity_time <- renderText({
+      if (is.null(input$process_time)) {
+        "0"
+      } else {
+        input$process_time
+      }
+    })    
 
     output$process <- renderProcessanimater(expr = {
       animate_process(eventlog, ...)
@@ -72,7 +82,7 @@ shinyAnimation <- function(eventlog, min.time = 30, max.time = 600, default.time
 
   # Two animations
   server <- function(input, output, session) {
-    callModule(animation, "module1", animation_mode = "relative")
+    callModule(animation, "module1", mode = "relative")
     callModule(animation, "module2")
   }
 

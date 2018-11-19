@@ -1,9 +1,9 @@
 dependencies:
   - name: processanimater-libs
-    version: 0.3.0
+    version: 1.0.0
     src: "htmlwidgets/lib/modules"
     script:
-      - animation_slider.js
+      - animation_playback_control.js
       - animation_scales.js
       - animation_tokens.js
       - animation_renderer_graphviz.js

@@ -1,6 +1,7 @@
 #' @title Animate cases on a process map
 #'
-#' @description A function for creating a SVG animation of an event log on a process map created by \code{\link{process_map}} from the processmapR package.
+#' @description A function for creating a SVG animation of an event log on a process map created by
+#'  \code{\link{process_map}} from the processmapR package.
 #'
 #' @param eventlog The event log object that should be animated
 #' @param processmap The process map created with processmapR that the event log should be animated on,
