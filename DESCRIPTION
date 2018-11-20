@@ -21,7 +21,6 @@ Imports:
   htmlwidgets, 
   DiagrammeR (>= 1.0.0),
   zoo, 
-  scales,
   grDevices
 Suggests: 
   eventdataR,
