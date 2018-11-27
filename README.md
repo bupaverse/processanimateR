@@ -14,7 +14,7 @@ ProcessanimateR provides a [htmlwidget](https://www.htmlwidgets.org/) using SVG 
 
 ## Getting Started
 
-**WARNING: There are breaking changes in the API of this package between v0.3.0 and v1.0. The documentation here is already updated to the new API in v1.0, which won't work with the released CRAN version!**
+**WARNING: There are breaking changes in the API of this package between v0.3.0 and v1.0.0**
 
 ### Installing
 
@@ -100,7 +100,7 @@ Felix Mannhardt ([SINTEF Digital -- Technology Management Department](https://ww
 
 ## License
 
-This software is licensed under the MIT License - see the [LICENSE](LICENSE.md) file for details
+This software is licensed under the MIT License - see the [LICENSE](LICENSE.md) file for details.
 
 ## Acknowledgments
 

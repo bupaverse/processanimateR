@@ -58,7 +58,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">processanimateR</a>
-        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">1.0.0.9000</span>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">1.0.0</span>
       </span>
     </div>
 
@@ -130,14 +130,18 @@
 <h3 class="hasAnchor">
 <a href="#backwards-incompatible-changes" class="anchor"></a>Backwards incompatible changes</h3>
 <ul>
-<li>TBD</li>
+<li>Completely changed API to reduce the number of parameters. Factored out functions to deal with specific aspects of the visual representation of tokens to functions <code>token_aes</code> and <code>token_scale</code>.</li>
+<li>Dropped the <code>scales</code> based colors in favour of D3 scales and legends.</li>
 </ul>
 </div>
 <div id="new-features" class="section level3">
 <h3 class="hasAnchor">
 <a href="#new-features" class="anchor"></a>New features</h3>
 <ul>
-<li>TBD</li>
+<li>Added leaflet-based <code>renderer</code> that draws the process map on a geographical map.</li>
+<li>Added <code>initial_</code> parameters to control the initial playback state.</li>
+<li>Added <code>repeat_</code> parameters to control how the animation is repeated.</li>
+<li>Many other small improvements and tweaks.</li>
 </ul>
 </div>
 </div>

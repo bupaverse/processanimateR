@@ -4,11 +4,15 @@ There are breaking changes in the API between v0.3.0 and v1.0.0. The old API was
 
 ### Backwards incompatible changes
 
-* TBD
+* Completely changed API to reduce the number of parameters. Factored out functions to deal with specific aspects of the visual representation of tokens to functions `token_aes` and `token_scale`.
+* Dropped the `scales` based colors in favour of D3 scales and legends.
 
 ### New features
 
-* TBD
+* Added leaflet-based `renderer` that draws the process map on a geographical map.
+* Added `initial_` parameters to control the initial playback state.
+* Added `repeat_` parameters to control how the animation is repeated.
+* Many other small improvements and tweaks.
 
 ## processanimateR 0.3.0
 
