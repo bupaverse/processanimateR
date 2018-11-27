@@ -20,7 +20,6 @@ Imports:
   tidyr,
   htmlwidgets, 
   DiagrammeR (>= 1.0.0),
-  zoo, 
   grDevices
 Suggests: 
   eventdataR,
