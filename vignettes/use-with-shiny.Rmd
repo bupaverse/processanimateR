@@ -110,7 +110,7 @@ ianimate_process <- function(eventlog, min.time = 30, max.time = 600, default.ti
 
       } else if (input$colorAttribute != "none") {
         animate_process(data(), model,
-                        animation_mode = input$type,
+                        mode = input$type,
                         legend = "color",
                         mapping = token_aes(color = token_scale(input$colorAttribute, scale = "ordinal", range = RColorBrewer::brewer.pal(5, "YlOrBr"))),
                         duration = input$duration)
