@@ -41,7 +41,7 @@ HTMLWidgets.widget({
           var tokenGroup = tokens.insertTokens(svg);
           tokens.attachEventListeners(svg, tokenGroup);
 
-          control.renderPlaybackControl(data, svg, width);
+          control.renderPlaybackControl(data, svg, width, true);
           scales.renderLegend(data, svg, width, height);
 
           renderer.resize(width, Math.max(0, height - control.getHeight()));
@@ -52,7 +52,7 @@ HTMLWidgets.widget({
       resize: function(width, height) {
 
         if (renderer) {
-          control.renderPlaybackControl(renderer.getData(), renderer.getSvg(), width);
+          control.renderPlaybackControl(renderer.getData(), renderer.getSvg(), width, false);
           scales.resizeLegend(renderer.getSvg(), width, height);
           renderer.resize(width, Math.max(0, height - control.getHeight()));
         }

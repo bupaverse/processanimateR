@@ -20,7 +20,7 @@ dependencies:
     script: smil.user.js
     all_files: FALSE
   - name: svg-pan-zoom
-    version: 3.5.2
+    version: 3.6.0
     src: "htmlwidgets/lib/svg-pan-zoom"
     script: svg-pan-zoom.min.js
     all_files: FALSE
@@ -30,7 +30,7 @@ dependencies:
     script: moment.min.js
     all_files: FALSE
   - name: viz
-    version: 2.0.0
+    version: 2.1.2
     src: "htmlwidgets/lib/viz"
     script:
      - viz.js
@@ -55,3 +55,7 @@ dependencies:
     src: "htmlwidgets/lib/leaflet-d3-svg-overlay"
     script: leaflet-d3-svg-overlay.js
     all_files: FALSE
+  - name: es6-promise
+    version: 4.2.5
+    src: "htmlwidgets/lib/es6-promise"
+    script: es6-promise.auto.min.js

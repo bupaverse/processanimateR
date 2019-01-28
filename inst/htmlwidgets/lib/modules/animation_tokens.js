@@ -18,67 +18,79 @@ function Tokens(el, data, scales) {
     return el.id+"-edge" + id + "-path";
   }
 
-  function insertAnimation(svg, group, shape, caseTokens, customAttrs) {
+  // Improve the rendering performance by avoiding animations if not necessary
+  function isSingle(attr) {
+    return attr.length === 1;
+  }
+
+  function insertAnimation(svg, group, shape, caseTokens, customAttrs, edgeStartPoints, edgeEndPoints) {
+
+    function getEdgeStart(id) {
+      var edgeId = generateEdgeId(id);
+      var point = edgeStartPoints.get(edgeId);
+      return point.x + " " + point.y;
+    }
+
+    function getEdgeEnd(id) {
+      var edgeId = generateEdgeId(id);
+      var point = edgeEndPoints.get(edgeId);
+      return point.x + " " + point.y;
+    }
 
     // group is moving
     var motions = group.selectAll("animateMotion")
                        .data(caseTokens).enter();
 
     motions.append("animateMotion")
-    	.attr("begin", function(d) { return safeNumber(d.token_start) + "s"; })
-    	.attr("dur", function(d) { return safeNumber(d.token_duration) + "s"; })
-    	.attr("fill", "freeze")
-    	.attr("rotate", "auto")
+      .attrs({
+        begin: function(d) { return safeNumber(d.token_start) + "s"; },
+        dur: function(d) { return safeNumber(d.token_duration) + "s"; },
+        fill: "freeze",
+        rotate: "auto"
+      })
       .append("mpath")
         .attr("href", function(d) { return "#"+generateEdgeId(d.edge_id); });
 
     var startNode = svg.querySelector("#node"+data.start_activity+" * ellipse");
     var endNode = svg.querySelector("#node"+data.end_activity+" * ellipse");
 
-    function getEdgePoint(id, length) {
-      var edge = svg.querySelector("#"+ generateEdgeId(id));
-      var point;
-      if (length === Infinity) {
-        point = edge.getPointAtLength(edge.getTotalLength());
-      } else {
-        point = edge.getPointAtLength(length);
-      }
-      return point.x + "," + point.y;
-    }
-
     motions.append("animateMotion")
-      .attr("begin", function(d) {
-          return safeNumber(d.token_start + d.token_duration) + "s";
-      })
-    	.attr("dur", function(d) {
-    	    return safeNumber(d.activity_duration) + "s";
-    	})
-      .attr("fill", "freeze")
-    	.attr("from", function(d) {
-    	    return getEdgePoint(d.edge_id, Infinity);
-    	})
-    	.attr("to", function(d, i) {
-    	    if (i == caseTokens.length-1) { // last node
-    	      if (endNode) {
-    	        return endNode.cx.animVal.value + "," + endNode.cy.animVal.value;
-    	      } else {
-    	        // no specific end node
-              return getEdgePoint(d.edge_id, Infinity);
-    	      }
-    	    } else {
-    	      return getEdgePoint(caseTokens[i+1].edge_id, 0);
-    	    }
-    	});
+      .attrs({
+        begin: function(d) {
+            return safeNumber(d.token_start + d.token_duration) + "s";
+        },
+        dur: function(d) {
+        	  return safeNumber(d.activity_duration) + "s";
+      	},
+        fill: "freeze",
+        from: function(d) {
+      	    return getEdgeEnd(d.edge_id);
+    	  },
+      	to: function(d, i) {
+      	    if (i == caseTokens.length-1) { // last node
+      	      if (endNode) {
+      	        return endNode.cx.animVal.value + "," + endNode.cy.animVal.value;
+      	      } else {
+      	        // no specific end node
+                return getEdgeEnd(d.edge_id);
+      	      }
+      	    } else {
+      	      return getEdgeStart(caseTokens[i+1].edge_id);
+      	    }
+      	}
+      });
 
     // Reveal token
     if (caseTokens[0].token_start === 0) {
       group.attr("display", "block");
     } else {
       group.append('set')
-        .attr("attributeName", "display")
-        .attr("to", "block")
-        .attr("begin", safeNumber(caseTokens[0].token_start) + "s")
-        .attr("fill", "freeze");
+        .attrs({
+          attributeName: "display",
+          to: "block",
+          begin: safeNumber(caseTokens[0].token_start+0.001) + "s",
+          fill: "freeze"
+        });
     }
 
     // Hide token after reaching end
@@ -86,15 +98,13 @@ function Tokens(el, data, scales) {
                    caseTokens[caseTokens.length-1].token_duration +
                    caseTokens[caseTokens.length-1].activity_duration + 0.5;
     group.append('set')
-      .attr("attributeName", "display")
-      .attr("to", "none")
-      .attr("begin", safeNumber(hideTime) + "s")
-      .attr("fill", "freeze");
+      .attrs({
+        attributeName: "display",
+        to: "none",
+        begin: safeNumber(hideTime) + "s",
+        fill: "freeze"
 
-    // Improve the rendering performance by avoiding animations if not necessary
-    function isSingle(attr) {
-      return attr.length === 1;
-    }
+      });
 
     if (isSingle(customAttrs.colors)) {
       group.attr("fill", colorScale(customAttrs.colors[0].value));
@@ -177,9 +187,9 @@ function Tokens(el, data, scales) {
                        .attr("class", "tokens");
 
     var tokens = HTMLWidgets.dataframeToD3(data.tokens);
-    var cases = tokens.reduce(function (a, e) {
-                                 if (a.indexOf(e.case) === -1) {
-                                   a.push(e.case);
+    var cases = data.tokens.case.reduce(function (a, e) {
+                                 if (a.indexOf(e) === -1) {
+                                   a.push(e);
                                  }
                                  return a;
                               }, []);
@@ -193,10 +203,12 @@ function Tokens(el, data, scales) {
       .data(cases)
       .enter()
       .append("g")
-      .attr("display", "none")
-      .attr("class", "token")
-      .attr("stroke", "black")
-      .attr("fill", "white");
+      .attrs({
+        display: "none",
+        class: "token",
+        stroke: "black",
+        fill: "white"
+      });
 
     if (data.shape === "image") {
       tokenShapes = tokenShapes.append(data.shape)
@@ -250,6 +262,16 @@ function Tokens(el, data, scales) {
 
     tokenShapes.attr("transform", transform);
 
+    var edgeStartPoints = new Map();
+    var edgeEndPoints = new Map();
+    var edges = svg.querySelectorAll('.edge path');
+    for(var i = 0; i < edges.length; i++) {
+      var edge = edges[i];
+    	var id = edge.id;
+    	edgeStartPoints.set(id, edge.getPointAtLength(0));
+    	edgeEndPoints.set(id, edge.getPointAtLength(edge.getTotalLength()));
+    }
+
     tokenShapes.each(function(d, i) {
 
         var group = d3.select(this.parentNode);
@@ -264,7 +286,7 @@ function Tokens(el, data, scales) {
           images: images.filter(function(x) { return(x.case === d); }),
           opacities: opacities.filter(function(x) { return(x.case === d); })
         };
-        insertAnimation(svg, group, tokenShape, caseTokens, customAttrs);
+        insertAnimation(svg, group, tokenShape, caseTokens, customAttrs, edgeStartPoints, edgeEndPoints);
 
     });
 
@@ -281,26 +303,26 @@ function Tokens(el, data, scales) {
   this.attachEventListeners = function(svg, tokenGroup) {
 
     function toggleSelection(element) {
-      if (!element.dataset.selected || element.dataset.selected === "false") {
-        element.dataset.selected = "true";
+      if (!element.getAttribute("data-selected") || element.getAttribute("data-selected") === "false") {
+        element.setAttribute("data-selected", "true");
       } else {
-        element.dataset.selected = "false";
+        element.setAttribute("data-selected", "false");
       }
     }
 
     function deselectAll(tokenElements, nodeElements) {
       tokenElements.each(function() {
-        this.dataset.selected = "false";
+        this.setAttribute("data-selected", "false");
         data.onclick_token_select(d3.select(this), false);
       });
       nodeElements.each(function() {
-        this.dataset.selected = "false";
+        this.setAttribute("data-selected", "false");
         data.onclick_activity_select(d3.select(this).select("path"), false);
       });
     }
 
     function isSelected(element) {
-      return "selected" in element.dataset && element.dataset.selected === "true";
+      return element.getAttribute("data-selected") && element.getAttribute("data-selected") === "true";
     }
 
     var tokenElements = tokenGroup.selectAll(".token");
@@ -379,7 +401,7 @@ function Tokens(el, data, scales) {
         data.onclick_activity_callback(svg, d3.select(this));
       }
 
-       evt.stopPropagation();
+      evt.stopPropagation();
     });
 
     // Deselect when clicking on white space

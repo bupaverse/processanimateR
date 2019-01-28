@@ -86,14 +86,15 @@ function smile(animating) {
 	var src = null;
 
 	var impl = document.implementation;
+
 	// namespace-to-process cache
 	// ("process" in the sense of "feature check states that support by script is needed")
 	// (map is initialized this way to avoid variables names being picked up as key instead of their value)
 	var ns2proc = {};
-	// NOTE: feature strings are broken in ASV - apparently only declarative switch declarations work
-	// (we have already filter this implementation, though, during the loading phase)
-	// http://tech.groups.yahoo.com/group/svg-developers/message/61236
-	ns2proc[svgns] = !impl.hasFeature("http://www.w3.org/TR/SVG11/feature#Animation", "1.1"); //&& !impl.hasFeature("org.w3c.svg.animation", "1.0");
+
+	// fixed according to https://github.com/FakeSmile/FakeSmile/issues/7
+	ns2proc[svgns] = !(document.createElementNS && /SVGAnimate/.test(document.createElementNS("http://www.w3.org/2000/svg", "animate")));
+
 	ns2proc[smilanimns] = !impl.hasFeature(smilanimns, "1.1");
 	ns2proc[smil2ns] = !impl.hasFeature(smil2ns, "2.0");
 	ns2proc[smil21ns] = !impl.hasFeature(smil21ns, "2.1");
@@ -715,7 +716,7 @@ Animator.prototype = {
 	getPath : function() {
 		var mpath = this.anim.getElementsByTagNameNS(svgns,"mpath")[0];
 		if (mpath) {
-			var pathHref = mpath.getAttributeNS(xlinkns, "href");
+			var pathHref = mpath.getAttribute("href");
 			return document.getElementById(pathHref.substring(1));
 		} else {
 			var d = this.anim.getAttribute("path");
@@ -1575,5 +1576,7 @@ if (!isNaN(Date.parse("2012-04-22T19:53:32Z"))){
 try {
 	// NOTE: ASV skips triggering the library here, as 'addEventListener' is not supported
 	// (but that's not an issue as most popular versions, ASV3 and ASV6 beta, both support SMIL)
-	window.addEventListener("load", initSMIL, false);
+	if (!(document.createElementNS && /SVGAnimate/.test(document.createElementNS("http://www.w3.org/2000/svg", "animate")))) {
+	  window.addEventListener("load", initSMIL, false);
+	}
 } catch(exc) {}

@@ -100,13 +100,15 @@ animate_process <- function(eventlog,
 
   if (mode != "off") {
 
-    cases <- precedence %>%
-      group_by(case) %>%
-      filter(!is.na(case)) %>%
-      summarise(case_start = min(start_time, na.rm = T),
-                case_end = max(end_time, na.rm = T)) %>%
-      mutate(case_duration = case_end - case_start) %>%
-      ungroup()
+    suppressWarnings({
+      cases <- precedence %>%
+        group_by(case) %>%
+        summarise(case_start = min(start_time, na.rm = T),
+                  case_end = max(end_time, na.rm = T)) %>%
+        mutate(case_duration = case_end - case_start) %>%
+        filter(!is.na(case)) %>%
+        ungroup()
+    })
 
     # determine animation factor based on requested duration
     if (mode == "absolute") {
@@ -206,9 +208,11 @@ animate_process <- function(eventlog,
     onclick_activity_select = htmlwidgets::JS(activity_callback_select),
     processmap_renderer = attr(renderer, "name")
   )
+  attr(x, 'TOJSON_ARGS') <- list(digits = 6)
 
   htmlwidgets::createWidget(elementId = elementId,
-                            name = "processanimateR", x = x,
+                            name = "processanimateR",
+                            x = x,
                             width = width, height = height,
                             sizingPolicy = htmlwidgets::sizingPolicy(
                               defaultWidth = 800,
@@ -301,13 +305,13 @@ generate_tokens <- function(cases, precedence, processmap, mode, a_factor,
 generate_animation_attribute <- function(eventlog, value, default) {
   attribute <- rlang::sym("value")
   if (is.null(value)) {
-    # use default
+    # use fixed default value
     eventlog %>%
       as.data.frame() %>%
+      group_by(!!case_id_(eventlog)) %>%
+      summarise(time = min(!!timestamp_(eventlog))) %>%
       mutate(!!attribute := default) %>%
-      select(case = !!case_id_(eventlog),
-             time = !!timestamp_(eventlog),
-             !!attribute)
+      rename(case = !!case_id_(eventlog))
   } else if (is.data.frame(value)) {
     # check data present
     stopifnot(c("case", "time", "value") %in% colnames(value))
@@ -334,24 +338,26 @@ generate_animation_attribute <- function(eventlog, value, default) {
 
 transform_time <- function(data, cases, mode, a_factor, timeline_start, timeline_end) {
 
-  .order <- time <- case <- log_start <- case_start <- NULL
+  .order <- time <- case <- log_start <- case_start <- value <- NULL
 
-  col <- rlang::sym("value")
+  if (nrow(data) != nrow(cases)) {
+    data <- data %>%
+      group_by(case) %>%
+      filter(lag(value, default = +Inf) != value) # only keep changes in value
+  }
+
   data <- data %>%
-    group_by(case) %>%
-    filter(row_number() == 1 | lag(!!col) != !!col) %>% # only keep changes in value
     left_join(cases, by = "case")
 
   if (mode == "absolute") {
-    data <- data %>%
-      mutate(time = as.numeric(time - timeline_start, units = "secs") / a_factor) %>%
-      select(case, time, !!col)
+    data <- mutate(data, time = as.numeric(time - timeline_start, units = "secs"))
   } else {
-    col <- data %>%
-      mutate(time = as.numeric(time - case_start, units = "secs") / a_factor) %>%
-      select(case, time, !!col)
+    data <- mutate(data, time = as.numeric(time - case_start, units = "secs"))
   }
 
+  data %>%
+    mutate(time / a_factor) %>%
+    select(case, time, value)
 }
 
 # Utility functions

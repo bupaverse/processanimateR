@@ -23,10 +23,7 @@ function RendererGraphviz(el, data) {
       for(var i = 0; i < edges.length; i++) {
       	var id = edges[i].id;
       	var paths = edges[i].getElementsByTagName("path");
-      	for(var j = 0; j < paths.length; j++) {
-      	  //TODO refactor!!
-      		paths[j].id = el.id + "-" + id + "-path";
-      	}
+      	paths[0].id = el.id + "-" + id + "-path";
       }
     }
 
@@ -84,7 +81,7 @@ function RendererGraphviz(el, data) {
 
         postRender(svg);
 
-        svgPan = svgPanZoom(svg, { dblClickZoomEnabled: false });
+        svgPan = svgPanZoom(svg, { dblClickZoomEnabled: false, preventEventsDefaults: true });
 
       }
     ).catch(function(error) {
