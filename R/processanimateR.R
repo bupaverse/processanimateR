@@ -343,7 +343,7 @@ transform_time <- function(data, cases, mode, a_factor, timeline_start, timeline
   if (nrow(data) != nrow(cases)) {
     data <- data %>%
       group_by(case) %>%
-      filter(lag(value, default = +Inf) != value) # only keep changes in value
+      filter(row_number() == 1 | lag(value) != value) # only keep changes in value
   }
 
   data <- data %>%
@@ -356,7 +356,7 @@ transform_time <- function(data, cases, mode, a_factor, timeline_start, timeline
   }
 
   data %>%
-    mutate(time / a_factor) %>%
+    mutate(time = time / a_factor) %>%
     select(case, time, value)
 }
 

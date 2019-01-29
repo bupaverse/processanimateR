@@ -1,5 +1,5 @@
 /*
-processanimateR 1.0.0
+processanimateR 1.0.1.9000
 Copyright (c) 2018 Felix Mannhardt
 Licensed under MIT license
 */
@@ -66,7 +66,7 @@ function Scales(el) {
         .attr("class", "processanimater-legend")
         .attr("style", "outline: thin solid black;")
         .attr("filter", "url(#box)")
-        .attr("transform", "translate(20,25)");
+        .attr("transform", "translate(20,20)");
 
       switch(data.legend) {
         case "color":
