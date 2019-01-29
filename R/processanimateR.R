@@ -208,7 +208,6 @@ animate_process <- function(eventlog,
     onclick_activity_select = htmlwidgets::JS(activity_callback_select),
     processmap_renderer = attr(renderer, "name")
   )
-  attr(x, 'TOJSON_ARGS') <- list(digits = 6)
 
   htmlwidgets::createWidget(elementId = elementId,
                             name = "processanimateR",
