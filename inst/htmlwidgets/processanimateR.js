@@ -37,13 +37,14 @@ HTMLWidgets.widget({
 
         renderer.render(function(svg) {
 
-          // Generate tokens and animations
-          var tokenGroup = tokens.insertTokens(svg);
-          tokens.attachEventListeners(svg, tokenGroup);
+          if (data.tokens.case !== undefined) {
+            // Generate tokens and animations
+            var tokenGroup = tokens.insertTokens(svg);
+            tokens.attachEventListeners(svg, tokenGroup);
+          }
 
           control.renderPlaybackControl(data, svg, width, true);
           scales.renderLegend(data, svg, width, height);
-
           renderer.resize(width, Math.max(0, height - control.getHeight()));
         });
 
