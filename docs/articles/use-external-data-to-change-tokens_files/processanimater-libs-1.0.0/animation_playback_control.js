@@ -1,5 +1,5 @@
 /*
-processanimateR 1.0.0
+processanimateR 1.0.1.9000
 Copyright (c) 2018 Felix Mannhardt
 Licensed under MIT license
 */
@@ -25,7 +25,7 @@ function PlaybackControl(el) {
   this.pauseAnimation = function() {};
   this.getCurrentTime = function() {};
 
-  this.renderPlaybackControl = function(data, svg, width) {
+  this.renderPlaybackControl = function(data, svg, width, initial) {
 
     if (data.timeline &&
         // Polyfill fakesmile does not support pausing/unpausing for IE
@@ -151,13 +151,15 @@ function PlaybackControl(el) {
       });
 
       animateSlider(svg, data);
-      repeatAnimation(svg, data);
 
-      // Configure initial playback state
-      if (data.initial_state === "paused") {
-        _pauseAnimation();
+      if (initial) {
+        repeatAnimation(svg, data);
+        // Configure initial playback state
+        if (data.initial_state === "paused") {
+          _pauseAnimation();
+        }
+        svg.setCurrentTime(Math.max(0,Math.min(data.duration, data.initial_time)));
       }
-      svg.setCurrentTime(Math.max(0,Math.min(data.duration, data.initial_time)));
 
       // Wire-up the public API
       this.getCurrentTime = function() {

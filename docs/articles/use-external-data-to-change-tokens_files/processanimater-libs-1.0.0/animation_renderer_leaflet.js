@@ -1,5 +1,5 @@
 /*
-processanimateR 1.0.0
+processanimateR 1.0.1.9000
 Copyright (c) 2018 Felix Mannhardt
 Licensed under MIT license
 */
@@ -137,11 +137,11 @@ function RendererLeaflet(el, data) {
             .curve(d3.curveNatural);
 
       var edgeSel = selection
-        .selectAll(".edges")
+        .selectAll(".edge")
         .data(["edges"])
         .enter()
         .append("g")
-          .attr("class", "edges")
+          .attr("class", "edge")
         .selectAll('path')
           .data(edges);
 
@@ -169,7 +169,7 @@ function RendererLeaflet(el, data) {
         .attr("transform", "scale(" + scaleFactor + ")");
 
       //TODO look at the strok-dashoffset property
-      selection.selectAll(".edges > path")
+      selection.selectAll(".edge > path")
         .attr("stroke-width", function(d) { return d.penwidth * scaleFactor;  });
 
       selection.selectAll(".token")
