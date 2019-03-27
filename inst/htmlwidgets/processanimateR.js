@@ -37,11 +37,12 @@ HTMLWidgets.widget({
 
         renderer.render(function(svg) {
 
+          var tokenGroup = d3.select();
           if (data.tokens.case !== undefined) {
             // Generate tokens and animations
-            var tokenGroup = tokens.insertTokens(svg);
-            tokens.attachEventListeners(svg, tokenGroup);
+            tokenGroup = tokens.insertTokens(svg);
           }
+          tokens.attachEventListeners(svg, tokenGroup);
 
           control.renderPlaybackControl(data, svg, width, true);
           scales.renderLegend(data, svg, width, height);
