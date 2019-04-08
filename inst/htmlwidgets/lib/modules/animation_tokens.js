@@ -317,7 +317,7 @@ function Tokens(el, data, scales) {
       });
       nodeElements.each(function() {
         this.setAttribute("data-selected", "false");
-        data.onclick_activity_select(d3.select(this).select("path"), false);
+        data.onclick_activity_select(d3.select(this).selectAll("path, polygon"), false);
       });
     }
 
@@ -392,7 +392,7 @@ function Tokens(el, data, scales) {
       toggleSelection(this);
 
       nodeElements.each(function() {
-        data.onclick_activity_select(d3.select(this).select("path"), isSelected(this));
+        data.onclick_activity_select(d3.select(this).selectAll("path, polygon"), isSelected(this));
       });
 
       notifyShinyNodeInput(nodeElements, data.activities);
