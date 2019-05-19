@@ -64,7 +64,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">processanimateR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.1.9002</span>
       </span>
     </div>
 
@@ -91,6 +91,9 @@
     </li>
     <li>
       <a href="../articles/use-shiny-selections.html">Use processanimateR selection as Shiny inputs</a>
+    </li>
+    <li>
+      <a href="../articles/use-timestamp-change-token-aes.html">User defined bins for time to change token aesthetics</a>
     </li>
     <li>
       <a href="../articles/use-token_scales.html">Use token scales</a>
@@ -141,13 +144,15 @@
   <span class='st'>"relative"</span>, <span class='st'>"off"</span>), <span class='kw'>duration</span> <span class='kw'>=</span> <span class='fl'>60</span>, <span class='kw'>jitter</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>timeline</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
   <span class='kw'>legend</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>initial_state</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"playing"</span>, <span class='st'>"paused"</span>),
   <span class='kw'>initial_time</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>repeat_count</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>repeat_delay</span> <span class='kw'>=</span> <span class='fl'>0.5</span>,
-  <span class='kw'>epsilon_time</span> <span class='kw'>=</span> <span class='no'>duration</span>/<span class='fl'>1000</span>, <span class='kw'>mapping</span> <span class='kw'>=</span> <span class='fu'><a href='token_aes.html'>token_aes</a></span>(),
+  <span class='kw'>epsilon_time</span> <span class='kw'>=</span> <span class='no'>duration</span>/<span class='fl'>1e+05</span>, <span class='kw'>mapping</span> <span class='kw'>=</span> <span class='fu'><a href='token_aes.html'>token_aes</a></span>(),
   <span class='kw'>token_callback_onclick</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"function(svg_root, svg_element, case_id) {"</span>,
   <span class='st'>"}"</span>), <span class='kw'>token_callback_select</span> <span class='kw'>=</span> <span class='fu'><a href='token_select_decoration.html'>token_select_decoration</a></span>(),
   <span class='kw'>activity_callback_onclick</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"function(svg_root, svg_element, activity_id) {"</span>,
   <span class='st'>"}"</span>), <span class='kw'>activity_callback_select</span> <span class='kw'>=</span> <span class='fu'><a href='activity_select_decoration.html'>activity_select_decoration</a></span>(),
   <span class='kw'>elementId</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>preRenderHook</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>width</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>height</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)</pre>
+  <span class='kw'>height</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>sizingPolicy</span> <span class='kw'>=</span> <span class='kw pkg'>htmlwidgets</span><span class='kw ns'>::</span><span class='fu'><a href='https://www.rdocumentation.org/packages/htmlwidgets/topics/sizingPolicy'>sizingPolicy</a></span>(<span class='kw'>browser.fill</span>
+  <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>viewer.fill</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>knitr.figure</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>knitr.defaultWidth</span> <span class='kw'>=</span>
+  <span class='st'>"100%"</span>, <span class='kw'>knitr.defaultHeight</span> <span class='kw'>=</span> <span class='st'>"300"</span>), <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -245,6 +250,13 @@ via input$elementId_tokens and input$elementId_activities when used in Shiny.</p
 The default is NULL, which results in intelligent automatic sizing based on the widget's container.</p></td>
     </tr>
     <tr>
+      <th>sizingPolicy</th>
+      <td><p>Options that govern how the widget is sized in various
+containers (e.g. a standalone browser, the RStudio Viewer, a knitr figure,
+or a Shiny output binding). These options can be specified by calling the
+<code>sizingPolicy</code> function.</p></td>
+    </tr>
+    <tr>
       <th>...</th>
       <td><p>Options passed on to <code>process_map</code>.</p></td>
     </tr>
@@ -259,7 +271,19 @@ The default is NULL, which results in intelligent automatic sizing based on the 
     <pre class="examples"><div class='input'><span class='fu'><a href='https://www.rdocumentation.org/packages/utils/topics/data'>data</a></span>(<span class='no'>example_log</span>)
 
 <span class='co'># Animate the process with default options (absolute time and 60s duration)</span>
-<span class='fu'>animate_process</span>(<span class='no'>example_log</span>)</div><div class='input'><span class='co'># Animate the process with default options (relative time, with jitter, infinite repeat)</span>
+<span class='fu'>animate_process</span>(<span class='no'>example_log</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: Prefixing `UQ()` with the rlang namespace is deprecated as of rlang 0.3.0.</span>
+#&gt; <span class='warning'>Please use the non-prefixed form or `!!` instead.</span>
+#&gt; <span class='warning'></span>
+#&gt; <span class='warning'>  # Bad:</span>
+#&gt; <span class='warning'>  rlang::expr(mean(rlang::UQ(var) * 100))</span>
+#&gt; <span class='warning'></span>
+#&gt; <span class='warning'>  # Ok:</span>
+#&gt; <span class='warning'>  rlang::expr(mean(UQ(var) * 100))</span>
+#&gt; <span class='warning'></span>
+#&gt; <span class='warning'>  # Good:</span>
+#&gt; <span class='warning'>  rlang::expr(mean(!!var * 100))</span>
+#&gt; <span class='warning'></span>
+#&gt; <span class='warning'><span style='color: #555555;'>This warning is displayed once per session.</span><span></span></div></span><div class='input'><span class='co'># Animate the process with default options (relative time, with jitter, infinite repeat)</span>
 <span class='fu'>animate_process</span>(<span class='no'>example_log</span>, <span class='kw'>mode</span> <span class='kw'>=</span> <span class='st'>"relative"</span>, <span class='kw'>jitter</span> <span class='kw'>=</span> <span class='fl'>10</span>, <span class='kw'>repeat_count</span> <span class='kw'>=</span> <span class='fl'>Inf</span>)</div><div class='input'>
 </div></pre>
   </div>

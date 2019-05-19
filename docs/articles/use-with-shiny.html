@@ -30,7 +30,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">processanimateR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.1.9002</span>
       </span>
     </div>
 
@@ -57,6 +57,9 @@
     </li>
     <li>
       <a href="../articles/use-shiny-selections.html">Use processanimateR selection as Shiny inputs</a>
+    </li>
+    <li>
+      <a href="../articles/use-timestamp-change-token-aes.html">User defined bins for time to change token aesthetics</a>
     </li>
     <li>
       <a href="../articles/use-token_scales.html">Use token scales</a>
@@ -92,7 +95,7 @@
       <h1>Use processanimateR and Shiny</h1>
                         <h4 class="author">Felix Mannhardt</h4>
             
-            <h4 class="date">2019-03-11</h4>
+            <h4 class="date">2019-05-19</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/fmannhardt/processanimateR/blob/master/vignettes/use-with-shiny.Rmd"><code>vignettes/use-with-shiny.Rmd</code></a></small>
       <div class="hidden name"><code>use-with-shiny.Rmd</code></div>
@@ -102,124 +105,124 @@
     
     
 <p>ProcessanimateR animation can be also used interactively as part of a (<a href="https://shiny.rstudio.com">Shiny</a>) web-application. Here, an example application that expects attributes are of an appropriate data type and automatically chooses appropriate color scales is given. We first define a function <code>ianimate_process</code> that defines our Shiny application as follows:</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(processanimateR)</a>
-<a class="sourceLine" id="cb1-2" data-line-number="2"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(shiny)</a>
-<a class="sourceLine" id="cb1-3" data-line-number="3"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(shinycssloaders)</a>
-<a class="sourceLine" id="cb1-4" data-line-number="4">ianimate_process &lt;-<span class="st"> </span><span class="cf">function</span>(eventlog, <span class="dt">min.time =</span> <span class="dv">30</span>, <span class="dt">max.time =</span> <span class="dv">600</span>, <span class="dt">default.time =</span> <span class="dv">60</span>) {</a>
-<a class="sourceLine" id="cb1-5" data-line-number="5"></a>
-<a class="sourceLine" id="cb1-6" data-line-number="6">  ui &lt;-<span class="st"> </span><span class="cf">function</span>(request) {</a>
-<a class="sourceLine" id="cb1-7" data-line-number="7">    <span class="kw">fluidPage</span>(</a>
-<a class="sourceLine" id="cb1-8" data-line-number="8">      tags<span class="op">$</span><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/head">head</a></span>(tags<span class="op">$</span><span class="kw">style</span>(<span class="st">"#process{height:90vh !important;}"</span>)),</a>
-<a class="sourceLine" id="cb1-9" data-line-number="9">      <span class="kw">titlePanel</span>(<span class="st">"Hello processanimateR!"</span>),</a>
-<a class="sourceLine" id="cb1-10" data-line-number="10"></a>
-<a class="sourceLine" id="cb1-11" data-line-number="11">      <span class="kw">sidebarLayout</span>(</a>
-<a class="sourceLine" id="cb1-12" data-line-number="12"></a>
-<a class="sourceLine" id="cb1-13" data-line-number="13">        <span class="kw">sidebarPanel</span>(</a>
-<a class="sourceLine" id="cb1-14" data-line-number="14">          <span class="dt">width =</span> <span class="dv">2</span>,</a>
-<a class="sourceLine" id="cb1-15" data-line-number="15">          <span class="kw">sliderInput</span>(<span class="st">"duration"</span>, <span class="st">"Animation duration"</span>, min.time, max.time, default.time),</a>
-<a class="sourceLine" id="cb1-16" data-line-number="16">          <span class="kw">selectInput</span>(<span class="st">"type"</span>, <span class="st">"Animation type"</span>, <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"relative"</span>, <span class="st">"absolute"</span>), <span class="st">"relative"</span>),</a>
-<a class="sourceLine" id="cb1-17" data-line-number="17">          <span class="kw">selectInput</span>(<span class="st">"sizeAttribute"</span>, <span class="st">"Size attribute"</span>, <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"none"</span>, <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/colnames">colnames</a></span>(eventlog)), <span class="st">"none"</span>),</a>
-<a class="sourceLine" id="cb1-18" data-line-number="18">          <span class="kw">selectInput</span>(<span class="st">"colorAttribute"</span>, <span class="st">"Color attribute"</span>, <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"none"</span>, <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/colnames">colnames</a></span>(eventlog)), <span class="st">"none"</span>),</a>
-<a class="sourceLine" id="cb1-19" data-line-number="19">          <span class="kw">selectInput</span>(<span class="st">"orientation"</span>, <span class="st">"Orientation"</span>, <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"horizontal"</span>=<span class="st">"LR"</span>, <span class="st">"vertical"</span>=<span class="st">"TB"</span>), <span class="st">"horizontal"</span>),</a>
-<a class="sourceLine" id="cb1-20" data-line-number="20">          <span class="kw">h4</span>(<span class="st">"Selected cases"</span>),</a>
-<a class="sourceLine" id="cb1-21" data-line-number="21">          <span class="kw">textOutput</span>(<span class="st">"token_selection"</span>),</a>
-<a class="sourceLine" id="cb1-22" data-line-number="22">          <span class="kw">h4</span>(<span class="st">"Selected activities"</span>),</a>
-<a class="sourceLine" id="cb1-23" data-line-number="23">          <span class="kw">textOutput</span>(<span class="st">"activity_selection"</span>)</a>
-<a class="sourceLine" id="cb1-24" data-line-number="24">        ),</a>
-<a class="sourceLine" id="cb1-25" data-line-number="25"></a>
-<a class="sourceLine" id="cb1-26" data-line-number="26">        <span class="kw">mainPanel</span>(</a>
-<a class="sourceLine" id="cb1-27" data-line-number="27">          <span class="dt">width =</span> <span class="dv">10</span>,</a>
-<a class="sourceLine" id="cb1-28" data-line-number="28">          shinycssloaders<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/shinycssloaders/topics/withSpinner">withSpinner</a></span>(<span class="kw"><a href="../reference/processanimaterOutput.html">processanimaterOutput</a></span>(<span class="st">"process"</span>))</a>
-<a class="sourceLine" id="cb1-29" data-line-number="29">        )</a>
-<a class="sourceLine" id="cb1-30" data-line-number="30">      )</a>
-<a class="sourceLine" id="cb1-31" data-line-number="31">    )</a>
-<a class="sourceLine" id="cb1-32" data-line-number="32">  }</a>
-<a class="sourceLine" id="cb1-33" data-line-number="33"></a>
-<a class="sourceLine" id="cb1-34" data-line-number="34">  server &lt;-<span class="st"> </span><span class="cf">function</span>(session, input, output) {</a>
-<a class="sourceLine" id="cb1-35" data-line-number="35"></a>
-<a class="sourceLine" id="cb1-36" data-line-number="36">    data &lt;-<span class="st"> </span><span class="kw">reactive</span>({</a>
-<a class="sourceLine" id="cb1-37" data-line-number="37"></a>
-<a class="sourceLine" id="cb1-38" data-line-number="38">      <span class="cf">if</span> (input<span class="op">$</span>colorAttribute <span class="op">!=</span><span class="st"> "none"</span>) {</a>
-<a class="sourceLine" id="cb1-39" data-line-number="39">        attr &lt;-<span class="st"> </span>rlang<span class="op">::</span><span class="kw"><a href="https://rlang.r-lib.org/reference/sym.html">sym</a></span>(input<span class="op">$</span>colorAttribute)</a>
-<a class="sourceLine" id="cb1-40" data-line-number="40">        val &lt;-<span class="st"> </span>eventlog <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">pull</span>(<span class="op">!!</span>attr)</a>
-<a class="sourceLine" id="cb1-41" data-line-number="41">        <span class="cf">if</span> (<span class="op">!</span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/character">is.character</a></span>(val) <span class="op">||</span><span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/factor">is.factor</a></span>(val))) {</a>
-<a class="sourceLine" id="cb1-42" data-line-number="42">          <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/warning">warning</a></span>(<span class="st">"Trying to use a numeric attribute for the token color!"</span>)</a>
-<a class="sourceLine" id="cb1-43" data-line-number="43">        }</a>
-<a class="sourceLine" id="cb1-44" data-line-number="44">      }</a>
-<a class="sourceLine" id="cb1-45" data-line-number="45"></a>
-<a class="sourceLine" id="cb1-46" data-line-number="46">      <span class="cf">if</span> (input<span class="op">$</span>sizeAttribute <span class="op">!=</span><span class="st"> "none"</span>) {</a>
-<a class="sourceLine" id="cb1-47" data-line-number="47">        <span class="co"># This only works for numeric attributes</span></a>
-<a class="sourceLine" id="cb1-48" data-line-number="48">        attr &lt;-<span class="st"> </span>rlang<span class="op">::</span><span class="kw"><a href="https://rlang.r-lib.org/reference/sym.html">sym</a></span>(input<span class="op">$</span>sizeAttribute)</a>
-<a class="sourceLine" id="cb1-49" data-line-number="49">        val &lt;-<span class="st"> </span>eventlog <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">pull</span>(<span class="op">!!</span>attr)</a>
-<a class="sourceLine" id="cb1-50" data-line-number="50">        <span class="cf">if</span> (<span class="op">!</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/numeric">is.numeric</a></span>(val)) {</a>
-<a class="sourceLine" id="cb1-51" data-line-number="51">          <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/warning">warning</a></span>(<span class="st">"Trying to use a non-numeric attribute for the token size!"</span>)</a>
-<a class="sourceLine" id="cb1-52" data-line-number="52">        }</a>
-<a class="sourceLine" id="cb1-53" data-line-number="53">      }</a>
-<a class="sourceLine" id="cb1-54" data-line-number="54"></a>
-<a class="sourceLine" id="cb1-55" data-line-number="55">      eventlog</a>
-<a class="sourceLine" id="cb1-56" data-line-number="56"></a>
-<a class="sourceLine" id="cb1-57" data-line-number="57">    })</a>
-<a class="sourceLine" id="cb1-58" data-line-number="58"></a>
-<a class="sourceLine" id="cb1-59" data-line-number="59">    output<span class="op">$</span>token_selection &lt;-<span class="st"> </span><span class="kw">renderText</span>({</a>
-<a class="sourceLine" id="cb1-60" data-line-number="60"></a>
-<a class="sourceLine" id="cb1-61" data-line-number="61">      <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/paste">paste0</a></span>(input<span class="op">$</span>process_tokens, <span class="st">","</span>)</a>
-<a class="sourceLine" id="cb1-62" data-line-number="62"></a>
-<a class="sourceLine" id="cb1-63" data-line-number="63">    })</a>
-<a class="sourceLine" id="cb1-64" data-line-number="64"></a>
-<a class="sourceLine" id="cb1-65" data-line-number="65">    output<span class="op">$</span>activity_selection &lt;-<span class="st"> </span><span class="kw">renderText</span>({</a>
-<a class="sourceLine" id="cb1-66" data-line-number="66"></a>
-<a class="sourceLine" id="cb1-67" data-line-number="67">      <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/paste">paste0</a></span>(input<span class="op">$</span>process_activities, <span class="st">","</span>)</a>
-<a class="sourceLine" id="cb1-68" data-line-number="68"></a>
-<a class="sourceLine" id="cb1-69" data-line-number="69">    })</a>
-<a class="sourceLine" id="cb1-70" data-line-number="70"></a>
-<a class="sourceLine" id="cb1-71" data-line-number="71">    output<span class="op">$</span>process &lt;-<span class="st"> </span><span class="kw"><a href="../reference/renderProcessanimater.html">renderProcessanimater</a></span>(<span class="dt">expr =</span> {</a>
-<a class="sourceLine" id="cb1-72" data-line-number="72">      graph &lt;-<span class="st"> </span>processmapR<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/processmapR/topics/process_map">process_map</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/data">data</a></span>(), <span class="dt">render =</span> F)</a>
-<a class="sourceLine" id="cb1-73" data-line-number="73">      model &lt;-<span class="st"> </span>DiagrammeR<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/DiagrammeR/topics/add_global_graph_attrs">add_global_graph_attrs</a></span>(graph, <span class="dt">attr =</span> <span class="st">"rankdir"</span>, <span class="dt">value =</span> input<span class="op">$</span>orientation, <span class="dt">attr_type =</span> <span class="st">"graph"</span>)</a>
-<a class="sourceLine" id="cb1-74" data-line-number="74">      <span class="cf">if</span> (input<span class="op">$</span>sizeAttribute <span class="op">!=</span><span class="st"> "none"</span> <span class="op">&amp;&amp;</span><span class="st"> </span>input<span class="op">$</span>colorAttribute <span class="op">!=</span><span class="st"> "none"</span>) {</a>
-<a class="sourceLine" id="cb1-75" data-line-number="75">        <span class="kw"><a href="../reference/animate_process.html">animate_process</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/data">data</a></span>(), model,</a>
-<a class="sourceLine" id="cb1-76" data-line-number="76">                        <span class="dt">mode =</span> input<span class="op">$</span>type,</a>
-<a class="sourceLine" id="cb1-77" data-line-number="77">                        <span class="dt">legend =</span> <span class="st">"color"</span>,</a>
-<a class="sourceLine" id="cb1-78" data-line-number="78">                        <span class="dt">mapping =</span> <span class="kw"><a href="../reference/token_aes.html">token_aes</a></span>(<span class="dt">color =</span> <span class="kw"><a href="../reference/token_scale.html">token_scale</a></span>(input<span class="op">$</span>colorAttribute, <span class="dt">scale =</span> <span class="st">"ordinal"</span>, </a>
-<a class="sourceLine" id="cb1-79" data-line-number="79">                                                                <span class="dt">range =</span> RColorBrewer<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/RColorBrewer/topics/ColorBrewer">brewer.pal</a></span>(<span class="dv">5</span>, <span class="st">"YlOrBr"</span>)),</a>
-<a class="sourceLine" id="cb1-80" data-line-number="80">                                            <span class="dt">size =</span> <span class="kw"><a href="../reference/token_scale.html">token_scale</a></span>(input<span class="op">$</span>sizeAttribute, <span class="dt">scale =</span> <span class="st">"linear"</span>, <span class="dt">range =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">6</span>,<span class="dv">10</span>))),</a>
-<a class="sourceLine" id="cb1-81" data-line-number="81">                        <span class="dt">duration =</span> input<span class="op">$</span>duration)</a>
-<a class="sourceLine" id="cb1-82" data-line-number="82">      } <span class="cf">else</span> <span class="cf">if</span> (input<span class="op">$</span>sizeAttribute <span class="op">!=</span><span class="st"> "none"</span>) {</a>
-<a class="sourceLine" id="cb1-83" data-line-number="83">        <span class="kw"><a href="../reference/animate_process.html">animate_process</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/data">data</a></span>(), model,</a>
-<a class="sourceLine" id="cb1-84" data-line-number="84">                        <span class="dt">mode =</span> input<span class="op">$</span>type,</a>
-<a class="sourceLine" id="cb1-85" data-line-number="85">                        <span class="dt">legend =</span> <span class="st">"size"</span>,</a>
-<a class="sourceLine" id="cb1-86" data-line-number="86">                        <span class="dt">mapping =</span> <span class="kw"><a href="../reference/token_aes.html">token_aes</a></span>(<span class="dt">size =</span> <span class="kw"><a href="../reference/token_scale.html">token_scale</a></span>(input<span class="op">$</span>sizeAttribute, <span class="dt">scale =</span> <span class="st">"linear"</span>, <span class="dt">range =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">6</span>,<span class="dv">10</span>))),</a>
-<a class="sourceLine" id="cb1-87" data-line-number="87">                        <span class="dt">duration =</span> input<span class="op">$</span>duration)</a>
-<a class="sourceLine" id="cb1-88" data-line-number="88"></a>
-<a class="sourceLine" id="cb1-89" data-line-number="89">      } <span class="cf">else</span> <span class="cf">if</span> (input<span class="op">$</span>colorAttribute <span class="op">!=</span><span class="st"> "none"</span>) {</a>
-<a class="sourceLine" id="cb1-90" data-line-number="90">        <span class="kw"><a href="../reference/animate_process.html">animate_process</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/data">data</a></span>(), model,</a>
-<a class="sourceLine" id="cb1-91" data-line-number="91">                        <span class="dt">mode =</span> input<span class="op">$</span>type,</a>
-<a class="sourceLine" id="cb1-92" data-line-number="92">                        <span class="dt">legend =</span> <span class="st">"color"</span>,</a>
-<a class="sourceLine" id="cb1-93" data-line-number="93">                        <span class="dt">mapping =</span> <span class="kw"><a href="../reference/token_aes.html">token_aes</a></span>(<span class="dt">color =</span> <span class="kw"><a href="../reference/token_scale.html">token_scale</a></span>(input<span class="op">$</span>colorAttribute, <span class="dt">scale =</span> <span class="st">"ordinal"</span>, <span class="dt">range =</span> RColorBrewer<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/RColorBrewer/topics/ColorBrewer">brewer.pal</a></span>(<span class="dv">5</span>, <span class="st">"YlOrBr"</span>))),</a>
-<a class="sourceLine" id="cb1-94" data-line-number="94">                        <span class="dt">duration =</span> input<span class="op">$</span>duration)</a>
-<a class="sourceLine" id="cb1-95" data-line-number="95">      } <span class="cf">else</span> {</a>
-<a class="sourceLine" id="cb1-96" data-line-number="96">        <span class="kw"><a href="../reference/animate_process.html">animate_process</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/data">data</a></span>(), model,</a>
-<a class="sourceLine" id="cb1-97" data-line-number="97">                        <span class="dt">mode =</span> input<span class="op">$</span>type,</a>
-<a class="sourceLine" id="cb1-98" data-line-number="98">                        <span class="dt">duration =</span> input<span class="op">$</span>duration)</a>
-<a class="sourceLine" id="cb1-99" data-line-number="99">      }</a>
-<a class="sourceLine" id="cb1-100" data-line-number="100"></a>
-<a class="sourceLine" id="cb1-101" data-line-number="101">    })</a>
-<a class="sourceLine" id="cb1-102" data-line-number="102"></a>
-<a class="sourceLine" id="cb1-103" data-line-number="103">  }</a>
-<a class="sourceLine" id="cb1-104" data-line-number="104"></a>
-<a class="sourceLine" id="cb1-105" data-line-number="105">  <span class="kw">shinyApp</span>(ui, server, <span class="dt">options =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(<span class="dt">height =</span> <span class="dv">500</span>))</a>
-<a class="sourceLine" id="cb1-106" data-line-number="106"></a>
-<a class="sourceLine" id="cb1-107" data-line-number="107">}</a></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(processanimateR)</a>
+<a class="sourceLine" id="cb1-2" title="2"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(shiny)</a>
+<a class="sourceLine" id="cb1-3" title="3"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(shinycssloaders)</a>
+<a class="sourceLine" id="cb1-4" title="4">ianimate_process &lt;-<span class="st"> </span><span class="cf">function</span>(eventlog, <span class="dt">min.time =</span> <span class="dv">30</span>, <span class="dt">max.time =</span> <span class="dv">600</span>, <span class="dt">default.time =</span> <span class="dv">60</span>) {</a>
+<a class="sourceLine" id="cb1-5" title="5"></a>
+<a class="sourceLine" id="cb1-6" title="6">  ui &lt;-<span class="st"> </span><span class="cf">function</span>(request) {</a>
+<a class="sourceLine" id="cb1-7" title="7">    <span class="kw">fluidPage</span>(</a>
+<a class="sourceLine" id="cb1-8" title="8">      tags<span class="op">$</span><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/head">head</a></span>(tags<span class="op">$</span><span class="kw">style</span>(<span class="st">"#process{height:90vh !important;}"</span>)),</a>
+<a class="sourceLine" id="cb1-9" title="9">      <span class="kw">titlePanel</span>(<span class="st">"Hello processanimateR!"</span>),</a>
+<a class="sourceLine" id="cb1-10" title="10"></a>
+<a class="sourceLine" id="cb1-11" title="11">      <span class="kw">sidebarLayout</span>(</a>
+<a class="sourceLine" id="cb1-12" title="12"></a>
+<a class="sourceLine" id="cb1-13" title="13">        <span class="kw">sidebarPanel</span>(</a>
+<a class="sourceLine" id="cb1-14" title="14">          <span class="dt">width =</span> <span class="dv">2</span>,</a>
+<a class="sourceLine" id="cb1-15" title="15">          <span class="kw">sliderInput</span>(<span class="st">"duration"</span>, <span class="st">"Animation duration"</span>, min.time, max.time, default.time),</a>
+<a class="sourceLine" id="cb1-16" title="16">          <span class="kw">selectInput</span>(<span class="st">"type"</span>, <span class="st">"Animation type"</span>, <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"relative"</span>, <span class="st">"absolute"</span>), <span class="st">"relative"</span>),</a>
+<a class="sourceLine" id="cb1-17" title="17">          <span class="kw">selectInput</span>(<span class="st">"sizeAttribute"</span>, <span class="st">"Size attribute"</span>, <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"none"</span>, <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/colnames">colnames</a></span>(eventlog)), <span class="st">"none"</span>),</a>
+<a class="sourceLine" id="cb1-18" title="18">          <span class="kw">selectInput</span>(<span class="st">"colorAttribute"</span>, <span class="st">"Color attribute"</span>, <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"none"</span>, <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/colnames">colnames</a></span>(eventlog)), <span class="st">"none"</span>),</a>
+<a class="sourceLine" id="cb1-19" title="19">          <span class="kw">selectInput</span>(<span class="st">"orientation"</span>, <span class="st">"Orientation"</span>, <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"horizontal"</span>=<span class="st">"LR"</span>, <span class="st">"vertical"</span>=<span class="st">"TB"</span>), <span class="st">"horizontal"</span>),</a>
+<a class="sourceLine" id="cb1-20" title="20">          <span class="kw">h4</span>(<span class="st">"Selected cases"</span>),</a>
+<a class="sourceLine" id="cb1-21" title="21">          <span class="kw">textOutput</span>(<span class="st">"token_selection"</span>),</a>
+<a class="sourceLine" id="cb1-22" title="22">          <span class="kw">h4</span>(<span class="st">"Selected activities"</span>),</a>
+<a class="sourceLine" id="cb1-23" title="23">          <span class="kw">textOutput</span>(<span class="st">"activity_selection"</span>)</a>
+<a class="sourceLine" id="cb1-24" title="24">        ),</a>
+<a class="sourceLine" id="cb1-25" title="25"></a>
+<a class="sourceLine" id="cb1-26" title="26">        <span class="kw">mainPanel</span>(</a>
+<a class="sourceLine" id="cb1-27" title="27">          <span class="dt">width =</span> <span class="dv">10</span>,</a>
+<a class="sourceLine" id="cb1-28" title="28">          shinycssloaders<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/shinycssloaders/topics/withSpinner">withSpinner</a></span>(<span class="kw"><a href="../reference/processanimaterOutput.html">processanimaterOutput</a></span>(<span class="st">"process"</span>))</a>
+<a class="sourceLine" id="cb1-29" title="29">        )</a>
+<a class="sourceLine" id="cb1-30" title="30">      )</a>
+<a class="sourceLine" id="cb1-31" title="31">    )</a>
+<a class="sourceLine" id="cb1-32" title="32">  }</a>
+<a class="sourceLine" id="cb1-33" title="33"></a>
+<a class="sourceLine" id="cb1-34" title="34">  server &lt;-<span class="st"> </span><span class="cf">function</span>(session, input, output) {</a>
+<a class="sourceLine" id="cb1-35" title="35"></a>
+<a class="sourceLine" id="cb1-36" title="36">    data &lt;-<span class="st"> </span><span class="kw">reactive</span>({</a>
+<a class="sourceLine" id="cb1-37" title="37"></a>
+<a class="sourceLine" id="cb1-38" title="38">      <span class="cf">if</span> (input<span class="op">$</span>colorAttribute <span class="op">!=</span><span class="st"> "none"</span>) {</a>
+<a class="sourceLine" id="cb1-39" title="39">        attr &lt;-<span class="st"> </span>rlang<span class="op">::</span><span class="kw"><a href="https://rlang.r-lib.org/reference/sym.html">sym</a></span>(input<span class="op">$</span>colorAttribute)</a>
+<a class="sourceLine" id="cb1-40" title="40">        val &lt;-<span class="st"> </span>eventlog <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">pull</span>(<span class="op">!!</span>attr)</a>
+<a class="sourceLine" id="cb1-41" title="41">        <span class="cf">if</span> (<span class="op">!</span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/character">is.character</a></span>(val) <span class="op">||</span><span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/factor">is.factor</a></span>(val))) {</a>
+<a class="sourceLine" id="cb1-42" title="42">          <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/warning">warning</a></span>(<span class="st">"Trying to use a numeric attribute for the token color!"</span>)</a>
+<a class="sourceLine" id="cb1-43" title="43">        }</a>
+<a class="sourceLine" id="cb1-44" title="44">      }</a>
+<a class="sourceLine" id="cb1-45" title="45"></a>
+<a class="sourceLine" id="cb1-46" title="46">      <span class="cf">if</span> (input<span class="op">$</span>sizeAttribute <span class="op">!=</span><span class="st"> "none"</span>) {</a>
+<a class="sourceLine" id="cb1-47" title="47">        <span class="co"># This only works for numeric attributes</span></a>
+<a class="sourceLine" id="cb1-48" title="48">        attr &lt;-<span class="st"> </span>rlang<span class="op">::</span><span class="kw"><a href="https://rlang.r-lib.org/reference/sym.html">sym</a></span>(input<span class="op">$</span>sizeAttribute)</a>
+<a class="sourceLine" id="cb1-49" title="49">        val &lt;-<span class="st"> </span>eventlog <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">pull</span>(<span class="op">!!</span>attr)</a>
+<a class="sourceLine" id="cb1-50" title="50">        <span class="cf">if</span> (<span class="op">!</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/numeric">is.numeric</a></span>(val)) {</a>
+<a class="sourceLine" id="cb1-51" title="51">          <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/warning">warning</a></span>(<span class="st">"Trying to use a non-numeric attribute for the token size!"</span>)</a>
+<a class="sourceLine" id="cb1-52" title="52">        }</a>
+<a class="sourceLine" id="cb1-53" title="53">      }</a>
+<a class="sourceLine" id="cb1-54" title="54"></a>
+<a class="sourceLine" id="cb1-55" title="55">      eventlog</a>
+<a class="sourceLine" id="cb1-56" title="56"></a>
+<a class="sourceLine" id="cb1-57" title="57">    })</a>
+<a class="sourceLine" id="cb1-58" title="58"></a>
+<a class="sourceLine" id="cb1-59" title="59">    output<span class="op">$</span>token_selection &lt;-<span class="st"> </span><span class="kw">renderText</span>({</a>
+<a class="sourceLine" id="cb1-60" title="60"></a>
+<a class="sourceLine" id="cb1-61" title="61">      <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/paste">paste0</a></span>(input<span class="op">$</span>process_tokens, <span class="st">","</span>)</a>
+<a class="sourceLine" id="cb1-62" title="62"></a>
+<a class="sourceLine" id="cb1-63" title="63">    })</a>
+<a class="sourceLine" id="cb1-64" title="64"></a>
+<a class="sourceLine" id="cb1-65" title="65">    output<span class="op">$</span>activity_selection &lt;-<span class="st"> </span><span class="kw">renderText</span>({</a>
+<a class="sourceLine" id="cb1-66" title="66"></a>
+<a class="sourceLine" id="cb1-67" title="67">      <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/paste">paste0</a></span>(input<span class="op">$</span>process_activities, <span class="st">","</span>)</a>
+<a class="sourceLine" id="cb1-68" title="68"></a>
+<a class="sourceLine" id="cb1-69" title="69">    })</a>
+<a class="sourceLine" id="cb1-70" title="70"></a>
+<a class="sourceLine" id="cb1-71" title="71">    output<span class="op">$</span>process &lt;-<span class="st"> </span><span class="kw"><a href="../reference/renderProcessanimater.html">renderProcessanimater</a></span>(<span class="dt">expr =</span> {</a>
+<a class="sourceLine" id="cb1-72" title="72">      graph &lt;-<span class="st"> </span>processmapR<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/processmapR/topics/process_map">process_map</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/data">data</a></span>(), <span class="dt">render =</span> F)</a>
+<a class="sourceLine" id="cb1-73" title="73">      model &lt;-<span class="st"> </span>DiagrammeR<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/DiagrammeR/topics/add_global_graph_attrs">add_global_graph_attrs</a></span>(graph, <span class="dt">attr =</span> <span class="st">"rankdir"</span>, <span class="dt">value =</span> input<span class="op">$</span>orientation, <span class="dt">attr_type =</span> <span class="st">"graph"</span>)</a>
+<a class="sourceLine" id="cb1-74" title="74">      <span class="cf">if</span> (input<span class="op">$</span>sizeAttribute <span class="op">!=</span><span class="st"> "none"</span> <span class="op">&amp;&amp;</span><span class="st"> </span>input<span class="op">$</span>colorAttribute <span class="op">!=</span><span class="st"> "none"</span>) {</a>
+<a class="sourceLine" id="cb1-75" title="75">        <span class="kw"><a href="../reference/animate_process.html">animate_process</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/data">data</a></span>(), model,</a>
+<a class="sourceLine" id="cb1-76" title="76">                        <span class="dt">mode =</span> input<span class="op">$</span>type,</a>
+<a class="sourceLine" id="cb1-77" title="77">                        <span class="dt">legend =</span> <span class="st">"color"</span>,</a>
+<a class="sourceLine" id="cb1-78" title="78">                        <span class="dt">mapping =</span> <span class="kw"><a href="../reference/token_aes.html">token_aes</a></span>(<span class="dt">color =</span> <span class="kw"><a href="../reference/token_scale.html">token_scale</a></span>(input<span class="op">$</span>colorAttribute, <span class="dt">scale =</span> <span class="st">"ordinal"</span>, </a>
+<a class="sourceLine" id="cb1-79" title="79">                                                                <span class="dt">range =</span> RColorBrewer<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/RColorBrewer/topics/ColorBrewer">brewer.pal</a></span>(<span class="dv">5</span>, <span class="st">"YlOrBr"</span>)),</a>
+<a class="sourceLine" id="cb1-80" title="80">                                            <span class="dt">size =</span> <span class="kw"><a href="../reference/token_scale.html">token_scale</a></span>(input<span class="op">$</span>sizeAttribute, <span class="dt">scale =</span> <span class="st">"linear"</span>, <span class="dt">range =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">6</span>,<span class="dv">10</span>))),</a>
+<a class="sourceLine" id="cb1-81" title="81">                        <span class="dt">duration =</span> input<span class="op">$</span>duration)</a>
+<a class="sourceLine" id="cb1-82" title="82">      } <span class="cf">else</span> <span class="cf">if</span> (input<span class="op">$</span>sizeAttribute <span class="op">!=</span><span class="st"> "none"</span>) {</a>
+<a class="sourceLine" id="cb1-83" title="83">        <span class="kw"><a href="../reference/animate_process.html">animate_process</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/data">data</a></span>(), model,</a>
+<a class="sourceLine" id="cb1-84" title="84">                        <span class="dt">mode =</span> input<span class="op">$</span>type,</a>
+<a class="sourceLine" id="cb1-85" title="85">                        <span class="dt">legend =</span> <span class="st">"size"</span>,</a>
+<a class="sourceLine" id="cb1-86" title="86">                        <span class="dt">mapping =</span> <span class="kw"><a href="../reference/token_aes.html">token_aes</a></span>(<span class="dt">size =</span> <span class="kw"><a href="../reference/token_scale.html">token_scale</a></span>(input<span class="op">$</span>sizeAttribute, <span class="dt">scale =</span> <span class="st">"linear"</span>, <span class="dt">range =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">6</span>,<span class="dv">10</span>))),</a>
+<a class="sourceLine" id="cb1-87" title="87">                        <span class="dt">duration =</span> input<span class="op">$</span>duration)</a>
+<a class="sourceLine" id="cb1-88" title="88"></a>
+<a class="sourceLine" id="cb1-89" title="89">      } <span class="cf">else</span> <span class="cf">if</span> (input<span class="op">$</span>colorAttribute <span class="op">!=</span><span class="st"> "none"</span>) {</a>
+<a class="sourceLine" id="cb1-90" title="90">        <span class="kw"><a href="../reference/animate_process.html">animate_process</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/data">data</a></span>(), model,</a>
+<a class="sourceLine" id="cb1-91" title="91">                        <span class="dt">mode =</span> input<span class="op">$</span>type,</a>
+<a class="sourceLine" id="cb1-92" title="92">                        <span class="dt">legend =</span> <span class="st">"color"</span>,</a>
+<a class="sourceLine" id="cb1-93" title="93">                        <span class="dt">mapping =</span> <span class="kw"><a href="../reference/token_aes.html">token_aes</a></span>(<span class="dt">color =</span> <span class="kw"><a href="../reference/token_scale.html">token_scale</a></span>(input<span class="op">$</span>colorAttribute, <span class="dt">scale =</span> <span class="st">"ordinal"</span>, <span class="dt">range =</span> RColorBrewer<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/RColorBrewer/topics/ColorBrewer">brewer.pal</a></span>(<span class="dv">5</span>, <span class="st">"YlOrBr"</span>))),</a>
+<a class="sourceLine" id="cb1-94" title="94">                        <span class="dt">duration =</span> input<span class="op">$</span>duration)</a>
+<a class="sourceLine" id="cb1-95" title="95">      } <span class="cf">else</span> {</a>
+<a class="sourceLine" id="cb1-96" title="96">        <span class="kw"><a href="../reference/animate_process.html">animate_process</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/data">data</a></span>(), model,</a>
+<a class="sourceLine" id="cb1-97" title="97">                        <span class="dt">mode =</span> input<span class="op">$</span>type,</a>
+<a class="sourceLine" id="cb1-98" title="98">                        <span class="dt">duration =</span> input<span class="op">$</span>duration)</a>
+<a class="sourceLine" id="cb1-99" title="99">      }</a>
+<a class="sourceLine" id="cb1-100" title="100"></a>
+<a class="sourceLine" id="cb1-101" title="101">    })</a>
+<a class="sourceLine" id="cb1-102" title="102"></a>
+<a class="sourceLine" id="cb1-103" title="103">  }</a>
+<a class="sourceLine" id="cb1-104" title="104"></a>
+<a class="sourceLine" id="cb1-105" title="105">  <span class="kw">shinyApp</span>(ui, server, <span class="dt">options =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(<span class="dt">height =</span> <span class="dv">500</span>))</a>
+<a class="sourceLine" id="cb1-106" title="106"></a>
+<a class="sourceLine" id="cb1-107" title="107">}</a></code></pre></div>
 <p>Then, the application can be, for example, launched by calling:</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(eventdataR)</a>
-<a class="sourceLine" id="cb2-2" data-line-number="2"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(edeaR)</a>
-<a class="sourceLine" id="cb2-3" data-line-number="3"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(dplyr)</a>
-<a class="sourceLine" id="cb2-4" data-line-number="4"><span class="kw">ianimate_process</span>(sepsis <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb2-5" data-line-number="5"><span class="st">  </span><span class="kw">filter_trace_frequency</span>(<span class="dt">percentage =</span> <span class="fl">0.2</span>) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb2-6" data-line-number="6"><span class="st">  </span><span class="kw">filter_activity</span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"Return ER"</span>), <span class="dt">reverse =</span> T) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb2-7" data-line-number="7"><span class="st">  </span><span class="co"># we fix the datatype of some of the attributes to allow proper rendering of the token color</span></a>
-<a class="sourceLine" id="cb2-8" data-line-number="8"><span class="st">  </span><span class="co"># the token size option currently only support numeric attributes</span></a>
-<a class="sourceLine" id="cb2-9" data-line-number="9"><span class="st">  </span><span class="kw">mutate_at</span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"lacticacid"</span>, <span class="st">"leucocytes"</span>, <span class="st">"crp"</span>, <span class="st">"age"</span>), as.numeric) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb2-10" data-line-number="10"><span class="st">  </span><span class="kw">mutate_at</span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"disfuncorg"</span>, <span class="st">"sirscriteria2ormore"</span>, <span class="st">"infectionsuspected"</span>), as.logical))</a></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(eventdataR)</a>
+<a class="sourceLine" id="cb2-2" title="2"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(edeaR)</a>
+<a class="sourceLine" id="cb2-3" title="3"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(dplyr)</a>
+<a class="sourceLine" id="cb2-4" title="4"><span class="kw">ianimate_process</span>(sepsis <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb2-5" title="5"><span class="st">  </span><span class="kw">filter_trace_frequency</span>(<span class="dt">percentage =</span> <span class="fl">0.2</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb2-6" title="6"><span class="st">  </span><span class="kw">filter_activity</span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"Return ER"</span>), <span class="dt">reverse =</span> T) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb2-7" title="7"><span class="st">  </span><span class="co"># we fix the datatype of some of the attributes to allow proper rendering of the token color</span></a>
+<a class="sourceLine" id="cb2-8" title="8"><span class="st">  </span><span class="co"># the token size option currently only support numeric attributes</span></a>
+<a class="sourceLine" id="cb2-9" title="9"><span class="st">  </span><span class="kw">mutate_at</span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"lacticacid"</span>, <span class="st">"leucocytes"</span>, <span class="st">"crp"</span>, <span class="st">"age"</span>), as.numeric) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb2-10" title="10"><span class="st">  </span><span class="kw">mutate_at</span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"disfuncorg"</span>, <span class="st">"sirscriteria2ormore"</span>, <span class="st">"infectionsuspected"</span>), as.logical))</a></code></pre></div>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">

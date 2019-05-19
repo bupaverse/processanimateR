@@ -15,7 +15,9 @@ animate_process(eventlog, processmap = process_map(eventlog, render = F,
   activity_callback_onclick = c("function(svg_root, svg_element, activity_id) {",
   "}"), activity_callback_select = activity_select_decoration(),
   elementId = NULL, preRenderHook = NULL, width = NULL,
-  height = NULL, ...)
+  height = NULL, sizingPolicy = htmlwidgets::sizingPolicy(browser.fill
+  = TRUE, viewer.fill = TRUE, knitr.figure = FALSE, knitr.defaultWidth =
+  "100\%", knitr.defaultHeight = "300"), ...)
 }
 \arguments{
 \item{eventlog}{The event log object that should be animated}
@@ -67,6 +69,11 @@ via input$elementId_tokens and input$elementId_activities when used in Shiny.}
 
 \item{width, height}{Fixed size for widget (in css units).
 The default is NULL, which results in intelligent automatic sizing based on the widget's container.}
+
+\item{sizingPolicy}{Options that govern how the widget is sized in various
+containers (e.g. a standalone browser, the RStudio Viewer, a knitr figure,
+or a Shiny output binding). These options can be specified by calling the
+\code{\link{sizingPolicy}} function.}
 
 \item{...}{Options passed on to \code{\link{process_map}}.}
 }

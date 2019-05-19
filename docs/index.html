@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">processanimateR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.1.9002</span>
       </span>
     </div>
 
@@ -58,6 +58,9 @@
     </li>
     <li>
       <a href="articles/use-shiny-selections.html">Use processanimateR selection as Shiny inputs</a>
+    </li>
+    <li>
+      <a href="articles/use-timestamp-change-token-aes.html">User defined bins for time to change token aesthetics</a>
     </li>
     <li>
       <a href="articles/use-token_scales.html">Use token scales</a>
@@ -107,16 +110,16 @@
 <h3 class="hasAnchor">
 <a href="#installing" class="anchor"></a>Installing</h3>
 <p>A stable version of ProcessanimateR can be installed from CRAN:</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/install.packages">install.packages</a></span>(<span class="st">"processanimateR"</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/install.packages">install.packages</a></span>(<span class="st">"processanimateR"</span>)</a></code></pre></div>
 <p>You can also use the development or specific released version by using the remotes package. Note that the current development version may break without warning.</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1"><span class="co"># install the remotes package</span></a>
-<a class="sourceLine" id="cb2-2" data-line-number="2"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/source">source</a></span>(<span class="st">"https://install-github.me/r-lib/remotes"</span>)</a>
-<a class="sourceLine" id="cb2-3" data-line-number="3"></a>
-<a class="sourceLine" id="cb2-4" data-line-number="4"><span class="co"># use remotes to install the latest version of processanimateR</span></a>
-<a class="sourceLine" id="cb2-5" data-line-number="5">remotes<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/remotes/topics/install_github">install_github</a></span>(<span class="st">"fmannhardt/processanimateR"</span>)</a>
-<a class="sourceLine" id="cb2-6" data-line-number="6"></a>
-<a class="sourceLine" id="cb2-7" data-line-number="7"><span class="co"># or install a specific tag</span></a>
-<a class="sourceLine" id="cb2-8" data-line-number="8">remotes<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/remotes/topics/install_github">install_github</a></span>(<span class="st">"fmannhardt/processanimateR@v0.3.0"</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" title="1"><span class="co"># install the remotes package</span></a>
+<a class="sourceLine" id="cb2-2" title="2"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/source">source</a></span>(<span class="st">"https://install-github.me/r-lib/remotes"</span>)</a>
+<a class="sourceLine" id="cb2-3" title="3"></a>
+<a class="sourceLine" id="cb2-4" title="4"><span class="co"># use remotes to install the latest version of processanimateR</span></a>
+<a class="sourceLine" id="cb2-5" title="5">remotes<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/remotes/topics/install_github">install_github</a></span>(<span class="st">"fmannhardt/processanimateR"</span>)</a>
+<a class="sourceLine" id="cb2-6" title="6"></a>
+<a class="sourceLine" id="cb2-7" title="7"><span class="co"># or install a specific tag</span></a>
+<a class="sourceLine" id="cb2-8" title="8">remotes<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/remotes/topics/install_github">install_github</a></span>(<span class="st">"fmannhardt/processanimateR@v0.3.0"</span>)</a></code></pre></div>
 </div>
 <div id="warnings-and-limitations" class="section level3">
 <h3 class="hasAnchor">
@@ -132,23 +135,23 @@
 <h3 class="hasAnchor">
 <a href="#usage" class="anchor"></a>Usage</h3>
 <p>We use the <code>patients</code> event log provided by the <code>eventdataR</code> package.</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(processanimateR)</a>
-<a class="sourceLine" id="cb3-2" data-line-number="2"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(eventdataR)</a></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(processanimateR)</a>
+<a class="sourceLine" id="cb3-2" title="2"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(eventdataR)</a></code></pre></div>
 <p>A basic animation with static color and token size:</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1"><span class="kw"><a href="reference/animate_process.html">animate_process</a></span>(patients)</a></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" title="1"><span class="kw"><a href="reference/animate_process.html">animate_process</a></span>(patients)</a></code></pre></div>
 <p>Default token color, size, or image can be changed as follows:</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1"><span class="kw"><a href="reference/animate_process.html">animate_process</a></span>(example_log, <span class="dt">mapping =</span> <span class="kw"><a href="reference/token_aes.html">token_aes</a></span>(<span class="dt">size =</span> <span class="kw"><a href="reference/token_scale.html">token_scale</a></span>(<span class="dv">12</span>), <span class="dt">shape =</span> <span class="st">"rect"</span>))</a>
-<a class="sourceLine" id="cb5-2" data-line-number="2"><span class="kw"><a href="reference/animate_process.html">animate_process</a></span>(example_log, <span class="dt">mapping =</span> <span class="kw"><a href="reference/token_aes.html">token_aes</a></span>(<span class="dt">color =</span> <span class="kw"><a href="reference/token_scale.html">token_scale</a></span>(<span class="st">"red"</span>)))</a></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" title="1"><span class="kw"><a href="reference/animate_process.html">animate_process</a></span>(example_log, <span class="dt">mapping =</span> <span class="kw"><a href="reference/token_aes.html">token_aes</a></span>(<span class="dt">size =</span> <span class="kw"><a href="reference/token_scale.html">token_scale</a></span>(<span class="dv">12</span>), <span class="dt">shape =</span> <span class="st">"rect"</span>))</a>
+<a class="sourceLine" id="cb5-2" title="2"><span class="kw"><a href="reference/animate_process.html">animate_process</a></span>(example_log, <span class="dt">mapping =</span> <span class="kw"><a href="reference/token_aes.html">token_aes</a></span>(<span class="dt">color =</span> <span class="kw"><a href="reference/token_scale.html">token_scale</a></span>(<span class="st">"red"</span>)))</a></code></pre></div>
 <p>The example animation on the top of this site:</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" data-line-number="1"><span class="kw"><a href="reference/animate_process.html">animate_process</a></span>(patients, <span class="dt">mode =</span> <span class="st">"relative"</span>, <span class="dt">jitter =</span> <span class="dv">10</span>, <span class="dt">legend =</span> <span class="st">"color"</span>,</a>
-<a class="sourceLine" id="cb6-2" data-line-number="2">  <span class="dt">mapping =</span> <span class="kw"><a href="reference/token_aes.html">token_aes</a></span>(<span class="dt">color =</span> <span class="kw"><a href="reference/token_scale.html">token_scale</a></span>(<span class="st">"employee"</span>, </a>
-<a class="sourceLine" id="cb6-3" data-line-number="3">    <span class="dt">scale =</span> <span class="st">"ordinal"</span>, </a>
-<a class="sourceLine" id="cb6-4" data-line-number="4">    <span class="dt">range =</span> RColorBrewer<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/RColorBrewer/topics/ColorBrewer">brewer.pal</a></span>(<span class="dv">7</span>, <span class="st">"Paired"</span>))))</a></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" title="1"><span class="kw"><a href="reference/animate_process.html">animate_process</a></span>(patients, <span class="dt">mode =</span> <span class="st">"relative"</span>, <span class="dt">jitter =</span> <span class="dv">10</span>, <span class="dt">legend =</span> <span class="st">"color"</span>,</a>
+<a class="sourceLine" id="cb6-2" title="2">  <span class="dt">mapping =</span> <span class="kw"><a href="reference/token_aes.html">token_aes</a></span>(<span class="dt">color =</span> <span class="kw"><a href="reference/token_scale.html">token_scale</a></span>(<span class="st">"employee"</span>, </a>
+<a class="sourceLine" id="cb6-3" title="3">    <span class="dt">scale =</span> <span class="st">"ordinal"</span>, </a>
+<a class="sourceLine" id="cb6-4" title="4">    <span class="dt">range =</span> RColorBrewer<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/RColorBrewer/topics/ColorBrewer">brewer.pal</a></span>(<span class="dv">7</span>, <span class="st">"Paired"</span>))))</a></code></pre></div>
 <p>Tokens can also be assigned images, for example:</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1"><span class="kw"><a href="reference/animate_process.html">animate_process</a></span>(example_log,</a>
-<a class="sourceLine" id="cb7-2" data-line-number="2">   <span class="dt">mapping =</span> <span class="kw"><a href="reference/token_aes.html">token_aes</a></span>(<span class="dt">shape =</span> <span class="st">"image"</span>,</a>
-<a class="sourceLine" id="cb7-3" data-line-number="3">    <span class="dt">size =</span> <span class="kw"><a href="reference/token_scale.html">token_scale</a></span>(<span class="dv">10</span>),</a>
-<a class="sourceLine" id="cb7-4" data-line-number="4">    <span class="dt">image =</span> <span class="kw"><a href="reference/token_scale.html">token_scale</a></span>(<span class="st">"https://upload.wikimedia.org/wikipedia/en/5/5f/Pacman.gif"</span>)))</a></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" title="1"><span class="kw"><a href="reference/animate_process.html">animate_process</a></span>(example_log,</a>
+<a class="sourceLine" id="cb7-2" title="2">   <span class="dt">mapping =</span> <span class="kw"><a href="reference/token_aes.html">token_aes</a></span>(<span class="dt">shape =</span> <span class="st">"image"</span>,</a>
+<a class="sourceLine" id="cb7-3" title="3">    <span class="dt">size =</span> <span class="kw"><a href="reference/token_scale.html">token_scale</a></span>(<span class="dv">10</span>),</a>
+<a class="sourceLine" id="cb7-4" title="4">    <span class="dt">image =</span> <span class="kw"><a href="reference/token_scale.html">token_scale</a></span>(<span class="st">"https://upload.wikimedia.org/wikipedia/en/5/5f/Pacman.gif"</span>)))</a></code></pre></div>
 <p>More advanced usage examples can be found <a href="https://fmannhardt.github.io/processanimateR/articles/">here</a>.</p>
 </div>
 </div>

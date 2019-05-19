@@ -32,6 +32,10 @@
 #' @param preRenderHook passed through to \code{\link{createWidget}}.
 #' @param width,height Fixed size for widget (in css units).
 #'  The default is NULL, which results in intelligent automatic sizing based on the widget's container.
+#' @param sizingPolicy Options that govern how the widget is sized in various
+#'   containers (e.g. a standalone browser, the RStudio Viewer, a knitr figure,
+#'   or a Shiny output binding). These options can be specified by calling the
+#'   \code{\link{sizingPolicy}} function.
 #' @param ... Options passed on to \code{\link{process_map}}.
 #'
 #' @examples
@@ -76,6 +80,13 @@ animate_process <- function(eventlog,
                             preRenderHook = NULL,
                             width = NULL,
                             height = NULL,
+                            sizingPolicy = htmlwidgets::sizingPolicy(
+                              browser.fill = TRUE,
+                              viewer.fill = TRUE,
+                              knitr.figure = FALSE,
+                              knitr.defaultWidth = "100%",
+                              knitr.defaultHeight = "300"
+                            ),
                             ...) {
 
   if (any(startsWith(as.character(names(list(...))), "animation_"))) {
@@ -180,7 +191,7 @@ animate_process <- function(eventlog,
     a_factor <- 0
   }
 
-  # actually render the process
+  # actually render the process map
   rendered_process <- renderer(processmap, width, height)
 
   settings <- list()
@@ -223,11 +234,7 @@ animate_process <- function(eventlog,
                             name = "processanimateR",
                             x = x,
                             width = width, height = height,
-                            sizingPolicy = htmlwidgets::sizingPolicy(
-                              defaultWidth = 800,
-                              defaultHeight = 600,
-                              browser.fill = TRUE
-                            ),
+                            sizingPolicy = sizingPolicy,
                             preRenderHook = preRenderHook)
 }
 
