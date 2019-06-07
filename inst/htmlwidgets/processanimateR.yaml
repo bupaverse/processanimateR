@@ -37,7 +37,7 @@ dependencies:
      - full.render.js
     all_files: FALSE
   - name: leaflet
-    version: 1.3.4
+    version: 1.5.1
     src: "htmlwidgets/lib/leaflet"
     stylesheet:
       - leaflet.css

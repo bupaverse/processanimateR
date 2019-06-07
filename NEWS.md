@@ -1,3 +1,12 @@
+## processanimateR 1.0.1
+
+* Integration with `heuristicsmineR` for `animation_mode="off"`
+* Added vignette contributed by @DomRowney
+* Fix several minor issues with knitR and JS selection code
+* Update embedded leaflet to v1.5.1
+* Security fix for embedded JS library braces used by leaflet
+
+
 ## processanimateR 1.0.0
 
 There are breaking changes in the API between v0.3.0 and v1.0.0. The old API was not maintainable and to avoid the list of parameters growing even more, the decision to move to a new API was made.
