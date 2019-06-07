@@ -32,8 +32,10 @@
 
 <meta property="og:title" content="Animate cases on a process map — animate_process" />
 
-<meta property="og:description" content="A function for creating a SVG animation of an event log on a process map created by
- process_map from the processmapR package." />
+<meta property="og:description" content="This function animates the cases stored in a `bupaR` event log on top of a process model.
+ Each case is represented by a token that travels through the process model according to the waiting and processing times of activities.
+ Currently, animation is only supported for process models created by process_map of the `processmapR` package.
+ The animation will be rendered as SVG animation (SMIL) using the `htmlwidgets` framework. Each token is a SVG shape and customizable." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -134,16 +136,18 @@
 
     <div class="ref-description">
     
-    <p>A function for creating a SVG animation of an event log on a process map created by
- <code>process_map</code> from the processmapR package.</p>
+    <p>This function animates the cases stored in a `bupaR` event log on top of a process model.
+ Each case is represented by a token that travels through the process model according to the waiting and processing times of activities.
+ Currently, animation is only supported for process models created by <code>process_map</code> of the `processmapR` package.
+ The animation will be rendered as SVG animation (SMIL) using the `htmlwidgets` framework. Each token is a SVG shape and customizable.</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>animate_process</span>(<span class='no'>eventlog</span>, <span class='kw'>processmap</span> <span class='kw'>=</span> <span class='fu'>process_map</span>(<span class='no'>eventlog</span>, <span class='kw'>render</span> <span class='kw'>=</span> <span class='no'>F</span>,
-  <span class='no'>...</span>), <span class='kw'>renderer</span> <span class='kw'>=</span> <span class='fu'><a href='renderer_graphviz.html'>renderer_graphviz</a></span>(), <span class='kw'>mode</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"absolute"</span>,
-  <span class='st'>"relative"</span>, <span class='st'>"off"</span>), <span class='kw'>duration</span> <span class='kw'>=</span> <span class='fl'>60</span>, <span class='kw'>jitter</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>timeline</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>legend</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>initial_state</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"playing"</span>, <span class='st'>"paused"</span>),
-  <span class='kw'>initial_time</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>repeat_count</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>repeat_delay</span> <span class='kw'>=</span> <span class='fl'>0.5</span>,
+    <pre class="usage"><span class='fu'>animate_process</span>(<span class='no'>eventlog</span>, <span class='kw'>processmap</span> <span class='kw'>=</span> <span class='kw pkg'>processmapR</span><span class='kw ns'>::</span><span class='fu'><a href='https://www.rdocumentation.org/packages/processmapR/topics/process_map'>process_map</a></span>(<span class='no'>eventlog</span>,
+  <span class='kw'>render</span> <span class='kw'>=</span> <span class='no'>F</span>, <span class='no'>...</span>), <span class='kw'>renderer</span> <span class='kw'>=</span> <span class='fu'><a href='renderer_graphviz.html'>renderer_graphviz</a></span>(),
+  <span class='kw'>mode</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"absolute"</span>, <span class='st'>"relative"</span>, <span class='st'>"off"</span>), <span class='kw'>duration</span> <span class='kw'>=</span> <span class='fl'>60</span>, <span class='kw'>jitter</span> <span class='kw'>=</span> <span class='fl'>0</span>,
+  <span class='kw'>timeline</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>legend</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>initial_state</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"playing"</span>,
+  <span class='st'>"paused"</span>), <span class='kw'>initial_time</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>repeat_count</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>repeat_delay</span> <span class='kw'>=</span> <span class='fl'>0.5</span>,
   <span class='kw'>epsilon_time</span> <span class='kw'>=</span> <span class='no'>duration</span>/<span class='fl'>1000</span>, <span class='kw'>mapping</span> <span class='kw'>=</span> <span class='fu'><a href='token_aes.html'>token_aes</a></span>(),
   <span class='kw'>token_callback_onclick</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"function(svg_root, svg_element, case_id) {"</span>,
   <span class='st'>"}"</span>), <span class='kw'>token_callback_select</span> <span class='kw'>=</span> <span class='fu'><a href='token_select_decoration.html'>token_select_decoration</a></span>(),
@@ -159,21 +163,22 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>eventlog</th>
-      <td><p>The event log object that should be animated</p></td>
+      <td><p>The `bupaR` event log object that should be animated</p></td>
     </tr>
     <tr>
       <th>processmap</th>
-      <td><p>The process map created with processmapR that the event log should be animated on,
-if not provided a standard process map will be generated by using processmapR::process_map.</p></td>
+      <td><p>A process map created with `processmapR` (<code>process_map</code>)
+on which the event log will be animated. If not provided a standard process map will be generated
+from the supplied event log.</p></td>
     </tr>
     <tr>
       <th>renderer</th>
       <td><p>Whether to use Graphviz (<code><a href='renderer_graphviz.html'>renderer_graphviz</a></code>) to layout and render the process map,
-or to render the process map using Leaflet ((<code><a href='renderer_leaflet.html'>renderer_leaflet</a></code>)) on a geographical map.</p></td>
+or to render the process map using Leaflet (<code><a href='renderer_leaflet.html'>renderer_leaflet</a></code>) on a geographical map.</p></td>
     </tr>
     <tr>
       <th>mode</th>
-      <td><p>Whether to animate the cases according to their actual time of occurence ("absolute") or to start all cases at once ("relative").</p></td>
+      <td><p>Whether to animate the cases according to their actual time of occurence (`absolute`) or to start all cases at once (`relative`).</p></td>
     </tr>
     <tr>
       <th>duration</th>
@@ -182,23 +187,23 @@ or to render the process map using Leaflet ((<code><a href='renderer_leaflet.htm
     <tr>
       <th>jitter</th>
       <td><p>The magnitude of a random coordinate translation, known as jitter in scatterplots, which is added to each token.
-Adding jitter can help to disambiguate tokens traveling on top of each other.</p></td>
+Adding jitter can help to disambiguate tokens drawn on top of each other.</p></td>
     </tr>
     <tr>
       <th>timeline</th>
-      <td><p>Whether to render a timeline slider in supported browsers (Recent versions of Chrome and Firefox only).</p></td>
+      <td><p>Whether to render a timeline slider in supported browsers (Work only on recent versions of Chrome and Firefox).</p></td>
     </tr>
     <tr>
       <th>legend</th>
-      <td><p>Whether to show a legend for the `size` or the `color` scale.</p></td>
+      <td><p>Whether to show a legend for the `size` or the `color` scale. The default is not to show a legend.</p></td>
     </tr>
     <tr>
       <th>initial_state</th>
-      <td><p>Whether the initial playback state is `playing` or `paused`.</p></td>
+      <td><p>Whether the initial playback state is `playing` or `paused`. The default is `playing`.</p></td>
     </tr>
     <tr>
       <th>initial_time</th>
-      <td><p>Sets the initial time of the animation. The default is to start at the beginning (0).</p></td>
+      <td><p>Sets the initial time of the animation. The default value is `0`.</p></td>
     </tr>
     <tr>
       <th>repeat_count</th>
@@ -220,7 +225,7 @@ Use <code><a href='token_aes.html'>token_aes</a></code> to create a suitable map
     <tr>
       <th>token_callback_onclick</th>
       <td><p>A JavaScript function that is called when a token is clicked.
-The function is parsed by <code>JS</code> and received three parameters: 'svg_root', 'svg_element', and 'case_id'.</p></td>
+The function is parsed by <code>JS</code> and received three parameters: `svg_root`, 'svg_element', and 'case_id'.</p></td>
     </tr>
     <tr>
       <th>token_callback_select</th>
@@ -271,19 +276,7 @@ or a Shiny output binding). These options can be specified by calling the
     <pre class="examples"><div class='input'><span class='fu'><a href='https://www.rdocumentation.org/packages/utils/topics/data'>data</a></span>(<span class='no'>example_log</span>)
 
 <span class='co'># Animate the process with default options (absolute time and 60s duration)</span>
-<span class='fu'>animate_process</span>(<span class='no'>example_log</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: Prefixing `UQ()` with the rlang namespace is deprecated as of rlang 0.3.0.</span>
-#&gt; <span class='warning'>Please use the non-prefixed form or `!!` instead.</span>
-#&gt; <span class='warning'></span>
-#&gt; <span class='warning'>  # Bad:</span>
-#&gt; <span class='warning'>  rlang::expr(mean(rlang::UQ(var) * 100))</span>
-#&gt; <span class='warning'></span>
-#&gt; <span class='warning'>  # Ok:</span>
-#&gt; <span class='warning'>  rlang::expr(mean(UQ(var) * 100))</span>
-#&gt; <span class='warning'></span>
-#&gt; <span class='warning'>  # Good:</span>
-#&gt; <span class='warning'>  rlang::expr(mean(!!var * 100))</span>
-#&gt; <span class='warning'></span>
-#&gt; <span class='warning'><span style='color: #555555;'>This warning is displayed once per session.</span><span></span></div></span><div class='input'><span class='co'># Animate the process with default options (relative time, with jitter, infinite repeat)</span>
+<span class='fu'>animate_process</span>(<span class='no'>example_log</span>)</div><div class='input'><span class='co'># Animate the process with default options (relative time, with jitter, infinite repeat)</span>
 <span class='fu'>animate_process</span>(<span class='no'>example_log</span>, <span class='kw'>mode</span> <span class='kw'>=</span> <span class='st'>"relative"</span>, <span class='kw'>jitter</span> <span class='kw'>=</span> <span class='fl'>10</span>, <span class='kw'>repeat_count</span> <span class='kw'>=</span> <span class='fl'>Inf</span>)</div><div class='input'>
 </div></pre>
   </div>
