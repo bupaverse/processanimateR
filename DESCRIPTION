@@ -7,7 +7,7 @@ Authors@R: c(person("Felix","Mannhardt", email = "felix.mannhardt@sintef.no", ro
 Description: Provides animated process maps based on the 'procesmapR' package.
   Cases stored in event logs created with with 'bupaR' S3 class eventlog() are
   rendered as tokens (SVG shapes) and animated according to their occurrence 
-  times on top of the process map. For rendering SVG animations (SMIL) and the
+  times on top of the process map. For rendering SVG animations ('SMIL') and the
   'htmlwidget' package are used.
 License: MIT + file LICENSE
 Encoding: UTF-8

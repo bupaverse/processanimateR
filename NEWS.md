@@ -3,9 +3,9 @@
 * Integration with `heuristicsmineR` for `animation_mode="off"`
 * Added vignette contributed by @DomRowney
 * Fix several minor issues with knitR and JS selection code
+* Fixed issue #16
 * Update embedded leaflet to v1.5.1
 * Security fix for embedded JS library braces used by leaflet
-
 
 ## processanimateR 1.0.0
 
