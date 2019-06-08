@@ -3,7 +3,7 @@ processanimateR 1.0.1
 Copyright (c) 2018 Felix Mannhardt
 Licensed under MIT license
 */
-function RendererLeaflet(el, data) {
+function PARendererLeaflet(el, data) {
 
   var svg = null;
 
@@ -28,7 +28,7 @@ function RendererLeaflet(el, data) {
     var mapData = data.rendered_process;
     var map = new L.Map(element, mapData.options ).addLayer(mapData.layer);
 
-    // conveniance feature to easier map building by hand
+    // facilitate map building by hand
     map.on('click', function(e) {
       var latlng = map.mouseEventToLatLng(e.originalEvent);
       console.log(latlng.lat + ', ' + latlng.lng);

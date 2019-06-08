@@ -1,5 +1,5 @@
 /*
-processanimateR 1.0.0
+processanimateR 1.0.1
 Copyright (c) 2018 Felix Mannhardt
 Licensed under MIT license
 */
@@ -10,8 +10,8 @@ HTMLWidgets.widget({
 
   factory: function(el, width, height) {
 
-    var control = new PlaybackControl(el);
-    var scales = new Scales(el);
+    var control = new PAPlaybackControl(el);
+    var scales = new PAScales(el);
     var tokens = null;
     var renderer = null;
 
@@ -26,24 +26,26 @@ HTMLWidgets.widget({
 
         scales.update(data);
 
-        tokens = new Tokens(el, data, scales);
+        tokens = new PATokens(el, data, scales);
 
         // Render process map
         if (data.processmap_renderer === "map") {
-          renderer = new RendererLeaflet(el, data);
+          renderer = new PARendererLeaflet(el, data);
         } else { // use GraphViz
-          renderer = new RendererGraphviz(el, data);
+          renderer = new PARendererGraphviz(el, data);
         }
 
         renderer.render(function(svg) {
 
-          // Generate tokens and animations
-          var tokenGroup = tokens.insertTokens(svg);
+          var tokenGroup = d3.select();
+          if (data.tokens.case !== undefined) {
+            // Generate tokens and animations
+            tokenGroup = tokens.insertTokens(svg);
+          }
           tokens.attachEventListeners(svg, tokenGroup);
 
-          control.renderPlaybackControl(data, svg, width);
+          control.renderPlaybackControl(data, svg, width, true);
           scales.renderLegend(data, svg, width, height);
-
           renderer.resize(width, Math.max(0, height - control.getHeight()));
         });
 
@@ -52,7 +54,7 @@ HTMLWidgets.widget({
       resize: function(width, height) {
 
         if (renderer) {
-          control.renderPlaybackControl(renderer.getData(), renderer.getSvg(), width);
+          control.renderPlaybackControl(renderer.getData(), renderer.getSvg(), width, false);
           scales.resizeLegend(renderer.getSvg(), width, height);
           renderer.resize(width, Math.max(0, height - control.getHeight()));
         }

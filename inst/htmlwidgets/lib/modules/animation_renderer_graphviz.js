@@ -3,7 +3,7 @@ processanimateR 1.0.1
 Copyright (c) 2018 Felix Mannhardt
 Licensed under MIT license
 */
-function RendererGraphviz(el, data) {
+function PARendererGraphviz(el, data) {
 
   var svg = null;
   var svgPan = null;
@@ -78,7 +78,7 @@ function RendererGraphviz(el, data) {
       d3.select(svg).select(".graph > polygon").remove();
     }
 
-    var viz = new Viz();
+    var viz = new PAViz();
 
     // Render DOT using Graphviz
     viz.renderSVGElement(data.rendered_process).then(function(element) {
@@ -105,7 +105,7 @@ function RendererGraphviz(el, data) {
 
       }
     ).catch(function(error) {
-      viz = new Viz();
+      viz = new PAViz();
       var p = document.createElement("p");
       var t = document.createTextNode("Failed to render the graph. It is probably too large. Original error: "+error);
       p.appendChild(t);

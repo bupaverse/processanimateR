@@ -29,7 +29,7 @@ dependencies:
     src: "htmlwidgets/lib/momentjs"
     script: moment.min.js
     all_files: FALSE
-  - name: viz
+  - name: viz.js
     version: 2.1.2
     src: "htmlwidgets/lib/viz"
     script:

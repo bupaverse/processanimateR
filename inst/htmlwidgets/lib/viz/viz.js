@@ -22,7 +22,7 @@ http://www.zlib.net/zlib_license.html
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
   typeof define === 'function' && define.amd ? define(factory) :
-  (global.Viz = factory());
+  (global.PAViz = factory());
 }(this, (function () { 'use strict';
 
   var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
@@ -233,15 +233,15 @@ http://www.zlib.net/zlib_license.html
     });
   }
 
-  var Viz = function () {
-    function Viz() {
+  var PAViz = function () {
+    function PAViz() {
       var _ref3 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
           workerURL = _ref3.workerURL,
           worker = _ref3.worker,
           Module = _ref3.Module,
           render = _ref3.render;
 
-      classCallCheck(this, Viz);
+      classCallCheck(this, PAViz);
 
       if (typeof workerURL !== 'undefined') {
         this.wrapper = new WorkerWrapper(new Worker(workerURL));
@@ -249,14 +249,14 @@ http://www.zlib.net/zlib_license.html
         this.wrapper = new WorkerWrapper(worker);
       } else if (typeof Module !== 'undefined' && typeof render !== 'undefined') {
         this.wrapper = new ModuleWrapper(Module, render);
-      } else if (typeof Viz.Module !== 'undefined' && typeof Viz.render !== 'undefined') {
-        this.wrapper = new ModuleWrapper(Viz.Module, Viz.render);
+      } else if (typeof PAViz.Module !== 'undefined' && typeof PAViz.render !== 'undefined') {
+        this.wrapper = new ModuleWrapper(PAViz.Module, PAViz.render);
       } else {
         throw new Error('Must specify workerURL or worker option, Module and render options, or include one of full.render.js or lite.render.js after viz.js.');
       }
     }
 
-    createClass(Viz, [{
+    createClass(PAViz, [{
       key: 'renderString',
       value: function renderString(src) {
         var _ref4 = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {},
@@ -325,9 +325,9 @@ http://www.zlib.net/zlib_license.html
         });
       }
     }]);
-    return Viz;
+    return PAViz;
   }();
 
-  return Viz;
+  return PAViz;
 
 })));

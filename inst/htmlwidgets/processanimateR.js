@@ -1,5 +1,5 @@
 /*
-processanimateR 1.0.1.9000
+processanimateR 1.0.1
 Copyright (c) 2018 Felix Mannhardt
 Licensed under MIT license
 */
@@ -10,8 +10,8 @@ HTMLWidgets.widget({
 
   factory: function(el, width, height) {
 
-    var control = new PlaybackControl(el);
-    var scales = new Scales(el);
+    var control = new PAPlaybackControl(el);
+    var scales = new PAScales(el);
     var tokens = null;
     var renderer = null;
 
@@ -26,13 +26,13 @@ HTMLWidgets.widget({
 
         scales.update(data);
 
-        tokens = new Tokens(el, data, scales);
+        tokens = new PATokens(el, data, scales);
 
         // Render process map
         if (data.processmap_renderer === "map") {
-          renderer = new RendererLeaflet(el, data);
+          renderer = new PARendererLeaflet(el, data);
         } else { // use GraphViz
-          renderer = new RendererGraphviz(el, data);
+          renderer = new PARendererGraphviz(el, data);
         }
 
         renderer.render(function(svg) {

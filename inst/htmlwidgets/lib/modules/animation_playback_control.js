@@ -3,7 +3,7 @@ processanimateR 1.0.1
 Copyright (c) 2018 Felix Mannhardt
 Licensed under MIT license
 */
-function PlaybackControl(el) {
+function PAPlaybackControl(el) {
 
   var smargin = {top:5, right:20, bottom:0, left:50};
   var sheight = 75 - smargin.top - smargin.bottom;

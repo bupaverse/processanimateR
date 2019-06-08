@@ -1,12 +1,30 @@
 /*
-processanimateR 1.0.1.9000
+processanimateR 1.0.1
 Copyright (c) 2018 Felix Mannhardt
 Licensed under MIT license
 */
-function RendererGraphviz(el, data) {
+function PARendererGraphviz(el, data) {
 
   var svg = null;
   var svgPan = null;
+
+  // source https://stackoverflow.com/questions/178325/how-do-i-check-if-an-element-is-hidden-in-jquery/11511035#11511035
+  function isRendered(domObj) {
+      if ((domObj.nodeType != 1) || (domObj == document.body)) {
+          return true;
+      }
+      if (domObj.currentStyle && domObj.currentStyle.display != "none" &&
+            domObj.currentStyle.visibility != "hidden") {
+          return isRendered(domObj.parentNode);
+      } else if (window.getComputedStyle) {
+          var cs = document.defaultView.getComputedStyle(domObj, null);
+          if (cs.getPropertyValue("display") != "none" &&
+                cs.getPropertyValue("visibility") != "hidden") {
+              return isRendered(domObj.parentNode);
+          }
+      }
+      return false;
+  }
 
   this.getSvg = function() {
     return svg;
@@ -60,7 +78,7 @@ function RendererGraphviz(el, data) {
       d3.select(svg).select(".graph > polygon").remove();
     }
 
-    var viz = new Viz();
+    var viz = new PAViz();
 
     // Render DOT using Graphviz
     viz.renderSVGElement(data.rendered_process).then(function(element) {
@@ -81,11 +99,13 @@ function RendererGraphviz(el, data) {
 
         postRender(svg);
 
-        svgPan = svgPanZoom(svg, { dblClickZoomEnabled: false, preventEventsDefaults: true });
+        if (isRendered(svg)) {
+          svgPan = svgPanZoom(svg, { dblClickZoomEnabled: false, preventEventsDefaults: true });
+        }
 
       }
     ).catch(function(error) {
-      viz = new Viz();
+      viz = new PAViz();
       var p = document.createElement("p");
       var t = document.createTextNode("Failed to render the graph. It is probably too large. Original error: "+error);
       p.appendChild(t);
@@ -103,12 +123,17 @@ function RendererGraphviz(el, data) {
     svg.setAttribute("width", width);
     svg.setAttribute("height", height);
 
-    if (svgPan) {
-      svgPan.resize();
-      if (height > 0) {
-        svgPan.fit();
+
+    if (isRendered(svg)) {
+      if (svgPan) {
+        svgPan.resize();
+        if (height > 0) {
+          svgPan.fit();
+        }
+        svgPan.center();
+      } else {
+        svgPan = svgPanZoom(svg, { dblClickZoomEnabled: false, preventEventsDefaults: true });
       }
-      svgPan.center();
     }
 
   };
