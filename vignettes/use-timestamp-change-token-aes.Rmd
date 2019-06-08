@@ -52,7 +52,7 @@ my_timeflags <- patients %>%
 
 The data for the `token_scale()` function must have the column headings 'case, time, value'.
 
-Without the `domain = my_flags$value` arguement the flags follow alphabetic order (e.g. 
+Without the `domain = my_flags$value` argument the flags follow alphabetic order (e.g. 
  0, 16, 2, 4, 8) rather than the numeric order we wants. See [d3-legend](https://github.com/susielu/d3-legend) for further information.
 
 ```{r echo = TRUE, message = FALSE}

@@ -4,8 +4,11 @@ Title: Process Map Token Replay Animation
 Version: 1.0.1
 Authors@R: c(person("Felix","Mannhardt", email = "felix.mannhardt@sintef.no", role = c("aut","cre")),
   person("Gert","Janssenswillen",email = "gert.janssenswillen@uhasselt.be", role = c("ctb")))
-Description: Token replay animation for process maps created with 
-  'processmapR' by using SVG animations ('SMIL') and the 'htmlwidget' package.
+Description: Provides animated process maps based on the 'procesmapR' package.
+  Cases stored in event logs created with with 'bupaR' S3 class eventlog() are
+  rendered as tokens (SVG shapes) and animated according to their occurrence 
+  times on top of the process map. For rendering SVG animations (SMIL) and the
+  'htmlwidget' package are used.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true

@@ -11,7 +11,7 @@
 #'  from the supplied event log.
 #' @param renderer Whether to use Graphviz (\code{\link{renderer_graphviz}}) to layout and render the process map,
 #'  or to render the process map using Leaflet (\code{\link{renderer_leaflet}}) on a geographical map.
-#' @param mode Whether to animate the cases according to their actual time of occurence (`absolute`) or to start all cases at once (`relative`).
+#' @param mode Whether to animate the cases according to their actual time of occurrence (`absolute`) or to start all cases at once (`relative`).
 #' @param duration The overall duration of the animation, all times are scaled according to this overall duration.
 #' @param jitter The magnitude of a random coordinate translation, known as jitter in scatterplots, which is added to each token.
 #'  Adding jitter can help to disambiguate tokens drawn on top of each other.

@@ -29,7 +29,7 @@ from the supplied event log.}
 \item{renderer}{Whether to use Graphviz (\code{\link{renderer_graphviz}}) to layout and render the process map,
 or to render the process map using Leaflet (\code{\link{renderer_leaflet}}) on a geographical map.}
 
-\item{mode}{Whether to animate the cases according to their actual time of occurence (`absolute`) or to start all cases at once (`relative`).}
+\item{mode}{Whether to animate the cases according to their actual time of occurrence (`absolute`) or to start all cases at once (`relative`).}
 
 \item{duration}{The overall duration of the animation, all times are scaled according to this overall duration.}
 
