@@ -101,7 +101,7 @@ Felix Mannhardt ([SINTEF Digital -- Technology Management Department](https://ww
 
 ## License
 
-This software is licensed under the MIT License - see the [LICENSE](LICENSE.md) file for details.
+This software is licensed under the MIT License - see the [LICENSE](https://github.com/fmannhardt/processanimateR/blob/master/LICENSE.md) file for details.
 
 ## Acknowledgments
 
