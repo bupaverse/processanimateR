@@ -10,6 +10,9 @@ function PARendererGraphviz(el, data) {
 
   // source https://stackoverflow.com/questions/178325/how-do-i-check-if-an-element-is-hidden-in-jquery/11511035#11511035
   function isRendered(domObj) {
+      if (domObj === null) {
+        return false;
+      }
       if ((domObj.nodeType != 1) || (domObj == document.body)) {
           return true;
       }
@@ -99,10 +102,6 @@ function PARendererGraphviz(el, data) {
 
         postRender(svg);
 
-        if (isRendered(svg)) {
-          svgPan = svgPanZoom(svg, { dblClickZoomEnabled: false, preventEventsDefaults: true });
-        }
-
       }
     ).catch(function(error) {
       viz = new PAViz();
@@ -119,17 +118,16 @@ function PARendererGraphviz(el, data) {
 
   this.resize = function(width, height) {
 
-    // Adjust GraphViz diagram size
-    svg.setAttribute("width", width);
-    svg.setAttribute("height", height);
+    if (height > 0 && width > 0) {
+      // Adjust GraphViz diagram size
+      svg.setAttribute("width", width);
+      svg.setAttribute("height", height);
+    }
 
-
-    if (isRendered(svg)) {
+    if (isRendered(el)) {
       if (svgPan) {
         svgPan.resize();
-        if (height > 0) {
-          svgPan.fit();
-        }
+        svgPan.fit();
         svgPan.center();
       } else {
         svgPan = svgPanZoom(svg, { dblClickZoomEnabled: false, preventEventsDefaults: true });

@@ -86,7 +86,7 @@ function PAScales(el) {
   };
 
   this.resizeLegend = function(svg, width, height) {
-    if (legendSvg) {
+    if (legendSvg && width > 0 && height > 0) {
       legendSvg.attr("style", "position: relative; bottom: "+height+"px; left: "+(width - legendSvg.attr("width")) +"px; z-index: 999;");
       el.insertBefore(legendSvg.node(), null); // keep as last child!
     }
