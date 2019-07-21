@@ -51,9 +51,13 @@ function PAScales(el) {
 
   this.renderLegend = function(data, svg, width, height) {
 
-    if (!legendSvg && data.legend && !(data.colors_scale === "time" || data.sizes_scale === "time")) {
+    if (data.legend && !(data.colors_scale === "time" || data.sizes_scale === "time")) {
 
-      legendSvg = d3.select(el).append("svg");
+      if (legendSvg) {
+        legendSvg.selectAll("*").remove();
+      } else {
+        legendSvg = d3.select(el).append("svg");
+      }
 
       legendSvg.append("defs")
         // text background box and arrow marker
