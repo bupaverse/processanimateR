@@ -3,10 +3,12 @@ processanimateR 1.0.1
 Copyright (c) 2018 Felix Mannhardt
 Licensed under MIT license
 */
-function PARendererGraphviz(el, data) {
+function PARendererGraphviz(el) {
 
   var svg = null;
   var svgPan = null;
+  var data = null;
+  var viz = new PAViz();
 
   // source https://stackoverflow.com/questions/178325/how-do-i-check-if-an-element-is-hidden-in-jquery/11511035#11511035
   function isRendered(domObj) {
@@ -37,7 +39,9 @@ function PARendererGraphviz(el, data) {
     return data;
   };
 
-  this.render = function(postRender) {
+  this.render = function(newData, postRender) {
+
+    data = newData;
 
     function fixEdgeIds(svg) {
       var edges = svg.querySelectorAll('.edge');
@@ -80,8 +84,6 @@ function PARendererGraphviz(el, data) {
     function fixBackground(svg) {
       d3.select(svg).select(".graph > polygon").remove();
     }
-
-    var viz = new PAViz();
 
     // Render DOT using Graphviz
     viz.renderSVGElement(data.rendered_process).then(function(element) {

@@ -24,18 +24,27 @@ HTMLWidgets.widget({
           Shiny.onInputChange(el.id + "_activities", []);
         }
 
+        var curWidth = width;
+        var curHeight = height;
+
+        if (renderer !== null && renderer.getSvg() !== null) {
+          // Widget is updated and was already initialized
+          curWidth = el.offsetWidth;
+          curHeight = el.offsetHeight;
+        }
+
         scales.update(data);
 
         tokens = new PATokens(el, data, scales);
 
         // Render process map
         if (data.processmap_renderer === "map") {
-          renderer = new PARendererLeaflet(el, data);
+          renderer = new PARendererLeaflet(el);
         } else { // use GraphViz
-          renderer = new PARendererGraphviz(el, data);
+          renderer = new PARendererGraphviz(el);
         }
 
-        renderer.render(function(svg) {
+        renderer.render(data, function(svg) {
 
           var tokenGroup = d3.select();
           if (data.tokens.case !== undefined) {
@@ -46,14 +55,17 @@ HTMLWidgets.widget({
 
           control.renderPlaybackControl(data, svg, width, true);
           scales.renderLegend(data, svg, width, height);
-          renderer.resize(width, Math.max(0, height - control.getHeight()));
+
+          debugger;
+          renderer.resize(curWidth, Math.max(0, curHeight - control.getHeight()));
         });
+
 
       },
 
       resize: function(width, height) {
-
-        if (renderer) {
+        debugger;
+        if (renderer !== null && renderer.getData() !== null) {
           control.renderPlaybackControl(renderer.getData(), renderer.getSvg(), width, false);
           scales.resizeLegend(renderer.getSvg(), width, height);
           renderer.resize(width, Math.max(0, height - control.getHeight()));
