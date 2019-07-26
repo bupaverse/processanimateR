@@ -56,7 +56,6 @@ HTMLWidgets.widget({
           control.renderPlaybackControl(data, svg, width, true);
           scales.renderLegend(data, svg, width, height);
 
-          debugger;
           renderer.resize(curWidth, Math.max(0, curHeight - control.getHeight()));
         });
 
@@ -64,7 +63,6 @@ HTMLWidgets.widget({
       },
 
       resize: function(width, height) {
-        debugger;
         if (renderer !== null && renderer.getData() !== null) {
           control.renderPlaybackControl(renderer.getData(), renderer.getSvg(), width, false);
           scales.resizeLegend(renderer.getSvg(), width, height);
