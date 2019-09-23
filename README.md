@@ -78,7 +78,7 @@ animate_process(example_log,
     image = token_scale("https://upload.wikimedia.org/wikipedia/en/5/5f/Pacman.gif")))
 ```
 
-More advanced usage examples can be found [here](https://fmannhardt.github.io/processanimateR/articles/).
+More advanced usage examples can be found [here](https://bupaverse.github.io/processanimateR/articles/).
 
 ## Libraries Used
 This package makes use of the following libraries:
