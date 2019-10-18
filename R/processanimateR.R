@@ -98,6 +98,7 @@ animate_process <- function(eventlog,
   case <- case_end <- log_start <- log_duration <- case_duration <- from_id <- to_id <- NULL
   label <- act <- NULL
   token_start <- token_end <- activity_duration <- token_duration <- NULL
+  constraint <- weight <- NULL
 
   mode <- match.arg(mode)
   initial_state <- match.arg(initial_state)

@@ -23,7 +23,8 @@ Imports:
   tidyr,
   htmlwidgets, 
   DiagrammeR (>= 1.0.0),
-  grDevices
+  grDevices,
+  stringr
 Suggests: 
   eventdataR,
   edeaR,
