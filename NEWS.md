@@ -1,3 +1,8 @@
+## processanimateR 1.0.2.9000
+
+* Height/width fixes for use in Rmarkdown
+* Fixes for legend not properly re-generated 
+
 ## processanimateR 1.0.1
 
 * Integration with `heuristicsmineR` for `animation_mode="off"`

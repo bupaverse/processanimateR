@@ -4,8 +4,11 @@
 \alias{activity_select_decoration}
 \title{Decoration callback for activity selection}
 \usage{
-activity_select_decoration(stroke_dasharray = "2", stroke_width = "2",
-  stroke = "black")
+activity_select_decoration(
+  stroke_dasharray = "2",
+  stroke_width = "2",
+  stroke = "black"
+)
 }
 \arguments{
 \item{stroke_dasharray}{Sets the `stroke-dasharray` attribute for selected activities.}

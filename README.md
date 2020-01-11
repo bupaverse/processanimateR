@@ -5,9 +5,9 @@
 [![](https://cranlogs.r-pkg.org/badges/processanimateR)](https://cran.r-project.org/package=processanimateR)
 [![CRAN\_Status\_Badge](https://www.r-pkg.org/badges/version/processanimateR)](https://cran.r-project.org/package=processanimateR)
 [![lifecycle](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://www.tidyverse.org/lifecycle/#maturing)
-[![Travis-CI Build Status](https://travis-ci.org/fmannhardt/processanimateR.svg?branch=master)](https://travis-ci.org/fmannhardt/processanimateR)
+[![Travis-CI Build Status](https://travis-ci.org/bupaverse/processanimateR.svg?branch=master)](https://travis-ci.org/bupaverse/processanimateR)
 
-[![processanimateR example](man/figures/processanimateR-banner.png)](https://fmannhardt.github.io/processanimateR/example/processanimateR-banner.html)
+[![processanimateR example](man/figures/processanimateR-banner.png)](https://bupaverse.github.io/processanimateR/example/processanimateR-banner.html)
 
 Flexible token replay animation for process maps created through the [processmapR](https://github.com/gertjanssenswillen/processmapR/) package from the [bupaR](http://www.bupar.net) suite, which uses [DiagrammeR](https://github.com/rich-iannone/DiagrammeR/) and [viz.js](https://github.com/mdaines/viz.js) library to render process maps using GraphViz. As alternative renderer [Leaflet](https://leafletjs.com/) with fixed coordinates for activities is also supported.
 
@@ -31,10 +31,10 @@ Note that the current development version may break without warning.
 source("https://install-github.me/r-lib/remotes")
 
 # use remotes to install the latest version of processanimateR
-remotes::install_github("fmannhardt/processanimateR")
+remotes::install_github("bupaverse/processanimateR")
 
 # or install a specific tag
-remotes::install_github("fmannhardt/processanimateR@v0.3.0")
+remotes::install_github("bupaverse/processanimateR@v0.3.0")
 ```
 
 ### Warnings and Limitations
@@ -94,14 +94,14 @@ This package makes use of the following libraries:
 
 ## Versioning
 
-We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/fmannhardt/processanimateR/tags). 
+We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/bupaverse/processanimateR/tags). 
 
 ## Authors
 Felix Mannhardt ([SINTEF Digital -- Technology Management Department](https://www.sintef.no/digital/))
 
 ## License
 
-This software is licensed under the MIT License - see the [LICENSE](https://github.com/fmannhardt/processanimateR/blob/master/LICENSE.md) file for details.
+This software is licensed under the MIT License - see the [LICENSE](https://github.com/bupaverse/processanimateR/blob/master/LICENSE.md) file for details.
 
 ## Acknowledgments
 

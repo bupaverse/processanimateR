@@ -7,8 +7,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Use processanimateR selection as Shiny inputs • processanimateR</title>
 <!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha256-916EbMg70RQy9LHiGkXzG8hSg9EdNy97GazNG/aiY1w=" crossorigin="anonymous">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous">
-<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script><!-- sticky kit --><script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/all.min.css" integrity="sha256-nAmazAk6vS34Xqo0BSrTb+abbtFlgsFK7NKSi6o7Y78=" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/v4-shims.min.css" integrity="sha256-6qHlizsOWFskGlwVOKuns+D1nB6ssZrHQrNj1wGplHc=" crossorigin="anonymous">
+<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/headroom.min.js" integrity="sha256-DJFC1kqIhelURkuza0AvYal5RxMtpzLjFhsnVIeuk+U=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
 <script src="../pkgdown.js"></script><meta property="og:title" content="Use processanimateR selection as Shiny inputs">
 <meta property="og:description" content="">
 <meta name="twitter:card" content="summary">
@@ -38,7 +39,7 @@
       <ul class="nav navbar-nav">
 <li>
   <a href="../index.html">
-    <span class="fa fa-home fa-lg"></span>
+    <span class="fas fa fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -75,8 +76,8 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/fmannhardt/processanimateR">
-    <span class="fa fa-github fa-lg"></span>
+  <a href="https://github.com/bupaverse/processanimateR">
+    <span class="fab fa fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -89,15 +90,16 @@
 <!--/.navbar -->
 
       
+
       </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1>Use processanimateR selection as Shiny inputs</h1>
                         <h4 class="author">Felix Mannhardt</h4>
             
-            <h4 class="date">2019-06-09</h4>
+            <h4 class="date">2020-01-11</h4>
       
-      <small class="dont-index">Source: <a href="https://github.com/fmannhardt/processanimateR/blob/master/vignettes/use-shiny-selections.Rmd"><code>vignettes/use-shiny-selections.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/bupaverse/processanimateR/blob/master/vignettes/use-shiny-selections.Rmd"><code>vignettes/use-shiny-selections.Rmd</code></a></small>
       <div class="hidden name"><code>use-shiny-selections.Rmd</code></div>
 
     </div>
@@ -105,10 +107,10 @@
     
     
 <p>Selections made in the processanimateR animation be used as input by Shiny applications. Here a simple example in which a Shiny module is created that renders the case identifiers of selected tokens and the identifiers and names of selected activities:</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(shiny)</a>
-<a class="sourceLine" id="cb1-2" title="2"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(processanimateR)</a>
-<a class="sourceLine" id="cb1-3" title="3"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(eventdataR)</a>
-<a class="sourceLine" id="cb1-4" title="4"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(jsonlite)</a>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" title="1"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(shiny)</a>
+<a class="sourceLine" id="cb1-2" title="2"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(processanimateR)</a>
+<a class="sourceLine" id="cb1-3" title="3"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(eventdataR)</a>
+<a class="sourceLine" id="cb1-4" title="4"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(jsonlite)</a>
 <a class="sourceLine" id="cb1-5" title="5"></a>
 <a class="sourceLine" id="cb1-6" title="6">shinyAnimation &lt;-<span class="st"> </span><span class="cf">function</span>(eventlog, <span class="dt">min.time =</span> <span class="dv">30</span>, <span class="dt">max.time =</span> <span class="dv">600</span>, <span class="dt">default.time =</span> <span class="dv">60</span>) {</a>
 <a class="sourceLine" id="cb1-7" title="7"></a>
@@ -130,24 +132,24 @@
 <a class="sourceLine" id="cb1-23" title="23">  animation &lt;-<span class="st"> </span><span class="cf">function</span>(input, output, session, ...) {</a>
 <a class="sourceLine" id="cb1-24" title="24"></a>
 <a class="sourceLine" id="cb1-25" title="25">    output<span class="op">$</span>token_selection &lt;-<span class="st"> </span><span class="kw">renderText</span>({</a>
-<a class="sourceLine" id="cb1-26" title="26">      <span class="cf">if</span> (<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/NULL">is.null</a></span>(input<span class="op">$</span>process_tokens)) {</a>
+<a class="sourceLine" id="cb1-26" title="26">      <span class="cf">if</span> (<span class="kw"><a href="https://rdrr.io/r/base/NULL.html">is.null</a></span>(input<span class="op">$</span>process_tokens)) {</a>
 <a class="sourceLine" id="cb1-27" title="27">        <span class="st">"None"</span></a>
 <a class="sourceLine" id="cb1-28" title="28">      } <span class="cf">else</span> {</a>
-<a class="sourceLine" id="cb1-29" title="29">        <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/paste">paste0</a></span>(input<span class="op">$</span>process_tokens, <span class="dt">collapse =</span> <span class="st">","</span>)</a>
+<a class="sourceLine" id="cb1-29" title="29">        <span class="kw"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span>(input<span class="op">$</span>process_tokens, <span class="dt">collapse =</span> <span class="st">","</span>)</a>
 <a class="sourceLine" id="cb1-30" title="30">      }</a>
 <a class="sourceLine" id="cb1-31" title="31">    })</a>
 <a class="sourceLine" id="cb1-32" title="32"></a>
 <a class="sourceLine" id="cb1-33" title="33">    output<span class="op">$</span>activity_selection &lt;-<span class="st"> </span><span class="kw">renderText</span>({</a>
-<a class="sourceLine" id="cb1-34" title="34">      <span class="cf">if</span> (<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/NULL">is.null</a></span>(input<span class="op">$</span>process_activities)) {</a>
+<a class="sourceLine" id="cb1-34" title="34">      <span class="cf">if</span> (<span class="kw"><a href="https://rdrr.io/r/base/NULL.html">is.null</a></span>(input<span class="op">$</span>process_activities)) {</a>
 <a class="sourceLine" id="cb1-35" title="35">        <span class="st">"None"</span></a>
 <a class="sourceLine" id="cb1-36" title="36">      } <span class="cf">else</span> {</a>
-<a class="sourceLine" id="cb1-37" title="37">        activities &lt;-<span class="st"> </span>jsonlite<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/jsonlite/topics/fromJSON">fromJSON</a></span>(input<span class="op">$</span>process_activities)</a>
-<a class="sourceLine" id="cb1-38" title="38">        <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/paste">paste0</a></span>(<span class="st">"("</span>, activities<span class="op">$</span>id, <span class="st">","</span>, activities<span class="op">$</span>activity, <span class="st">")"</span>, <span class="dt">collapse =</span> <span class="st">","</span>)</a>
+<a class="sourceLine" id="cb1-37" title="37">        activities &lt;-<span class="st"> </span>jsonlite<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/jsonlite/man/fromJSON.html">fromJSON</a></span>(input<span class="op">$</span>process_activities)</a>
+<a class="sourceLine" id="cb1-38" title="38">        <span class="kw"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span>(<span class="st">"("</span>, activities<span class="op">$</span>id, <span class="st">","</span>, activities<span class="op">$</span>activity, <span class="st">")"</span>, <span class="dt">collapse =</span> <span class="st">","</span>)</a>
 <a class="sourceLine" id="cb1-39" title="39">      }</a>
 <a class="sourceLine" id="cb1-40" title="40">    })</a>
 <a class="sourceLine" id="cb1-41" title="41">    </a>
 <a class="sourceLine" id="cb1-42" title="42">    output<span class="op">$</span>activity_time &lt;-<span class="st"> </span><span class="kw">renderText</span>({</a>
-<a class="sourceLine" id="cb1-43" title="43">      <span class="cf">if</span> (<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/NULL">is.null</a></span>(input<span class="op">$</span>process_time)) {</a>
+<a class="sourceLine" id="cb1-43" title="43">      <span class="cf">if</span> (<span class="kw"><a href="https://rdrr.io/r/base/NULL.html">is.null</a></span>(input<span class="op">$</span>process_time)) {</a>
 <a class="sourceLine" id="cb1-44" title="44">        <span class="st">"0"</span></a>
 <a class="sourceLine" id="cb1-45" title="45">      } <span class="cf">else</span> {</a>
 <a class="sourceLine" id="cb1-46" title="46">        input<span class="op">$</span>process_time</a>
@@ -171,7 +173,7 @@
 <a class="sourceLine" id="cb1-64" title="64">    <span class="kw">callModule</span>(animation, <span class="st">"module2"</span>)</a>
 <a class="sourceLine" id="cb1-65" title="65">  }</a>
 <a class="sourceLine" id="cb1-66" title="66"></a>
-<a class="sourceLine" id="cb1-67" title="67">  <span class="kw">shinyApp</span>(ui, server, <span class="dt">options =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(<span class="dt">height =</span> <span class="dv">500</span>))</a>
+<a class="sourceLine" id="cb1-67" title="67">  <span class="kw">shinyApp</span>(ui, server, <span class="dt">options =</span> <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">height =</span> <span class="dv">500</span>))</a>
 <a class="sourceLine" id="cb1-68" title="68"></a>
 <a class="sourceLine" id="cb1-69" title="69">}</a>
 <a class="sourceLine" id="cb1-70" title="70"></a>
@@ -179,9 +181,11 @@
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
+
       </div>
 
 </div>
+
 
 
       <footer><div class="copyright">
@@ -189,12 +193,14 @@
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.3.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.1.</p>
 </div>
+
       </footer>
 </div>
 
   
+
 
   </body>
 </html>

@@ -51,9 +51,18 @@ function PAScales(el) {
 
   this.renderLegend = function(data, svg, width, height) {
 
-    if (!legendSvg && data.legend && !(data.colors_scale === "time" || data.sizes_scale === "time")) {
+    // Clean-up anyway
+    if (legendSvg) {
+        legendSvg.selectAll("*").remove();
+    }
 
-      legendSvg = d3.select(el).append("svg");
+    if (data.legend && data.tokens.case !== undefined &&
+                       !(data.colors_scale === "time" ||
+                         data.sizes_scale === "time")) {
+
+      if (!legendSvg) {
+        legendSvg = d3.select(el).append("svg");
+      }
 
       legendSvg.append("defs")
         // text background box and arrow marker
@@ -79,6 +88,7 @@ function PAScales(el) {
       }
 
       legendSvg.attr("width", legendGroup.node().getBBox().width + 30);
+      legendSvg.attr("height", legendGroup.node().getBBox().height + 60);
     }
 
     this.resizeLegend(svg, width, height);
@@ -86,8 +96,11 @@ function PAScales(el) {
   };
 
   this.resizeLegend = function(svg, width, height) {
-    if (legendSvg) {
-      legendSvg.attr("style", "position: relative; bottom: "+height+"px; left: "+(width - legendSvg.attr("width")) +"px; z-index: 999;");
+    if (legendSvg && width > 0 && height > 0) {
+      legendSvg.attr("style", "position: relative; " +
+                              "bottom: "+height+"px; " +
+                              "left: "+(width - legendSvg.attr("width")) +"px; "+
+                              "z-index: 999;");
       el.insertBefore(legendSvg.node(), null); // keep as last child!
     }
   };

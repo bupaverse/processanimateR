@@ -27,11 +27,7 @@ function PAPlaybackControl(el) {
 
   this.renderPlaybackControl = function(data, svg, width, initial) {
 
-    if (data.timeline &&
-        // Polyfill fakesmile does not support pausing/unpausing for IE
-        typeof SVGSVGElement.prototype.animationsPaused === "function") {
-
-      // Clean-up
+    function cleanup() {
       if (sliderSvg) {
         sliderSvg.remove();
       }
@@ -41,6 +37,21 @@ function PAPlaybackControl(el) {
       if (sliderLoop) {
         window.cancelAnimationFrame(sliderLoop);
       }
+    }
+
+    if (typeof SVGSVGElement.prototype.animationsPaused !== "function") {
+      // Polyfill fakesmile does not support pausing/unpausing for IE
+      return;
+    }
+
+    if (!data.timeline) {
+
+      cleanup();
+
+    } else {
+
+      // Clean-up
+      cleanup();
 
       // re-calculate dimensions
       var swidth = width - smargin.left - smargin.right;

@@ -4,20 +4,33 @@
 \alias{animate_process}
 \title{Animate cases on a process map}
 \usage{
-animate_process(eventlog, processmap = processmapR::process_map(eventlog,
-  render = F, ...), renderer = renderer_graphviz(),
-  mode = c("absolute", "relative", "off"), duration = 60, jitter = 0,
-  timeline = TRUE, legend = NULL, initial_state = c("playing",
-  "paused"), initial_time = 0, repeat_count = 1, repeat_delay = 0.5,
-  epsilon_time = duration/1000, mapping = token_aes(),
-  token_callback_onclick = c("function(svg_root, svg_element, case_id) {",
-  "}"), token_callback_select = token_select_decoration(),
-  activity_callback_onclick = c("function(svg_root, svg_element, activity_id) {",
-  "}"), activity_callback_select = activity_select_decoration(),
-  elementId = NULL, preRenderHook = NULL, width = NULL,
-  height = NULL, sizingPolicy = htmlwidgets::sizingPolicy(browser.fill
-  = TRUE, viewer.fill = TRUE, knitr.figure = FALSE, knitr.defaultWidth =
-  "100\%", knitr.defaultHeight = "300"), ...)
+animate_process(
+  eventlog,
+  processmap = processmapR::process_map(eventlog, render = F, ...),
+  renderer = renderer_graphviz(),
+  mode = c("absolute", "relative", "off"),
+  duration = 60,
+  jitter = 0,
+  timeline = TRUE,
+  legend = NULL,
+  initial_state = c("playing", "paused"),
+  initial_time = 0,
+  repeat_count = 1,
+  repeat_delay = 0.5,
+  epsilon_time = duration/1000,
+  mapping = token_aes(),
+  token_callback_onclick = c("function(svg_root, svg_element, case_id) {", "}"),
+  token_callback_select = token_select_decoration(),
+  activity_callback_onclick = c("function(svg_root, svg_element, activity_id) {", "}"),
+  activity_callback_select = activity_select_decoration(),
+  elementId = NULL,
+  preRenderHook = NULL,
+  width = NULL,
+  height = NULL,
+  sizingPolicy = htmlwidgets::sizingPolicy(browser.fill = TRUE, viewer.fill = TRUE,
+    knitr.figure = FALSE, knitr.defaultWidth = "100\%", knitr.defaultHeight = "300"),
+  ...
+)
 }
 \arguments{
 \item{eventlog}{The `bupaR` event log object that should be animated}

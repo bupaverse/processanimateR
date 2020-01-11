@@ -4,9 +4,14 @@
 \alias{token_aes}
 \title{Tokens aesthetics mapping}
 \usage{
-token_aes(size = token_scale(), color = token_scale(),
-  image = token_scale(), opacity = token_scale(), shape = "circle",
-  attributes = list())
+token_aes(
+  size = token_scale(),
+  color = token_scale(),
+  image = token_scale(),
+  opacity = token_scale(),
+  shape = "circle",
+  attributes = list()
+)
 }
 \arguments{
 \item{size}{The scale used for the token size.}

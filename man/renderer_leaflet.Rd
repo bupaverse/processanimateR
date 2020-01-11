@@ -4,15 +4,21 @@
 \alias{renderer_leaflet}
 \title{Render as graph on a geographical map}
 \usage{
-renderer_leaflet(node_coordinates, edge_coordinates = data.frame(act_from
-  = character(0), act_to = character(0), lat = numeric(0), lng =
-  numeric(0), stringsAsFactors = FALSE),
-  layer = c(paste0("new L.TileLayer('", tile, "',"),
-  paste0("{ attribution : '", attribution_osm(), "'})")),
+renderer_leaflet(
+  node_coordinates,
+  edge_coordinates = data.frame(act_from = character(0), act_to = character(0), lat =
+    numeric(0), lng = numeric(0), stringsAsFactors = FALSE),
+  layer = c(paste0("new L.TileLayer('", tile, "',"), paste0("{ attribution : '",
+    attribution_osm(), "'})")),
   tile = "http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-  options = list(), grayscale = TRUE, icon_act = icon_marker(),
-  icon_start = icon_circle(), icon_end = icon_circle(),
-  scale_max = 4, scale_min = 0.25)
+  options = list(),
+  grayscale = TRUE,
+  icon_act = icon_marker(),
+  icon_start = icon_circle(),
+  icon_end = icon_circle(),
+  scale_max = 4,
+  scale_min = 0.25
+)
 }
 \arguments{
 \item{node_coordinates}{A data frame with node coordinates in the format `act`, `lat`, `lng`.}

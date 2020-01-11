@@ -3,9 +3,10 @@ processanimateR 1.0.1
 Copyright (c) 2018 Felix Mannhardt
 Licensed under MIT license
 */
-function PARendererLeaflet(el, data) {
+function PARendererLeaflet(el) {
 
   var svg = null;
+  var data = null;
 
   this.getSvg = function() {
     return svg;
@@ -15,7 +16,9 @@ function PARendererLeaflet(el, data) {
     return data;
   };
 
-  this.render = function(postRender) {
+  this.render = function(newData, postRender) {
+
+    data = newData;
 
     var element = d3.select(el).append("div").attr("style", "width: 100%; height: 100%").node();
 

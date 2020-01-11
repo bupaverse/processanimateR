@@ -4,8 +4,12 @@
 \alias{token_scale}
 \title{Token scale mapping values to aesthetics}
 \usage{
-token_scale(attribute = NULL, scale = c("identity", "linear", "sqrt",
-  "log", "quantize", "ordinal", "time"), domain = NULL, range = NULL)
+token_scale(
+  attribute = NULL,
+  scale = c("identity", "linear", "sqrt", "log", "quantize", "ordinal", "time"),
+  domain = NULL,
+  range = NULL
+)
 }
 \arguments{
 \item{attribute}{This may be (1) the name of the event attribute to be used as values,

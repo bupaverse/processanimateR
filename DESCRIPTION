@@ -1,7 +1,7 @@
 Package: processanimateR
 Type: Package
 Title: Process Map Token Replay Animation
-Version: 1.0.1
+Version: 1.0.2.9000
 Authors@R: c(person("Felix","Mannhardt", email = "felix.mannhardt@sintef.no", role = c("aut","cre")),
   person("Gert","Janssenswillen",email = "gert.janssenswillen@uhasselt.be", role = c("ctb")))
 Description: Provides animated process maps based on the 'procesmapR' package.
@@ -34,7 +34,7 @@ Suggests:
   shiny,
   RColorBrewer,
   lubridate
-RoxygenNote: 6.1.1
-URL: https://github.com/fmannhardt/processanimateR/
-BugReports: https://github.com/fmannhardt/processanimateR/issues
+RoxygenNote: 7.0.2
+URL: https://github.com/bupaverse/processanimateR/
+BugReports: https://github.com/bupaverse/processanimateR/issues
 VignetteBuilder: knitr
