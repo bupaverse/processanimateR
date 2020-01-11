@@ -6,7 +6,10 @@ addons:
   apt:
     packages:
       - libv8-3.14-dev
-r: release
+r:
+  - oldrel
+  - release
+  - devel
 r_packages:
  - DiagrammeRsvg
 cache: packages
