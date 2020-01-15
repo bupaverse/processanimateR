@@ -56,10 +56,11 @@
 #' @import dplyr
 #' @importFrom magrittr %>%
 #' @importFrom rlang :=
+#' @importFrom processmapR process_map
 #'
 #' @export
 animate_process <- function(eventlog,
-                            processmap = processmapR::process_map(eventlog, render = F, ...),
+                            processmap = process_map(eventlog, render = F, ...),
                             renderer = renderer_graphviz(),
                             mode = c("absolute","relative","off"),
                             duration = 60,

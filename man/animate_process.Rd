@@ -6,7 +6,7 @@
 \usage{
 animate_process(
   eventlog,
-  processmap = processmapR::process_map(eventlog, render = F, ...),
+  processmap = process_map(eventlog, render = F, ...),
   renderer = renderer_graphviz(),
   mode = c("absolute", "relative", "off"),
   duration = 60,
