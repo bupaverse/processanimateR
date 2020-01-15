@@ -1,4 +1,4 @@
-## processanimateR 1.0.2.9000
+## processanimateR 1.0.2
 
 * Height/width fixes for use in Rmarkdown
 * Fixes for legend not properly re-generated 

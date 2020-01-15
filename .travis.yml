@@ -1,13 +1,14 @@
 # R for travis: see documentation at https://docs.travis-ci.com/user/languages/r
 
+dist: xenial
 language: R
 sudo: false
 addons:
   apt:
     packages:
-      - libv8-3.14-dev
+      - libnode-dev
 r:
-  - oldrel
+#  - oldrel does not work
   - release
   - devel
 r_packages:
