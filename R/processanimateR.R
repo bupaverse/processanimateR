@@ -208,11 +208,6 @@ animate_process <- function(eventlog,
   # actually render the process map
   rendered_process <- renderer(processmap, width, height)
 
-  # hack to add 'weight' attribute to the graph
-  rendered_process %>%
-    stringr::str_replace_all("len", "weight") %>%
-    stringr::str_replace_all("decorate", "constraint") -> rendered_process
-
   settings <- list()
   x <- list(
     rendered_process = rendered_process,
@@ -254,7 +249,8 @@ animate_process <- function(eventlog,
                             x = x,
                             width = width, height = height,
                             sizingPolicy = sizingPolicy,
-                            preRenderHook = preRenderHook)
+                            preRenderHook = preRenderHook,
+                            dependencies = attr(renderer, "dependencies"))
 }
 
 #' @title Create a process animation output element

@@ -1,6 +1,6 @@
 dependencies:
   - name: processanimater-libs
-    version: 1.0.0
+    version: 1.0.3
     src: "htmlwidgets/lib/modules"
     script:
       - animation_playback_control.js
@@ -28,32 +28,6 @@ dependencies:
     version: 0.2.22.1
     src: "htmlwidgets/lib/momentjs"
     script: moment.min.js
-    all_files: FALSE
-  - name: viz.js
-    version: 2.1.2
-    src: "htmlwidgets/lib/viz"
-    script:
-     - viz.js
-     - full.render.js
-    all_files: FALSE
-  - name: leaflet
-    version: 1.5.1
-    src: "htmlwidgets/lib/leaflet"
-    stylesheet:
-      - leaflet.css
-      - leaflet-grayscale.css
-    script: leaflet.min.js
-    attachment:
-      - images/layers.png
-      - images/layers-2x.png
-      - images/marker-icon-2x.png
-      - images/marker-icon.png
-      - images/marker-shadow.png
-    all_files: FALSE
-  - name: leaflet-d3-svg-overlay
-    version: 2.2
-    src: "htmlwidgets/lib/leaflet-d3-svg-overlay"
-    script: leaflet-d3-svg-overlay.js
     all_files: FALSE
   - name: es6-promise
     version: 4.2.5

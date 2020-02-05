@@ -17,9 +17,22 @@ renderer_graphviz <- function() {
   render <- function(processmap, width, height) {
     # Generate the DOT source
     graph <- DiagrammeR::render_graph(processmap, width = width, height = height)
-    graph$x$diagram
+    diagram <- graph$x$diagram
+
+    # hack to add 'weight' attribute to the graph (see same approach in processmapR)
+    diagram %>%
+      stringr::str_replace_all("len", "weight") %>%
+      stringr::str_replace_all("decorate", "constraint")
   }
+
   attr(render, "name") <- "graph"
+  attr(render, "dependencies") <- list(htmltools::htmlDependency(name = "viz.js",
+                                                                version = "2.1.2",
+                                                                src = c(file="htmlwidgets/lib/viz"),
+                                                                script = c("viz.js",
+                                                                           "full.render.js"),
+                                                                all_files = FALSE,
+                                                                package = "processanimateR"))
 
   return(render)
 }
@@ -121,7 +134,7 @@ renderer_leaflet <- function(node_coordinates,
     edges <- bind_rows(edges_from, edges_extra, edges_to) %>%
       mutate(color = sapply(color, colConv)) %>%
       select(id, from, to, lat, lng, label, penwidth, color) %>%
-      tidyr::nest(lat, lng, .key = "path")
+      tidyr::nest("path" = c(lat, lng))
 
     list("nodes" = nodes,
          "edges" = edges,
@@ -135,7 +148,24 @@ renderer_leaflet <- function(node_coordinates,
          "scale_min" = scale_min)
   }
   attr(render, "name") <- "map"
-
+  attr(render, "dependencies") <- list(htmltools::htmlDependency(name = "leaflet",
+                                                                version = "1.5.1",
+                                                                src = c(file="htmlwidgets/lib/leaflet"),
+                                                                script = "leaflet.min.js",
+                                                                stylesheet = c("leaflet.css", "leaflet-grayscale.css"),
+                                                                attachment = c("images/layers.png",
+                                                                               "images/layers-2x.png",
+                                                                               "images/marker-icon-2x.png",
+                                                                               "images/marker-icon.png",
+                                                                               "images/marker-shadow.png"),
+                                                                all_files = FALSE,
+                                                                package = "processanimateR"),
+                                     htmltools::htmlDependency(name = "leaflet-d3-svg-overlay",
+                                                              version = "2.2",
+                                                              src = c(file="htmlwidgets/lib/leaflet-d3-svg-overlay"),
+                                                              script = "leaflet-d3-svg-overlay.js",
+                                                              all_files = FALSE,
+                                                              package = "processanimateR"))
   return(render)
 }
 

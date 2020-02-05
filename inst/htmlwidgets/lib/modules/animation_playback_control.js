@@ -1,6 +1,6 @@
 /*
-processanimateR 1.0.1
-Copyright (c) 2018 Felix Mannhardt
+processanimateR 1.0.3
+Copyright (c) 2019 Felix Mannhardt
 Licensed under MIT license
 */
 function PAPlaybackControl(el) {
