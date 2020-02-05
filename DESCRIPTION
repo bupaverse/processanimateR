@@ -24,7 +24,8 @@ Imports:
   htmlwidgets, 
   DiagrammeR (>= 1.0.0),
   grDevices,
-  stringr
+  stringr,
+  htmltools
 Suggests: 
   eventdataR,
   edeaR,
