@@ -8,7 +8,7 @@ function PARendererGraphviz(el) {
   var svg = null;
   var svgPan = null;
   var data = null;
-  var viz = new PAViz();
+  //var viz = new PAViz();
 
   // source https://stackoverflow.com/questions/178325/how-do-i-check-if-an-element-is-hidden-in-jquery/11511035#11511035
   function isRendered(domObj) {
@@ -85,8 +85,29 @@ function PARendererGraphviz(el) {
       d3.select(svg).select(".graph > polygon").remove();
     }
 
+
+    var graph = dagre.read(data.rendered_process);
+    console.log(graph);
+
+    // Create the renderer
+    var render = new dagre.render();
+    render.shapes().rectangle = render.shapes().rect;
+
+    // Clean-up
+    while( el.hasChildNodes() ){
+        el.removeChild(el.lastChild);
+    }
+
+    var svg = d3.select(el).append("svg");
+    inner = svg.append("g");
+
+    // Run the renderer. This is what draws the final graph.
+    render(inner, graph);
+
+    postRender(svg);
+
     // Render DOT using Graphviz
-    viz.renderSVGElement(data.rendered_process).then(function(element) {
+/*    viz.renderSVGElement(data.rendered_process).then(function(element) {
 
         if (el.hasChildNodes()) {
           el.replaceChild(element, el.childNodes[0]);
@@ -115,7 +136,7 @@ function PARendererGraphviz(el) {
       } else {
         el.appendChild(p);
       }
-    });
+    });*/
   };
 
   this.resize = function(width, height) {

@@ -32,6 +32,12 @@ renderer_graphviz <- function() {
                                                                 script = c("viz.js",
                                                                            "full.render.js"),
                                                                 all_files = FALSE,
+                                                                package = "processanimateR"),
+                                       htmltools::htmlDependency(name = "dagre-d3",
+                                                                version = "0.6.4",
+                                                                src = c(file="htmlwidgets/lib/dagre-d3"),
+                                                                script = c("dagre-custom.min.js"),
+                                                                all_files = FALSE,
                                                                 package = "processanimateR"))
 
   return(render)

@@ -5,7 +5,9 @@
     "prepare": "rollup -c && uglifyjs leaflet.js -c -m -o leaflet.min.js && rm leaflet.js"
   },
   "dependencies": {
-    "leaflet": "^1.5.1",
+    "leaflet": "^1.5.1"
+  },
+  "devDependencies": {
     "rollup": "^0.66.6",
     "rollup-plugin-node-resolve": "^3.4.0",
     "rollup-plugin-json": "^3.1.0",

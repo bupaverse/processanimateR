@@ -1,0 +1,17 @@
+{
+  "name": "dagre",
+  "version": "0.8.5",
+  "scripts": {
+    "prepare": "rollup -c && uglifyjs dagre-custom.js -c -m -o dagre-custom.min.js && rm dagre-custom.js"
+  },
+  "dependencies": {
+    "dagre-d3": "^0.6.4",
+    "graphlib-dot": "^0.6.4"
+  },
+  "devDependencies": {
+    "@rollup/plugin-commonjs": "^11.0.2",
+    "@rollup/plugin-node-resolve": "^7.1.1",
+    "rollup": "^1.31.0",
+    "uglify-js": "^3.7.7"
+  }
+}

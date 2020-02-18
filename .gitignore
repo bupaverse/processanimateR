@@ -27,6 +27,5 @@ vignettes/*.pdf
 *.knit.md
 .Rproj.user
 inst/doc
-inst/htmlwidgets/lib/d3/node_modules/
-inst/htmlwidgets/lib/leaflet/node_modules/
+/**/node_modules/
 cran-comments.md
