@@ -150,6 +150,8 @@ function PARendererGraphviz(el) {
             // Enable pinch
             this.hammer.get('pinch').set({enable: true});
 
+            this.hammer.get('pan').set({pointers: 2});
+
             // Handle double tap
             this.hammer.on('doubletap', function(ev){
               instance.zoomIn();
