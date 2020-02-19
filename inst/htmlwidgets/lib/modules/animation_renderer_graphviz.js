@@ -132,7 +132,31 @@ function PARendererGraphviz(el) {
         svgPan.fit();
         svgPan.center();
       } else {
-        svgPan = svgPanZoom(svg, { dblClickZoomEnabled: false, preventEventsDefaults: true });
+        svgPan = svgPanZoom(svg, { dblClickZoomEnabled: false,
+                                   preventEventsDefaults: false,
+                                   controlIconsEnabled: true,
+                                   maxZoom: 20,
+                                  customEventsHandler: {
+                                    // Halt all touch events
+                                    haltEventListeners: ['touchstart', 'touchend', 'touchmove', 'touchleave', 'touchcancel']
+
+                                    // Init custom events handler
+                                  , init: function(options) {
+                                      // Init Hammer
+                                      this.hammer = Hammer(options.svgElement)
+
+                                      // Handle double tap
+                                      this.hammer.on('doubletap', function(ev){
+                                        options.instance.zoomIn()
+                                      })
+                                    }
+
+                                    // Destroy custom events handler
+                                  , destroy: function(){
+                                      this.hammer.destroy()
+                                    }
+                                  }
+        });
       }
     }
 

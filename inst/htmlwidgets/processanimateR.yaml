@@ -33,3 +33,7 @@ dependencies:
     version: 4.2.5
     src: "htmlwidgets/lib/es6-promise"
     script: es6-promise.auto.min.js
+  - name: hammerjs
+    version: 2.0.8
+    src: "htmlwidgets/lib/hammerjs"
+    script: hammer.min.js
