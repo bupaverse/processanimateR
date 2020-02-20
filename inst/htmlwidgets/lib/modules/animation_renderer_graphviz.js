@@ -120,6 +120,9 @@ function PARendererGraphviz(el) {
 
   this.resize = function(width, height) {
 
+    var oldWidth = svg.getAttribute("width");
+    var oldHeight = svg.getAttribute("height");
+
     if (height > 0 && width > 0) {
       // Adjust GraphViz diagram size
       svg.setAttribute("width", width);
@@ -128,9 +131,17 @@ function PARendererGraphviz(el) {
 
     if (isRendered(el)) {
       if (svgPan) {
+
         svgPan.resize();
-        svgPan.fit();
-        svgPan.center();
+
+        if (data.svg_resize_fit) {
+          svgPan.center();
+          svgPan.fit();
+        } else {
+          svgPan.pan({x: (svgPan.getPan().x / oldWidth) * width,
+                      y: (svgPan.getPan().y / oldHeight) * height});
+        }
+
       } else {
 
         var eventsHandler = {
@@ -149,8 +160,6 @@ function PARendererGraphviz(el) {
 
             // Enable pinch
             this.hammer.get('pinch').set({enable: true});
-
-            this.hammer.get('pan').set({pointers: 2});
 
             // Handle double tap
             this.hammer.on('doubletap', function(ev){
@@ -176,10 +185,9 @@ function PARendererGraphviz(el) {
               // On pinch start remember initial zoom
               if (ev.type === 'pinchstart') {
                 initialScale = instance.getZoom();
-                instance.zoomAtPoint(initialScale * ev.scale, {x: ev.center.x, y: ev.center.y});
               }
 
-              instance.zoomAtPoint(initialScale * ev.scale, {x: ev.center.x, y: ev.center.y});
+              instance.zoom(initialScale * ev.scale);
             });
 
             // Prevent moving the page on some devices when panning over SVG
@@ -191,12 +199,39 @@ function PARendererGraphviz(el) {
           }
         };
 
-        svgPan = svgPanZoom(svg, { dblClickZoomEnabled: false,
+        svgPan = svgPanZoom(svg, { dblClickZoomEnabled: true,
                                    preventEventsDefaults: false,
-                                   controlIconsEnabled: true,
-                                   maxZoom: 20,
-                                  customEventsHandler: eventsHandler
+                                   controlIconsEnabled: data.zoom_controls,
+                                   customEventsHandler: eventsHandler
         });
+
+        if (data.svg_fit) {
+          svgPan.fit();
+          svgPan.center();
+        } else {
+          if (data.svg_contain) {
+            svgPan.contain();
+            svgPan.pan({x: 0, y: 0});
+          } else {
+            var s = svgPan.getSizes();
+            if (s.width > s.height) {
+              if (data.zoom_initial) {
+                svgPan.zoomAtPoint(data.zoom_initial,
+                                   {x: 0, y: s.height / 2});
+              } else {
+                svgPan.pan({x: 0, y: -s.height / 2});
+              }
+            } else {
+              if (data.zoom_initial) {
+                svgPan.zoomAtPoint(data.zoom_initial,
+                                   {x: s.width / 2, y: 0});
+              } else {
+                svgPan.pan({x: s.width / 2, y: 0});
+              }
+            }
+          }
+        }
+
       }
     }
 

@@ -2,6 +2,11 @@
 #'
 #' This renderer uses viz.js to render the process map using the DOT layout.
 #'
+#' @param svg_fit Whether to scale the process map to fully fit in its container. If set to `TRUE` the process map will be scaled to be fully visible and may appear very small.
+#' @param svg_contain Whether to scale the process map to use all available space (contain) from its container. If set to `FALSE`, if `svg_fit` is set this takes precedence.
+#' @param svg_resize_fit Whether to (re)-fit the process map to its container upon resize.
+#' @param zoom_control Whether to show zoom controls.
+#' @param zoom_initial The initial zoom level to use.
 #' @return A rendering function to be used with \code{\link{animate_process}}
 #' @export
 #'
@@ -13,7 +18,12 @@
 #'
 #' @seealso animate_process
 #'
-renderer_graphviz <- function() {
+renderer_graphviz <- function(svg_fit = TRUE,
+                              svg_contain = FALSE,
+                              svg_resize_fit = TRUE,
+                              zoom_controls = TRUE,
+                              zoom_initial = NULL) {
+
   render <- function(processmap, width, height) {
     # Generate the DOT source
     graph <- DiagrammeR::render_graph(processmap, width = width, height = height)
@@ -33,6 +43,13 @@ renderer_graphviz <- function() {
                                                                            "full.render.js"),
                                                                 all_files = FALSE,
                                                                 package = "processanimateR"))
+  attr(render, "config") <- list(
+    svg_fit = svg_fit,
+    svg_contain = svg_contain,
+    svg_resize_fit = svg_resize_fit,
+    zoom_controls = zoom_controls,
+    zoom_initial = zoom_initial
+  )
 
   return(render)
 }
@@ -166,6 +183,10 @@ renderer_leaflet <- function(node_coordinates,
                                                               script = "leaflet-d3-svg-overlay.js",
                                                               all_files = FALSE,
                                                               package = "processanimateR"))
+
+  attr(render, "config") <- list(
+  )
+
   return(render)
 }
 

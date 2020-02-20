@@ -208,7 +208,6 @@ animate_process <- function(eventlog,
   # actually render the process map
   rendered_process <- renderer(processmap, width, height)
 
-  settings <- list()
   x <- list(
     rendered_process = rendered_process,
     activities = activities,
@@ -243,6 +242,8 @@ animate_process <- function(eventlog,
     onclick_activity_select = htmlwidgets::JS(activity_callback_select),
     processmap_renderer = attr(renderer, "name")
   )
+
+  x <- c(x, attr(renderer, "config"))
 
   htmlwidgets::createWidget(elementId = elementId,
                             name = "processanimateR",

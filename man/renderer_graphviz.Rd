@@ -6,7 +6,24 @@
 
 This renderer uses viz.js to render the process map using the DOT layout.}
 \usage{
-renderer_graphviz()
+renderer_graphviz(
+  svg_fit = TRUE,
+  svg_contain = FALSE,
+  svg_resize_fit = TRUE,
+  zoom_controls = TRUE,
+  zoom_initial = NULL
+)
+}
+\arguments{
+\item{svg_fit}{Whether to scale the process map to fully fit in its container. If set to `TRUE` the process map will be scaled to be fully visible and may appear very small.}
+
+\item{svg_contain}{Whether to scale the process map to use all available space (contain) from its container. If set to `FALSE`, if `svg_fit` is set this takes precedence.}
+
+\item{svg_resize_fit}{Whether to (re)-fit the process map to its container upon resize.}
+
+\item{zoom_initial}{The initial zoom level to use.}
+
+\item{zoom_control}{Whether to show zoom controls.}
 }
 \value{
 A rendering function to be used with \code{\link{animate_process}}
