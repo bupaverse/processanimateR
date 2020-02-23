@@ -21,9 +21,9 @@ renderer_graphviz(
 
 \item{svg_resize_fit}{Whether to (re)-fit the process map to its container upon resize.}
 
-\item{zoom_initial}{The initial zoom level to use.}
+\item{zoom_controls}{Whether to show zoom controls.}
 
-\item{zoom_control}{Whether to show zoom controls.}
+\item{zoom_initial}{The initial zoom level to use.}
 }
 \value{
 A rendering function to be used with \code{\link{animate_process}}

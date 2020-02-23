@@ -5,7 +5,7 @@
 #' @param svg_fit Whether to scale the process map to fully fit in its container. If set to `TRUE` the process map will be scaled to be fully visible and may appear very small.
 #' @param svg_contain Whether to scale the process map to use all available space (contain) from its container. If set to `FALSE`, if `svg_fit` is set this takes precedence.
 #' @param svg_resize_fit Whether to (re)-fit the process map to its container upon resize.
-#' @param zoom_control Whether to show zoom controls.
+#' @param zoom_controls Whether to show zoom controls.
 #' @param zoom_initial The initial zoom level to use.
 #' @return A rendering function to be used with \code{\link{animate_process}}
 #' @export
