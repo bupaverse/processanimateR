@@ -185,9 +185,10 @@ function PARendererGraphviz(el) {
               // On pinch start remember initial zoom
               if (ev.type === 'pinchstart') {
                 initialScale = instance.getZoom();
+                instance.zoomAtPoint(initialScale * ev.scale, {x: ev.center.x, y: ev.center.y});
               }
 
-              instance.zoom(initialScale * ev.scale);
+              instance.zoomAtPoint(initialScale * ev.scale, {x: ev.center.x, y: ev.center.y});
             });
 
             // Prevent moving the page on some devices when panning over SVG
@@ -200,7 +201,7 @@ function PARendererGraphviz(el) {
         };
 
         svgPan = svgPanZoom(svg, { dblClickZoomEnabled: true,
-                                   preventEventsDefaults: false,
+                                   preventEventsDefaults: true,
                                    controlIconsEnabled: data.zoom_controls,
                                    customEventsHandler: eventsHandler
         });
