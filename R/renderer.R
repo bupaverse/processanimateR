@@ -81,7 +81,7 @@ renderer_graphviz <- function(svg_fit = TRUE,
 #' animate_process(example_log,
 #'   renderer = renderer_leaflet(
 #'     node_coordinates = data.frame(
-#'        act = c("A", "B", "C", "D", "Start", "End"),
+#'        act = c("A", "B", "C", "D", "ARTIFICIAL_START", "ARTIFICIAL_END"),
 #'        lat = c(63.443680, 63.426925, 63.409207, 63.422336, 63.450950, 63.419706),
 #'        lng = c(10.383625, 10.396972, 10.406418, 10.432119, 10.383368, 10.252347),
 #'        stringsAsFactors = FALSE),
@@ -121,15 +121,25 @@ renderer_leaflet <- function(node_coordinates,
     from_act <- from_lat <- from_lng <- to_act <- to_lat <- to_lng <- NULL
     lng <- lat <- color <- penwidth <- from <- to <- . <- NULL
 
+    if (any(node_coordinates$act == "Start" | node_coordinates$act == "End")) {
+      warning("You specified the coordinates for 'Start' and 'End' activities. Please note that 'processmapR' changed the names of the auto-generated 'Start' and 'End' activities to 'ARTIFICIAL_START' and 'ARTIFICIAL_END' and use those terms instead!")
+    }
+
+    node_coordinates <- node_coordinates %>%
+      filter(act == "Start" | act == "End") %>%
+      mutate(act = if_else(act == "Start", "ARTIFICIAL_START", "ARTIFICIAL_END")) %>%
+      bind_rows(node_coordinates)
+
     precedence <- attr(processmap, "base_precedence")
     nodes <- processmap$nodes_df %>%
       select(id, shape, label, fillcolor, fontcolor) %>%
       left_join(precedence %>% distinct(act, from_id), by = c("id" = "from_id")) %>%
       left_join(node_coordinates, by = c("act" = "act")) %>%
       mutate(fillcolor = sapply(fillcolor, colConv))
+
     if (any(is.na(nodes))) {
-      stop(paste0("Missing coordinates for activities",
-                  nodes$act[which(is.na(nodes$lat) | is.na(nodes$lng))]));
+      stop(paste0("Missing coordinates for activities: ",
+                  paste(nodes$act[which(is.na(nodes$lat) | is.na(nodes$lng))], collapse = ", ")))
     }
 
     edges_from <- processmap$edges_df %>%
