@@ -108,7 +108,7 @@ function PARendererGraphviz(el) {
     ).catch(function(error) {
       viz = new PAViz();
       var p = document.createElement("p");
-      var t = document.createTextNode("Failed to render the graph. It is probably too large. Original error: "+error);
+      var t = document.createTextNode("Failed to render the graph. It is probably too large. Original error: "+ error.stack);
       p.appendChild(t);
       if (el.hasChildNodes()) {
         el.replaceChild(p, el.childNodes[0]);

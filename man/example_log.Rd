@@ -4,7 +4,9 @@
 \name{example_log}
 \alias{example_log}
 \title{Example event log used in documentation}
-\format{An bupaR event log}
+\format{
+An bupaR event log
+}
 \usage{
 example_log
 }
