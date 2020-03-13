@@ -1,3 +1,7 @@
+## processanimateR 1.0.3
+
+* Fix for update in `processmapR`
+
 ## processanimateR 1.0.2
 
 * Height/width fixes for use in Rmarkdown
