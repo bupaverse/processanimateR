@@ -108,8 +108,6 @@ animate_process <- function(eventlog,
     stop("The 'initial_time' parameter should be less or equal than the specified 'duration'.")
   }
 
-  browser()
-
   precedence <- NULL
   if (!is.null(attr(processmap, "base_precedence"))) {
     precedence <- attr(processmap, "base_precedence") %>%
