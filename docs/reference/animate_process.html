@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">processanimateR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.3</span>
       </span>
     </div>
 
@@ -292,22 +292,11 @@ or a Shiny output binding). These options can be specified by calling the
     <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='no'>example_log</span>)
 
 <span class='co'># Animate the process with default options (absolute time and 60s duration)</span>
-<span class='fu'>animate_process</span>(<span class='no'>example_log</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: Prefixing `UQ()` with the rlang namespace is deprecated as of rlang 0.3.0.</span>
-#&gt; <span class='warning'>Please use the non-prefixed form or `!!` instead.</span>
-#&gt; <span class='warning'></span>
-#&gt; <span class='warning'>  # Bad:</span>
-#&gt; <span class='warning'>  rlang::expr(mean(rlang::UQ(var) * 100))</span>
-#&gt; <span class='warning'></span>
-#&gt; <span class='warning'>  # Ok:</span>
-#&gt; <span class='warning'>  rlang::expr(mean(UQ(var) * 100))</span>
-#&gt; <span class='warning'></span>
-#&gt; <span class='warning'>  # Good:</span>
-#&gt; <span class='warning'>  rlang::expr(mean(!!var * 100))</span>
-#&gt; <span class='warning'></span>
-#&gt; <span class='warning'><span style='color: #555555;'>This warning is displayed once per session.</span><span></span></div><div class='input'><span class='co'># \donttest{</span>
+<span class='fu'>animate_process</span>(<span class='no'>example_log</span>)
+<span class='co'># \donttest{</span>
 <span class='co'># Animate the process with default options (relative time, with jitter, infinite repeat)</span>
 <span class='fu'>animate_process</span>(<span class='no'>example_log</span>, <span class='kw'>mode</span> <span class='kw'>=</span> <span class='st'>"relative"</span>, <span class='kw'>jitter</span> <span class='kw'>=</span> <span class='fl'>10</span>, <span class='kw'>repeat_count</span> <span class='kw'>=</span> <span class='fl'>Inf</span>)
-<span class='co'># }</span></div></span></pre>
+<span class='co'># }</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

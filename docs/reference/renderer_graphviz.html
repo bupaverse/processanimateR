@@ -74,7 +74,7 @@ This renderer uses viz.js to render the process map using the DOT layout." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">processanimateR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.3</span>
       </span>
     </div>
 
@@ -149,8 +149,38 @@ This renderer uses viz.js to render the process map using the DOT layout.</h1>
 <p>This renderer uses viz.js to render the process map using the DOT layout.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>renderer_graphviz</span>()</pre>
+    <pre class="usage"><span class='fu'>renderer_graphviz</span>(
+  <span class='kw'>svg_fit</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>svg_contain</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>svg_resize_fit</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>zoom_controls</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>zoom_initial</span> <span class='kw'>=</span> <span class='kw'>NULL</span>
+)</pre>
 
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>svg_fit</th>
+      <td><p>Whether to scale the process map to fully fit in its container. If set to `TRUE` the process map will be scaled to be fully visible and may appear very small.</p></td>
+    </tr>
+    <tr>
+      <th>svg_contain</th>
+      <td><p>Whether to scale the process map to use all available space (contain) from its container. If set to `FALSE`, if `svg_fit` is set this takes precedence.</p></td>
+    </tr>
+    <tr>
+      <th>svg_resize_fit</th>
+      <td><p>Whether to (re)-fit the process map to its container upon resize.</p></td>
+    </tr>
+    <tr>
+      <th>zoom_controls</th>
+      <td><p>Whether to show zoom controls.</p></td>
+    </tr>
+    <tr>
+      <th>zoom_initial</th>
+      <td><p>The initial zoom level to use.</p></td>
+    </tr>
+    </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
@@ -168,6 +198,7 @@ This renderer uses viz.js to render the process map using the DOT layout.</h1>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
+      <li><a href="#arguments">Arguments</a></li>
       <li><a href="#value">Value</a></li>
       <li><a href="#see-also">See also</a></li>
       <li><a href="#examples">Examples</a></li>
