@@ -176,7 +176,7 @@ renderer_leaflet <- function(node_coordinates,
   }
   attr(render, "name") <- "map"
   attr(render, "dependencies") <- list(htmltools::htmlDependency(name = "leaflet",
-                                                                version = "1.5.1",
+                                                                version = "1.6.0",
                                                                 src = c(file="htmlwidgets/lib/leaflet"),
                                                                 script = "leaflet.min.js",
                                                                 stylesheet = c("leaflet.css", "leaflet-grayscale.css"),

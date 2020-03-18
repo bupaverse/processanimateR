@@ -1,16 +1,18 @@
 {
-  "name": "leaflet",
-  "version": "1.5.1",
+  "name": "leaflet-package",
+  "version": "1.6.0",
   "scripts": {
     "prepare": "rollup -c && uglifyjs leaflet.js -c -m -o leaflet.min.js && rm leaflet.js"
   },
   "dependencies": {
-    "leaflet": "^1.5.1",
-    "rollup": "^0.66.6",
-    "rollup-plugin-node-resolve": "^3.4.0",
-    "rollup-plugin-json": "^3.1.0",
-    "rollup-plugin-css-only": "^0.4.0",
-    "rollup-plugin-copy": "^0.2.3",
-    "uglify-js": "^3.4.9"
+    "leaflet": "^1.6.0"
+  },
+  "devDependencies": {
+    "rollup": "^1.20.0",
+    "rollup-plugin-copy": "^3.3.0",
+    "rollup-plugin-css-only": "^2.0.0",
+    "@rollup/plugin-json": "^4.0.2",
+    "@rollup/plugin-node-resolve": "^7.1.1",
+    "uglify-js": "^3.8.0"
   }
 }
