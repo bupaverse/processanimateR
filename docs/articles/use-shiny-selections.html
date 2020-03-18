@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">processanimateR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.3</span>
       </span>
     </div>
 
@@ -97,7 +97,7 @@
       <h1>Use processanimateR selection as Shiny inputs</h1>
                         <h4 class="author">Felix Mannhardt</h4>
             
-            <h4 class="date">2020-01-15</h4>
+            <h4 class="date">2020-03-18</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/bupaverse/processanimateR/blob/master/vignettes/use-shiny-selections.Rmd"><code>vignettes/use-shiny-selections.Rmd</code></a></small>
       <div class="hidden name"><code>use-shiny-selections.Rmd</code></div>
@@ -143,7 +143,7 @@
 <a class="sourceLine" id="cb1-34" title="34">      <span class="cf">if</span> (<span class="kw"><a href="https://rdrr.io/r/base/NULL.html">is.null</a></span>(input<span class="op">$</span>process_activities)) {</a>
 <a class="sourceLine" id="cb1-35" title="35">        <span class="st">"None"</span></a>
 <a class="sourceLine" id="cb1-36" title="36">      } <span class="cf">else</span> {</a>
-<a class="sourceLine" id="cb1-37" title="37">        activities &lt;-<span class="st"> </span>jsonlite<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/jsonlite/man/fromJSON.html">fromJSON</a></span>(input<span class="op">$</span>process_activities)</a>
+<a class="sourceLine" id="cb1-37" title="37">        activities &lt;-<span class="st"> </span>jsonlite<span class="op">::</span><span class="kw"><a href="https://jeroen.cran.dev/jsonlite/reference/fromJSON.html">fromJSON</a></span>(input<span class="op">$</span>process_activities)</a>
 <a class="sourceLine" id="cb1-38" title="38">        <span class="kw"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span>(<span class="st">"("</span>, activities<span class="op">$</span>id, <span class="st">","</span>, activities<span class="op">$</span>activity, <span class="st">")"</span>, <span class="dt">collapse =</span> <span class="st">","</span>)</a>
 <a class="sourceLine" id="cb1-39" title="39">      }</a>
 <a class="sourceLine" id="cb1-40" title="40">    })</a>
