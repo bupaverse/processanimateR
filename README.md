@@ -96,9 +96,6 @@ This package makes use of the following libraries:
 
 We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/bupaverse/processanimateR/tags). 
 
-## Authors
-Felix Mannhardt ([SINTEF Digital -- Technology Management Department](https://www.sintef.no/digital/))
-
 ## License
 
 This software is licensed under the MIT License - see the [LICENSE](https://github.com/bupaverse/processanimateR/blob/master/LICENSE.md) file for details.
