@@ -1,5 +1,5 @@
 /*
-processanimateR 1.0.3
+processanimateR
 Copyright (c) 2019 Felix Mannhardt
 Licensed under MIT license
 */
@@ -46,8 +46,7 @@ function PATokens(el, data, scales) {
         begin: function(d) { return safeNumber(d.token_start) + "s"; },
         dur: function(d) { return safeNumber(d.token_duration) + "s"; },
         fill: "freeze",
-        rotate: "auto"
-      })
+        rotate: "auto" })
       .append("mpath")
         .attr("href", function(d) { return "#"+generateEdgeId(d.edge_id); });
 

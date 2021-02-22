@@ -35,7 +35,7 @@ Suggests:
   shiny,
   RColorBrewer,
   lubridate
-RoxygenNote: 7.1.0
+RoxygenNote: 7.1.1
 URL: https://github.com/bupaverse/processanimateR/
 BugReports: https://github.com/bupaverse/processanimateR/issues
 VignetteBuilder: knitr

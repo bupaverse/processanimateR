@@ -1,5 +1,5 @@
 /*
-processanimateR 1.0.3
+processanimateR
 Copyright (c) 2019 Felix Mannhardt
 Licensed under MIT license
 */

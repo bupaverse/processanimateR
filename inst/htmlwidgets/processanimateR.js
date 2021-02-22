@@ -1,5 +1,5 @@
 /*
-processanimateR 1.0.3
+processanimateR
 Copyright (c) 2019 Felix Mannhardt
 Licensed under MIT license
 */
@@ -13,6 +13,7 @@ HTMLWidgets.widget({
     var control = new PAPlaybackControl(el);
     var scales = new PAScales(el);
     var tokens = null;
+    var activities = null;
     var renderer = null;
 
     return {
@@ -36,6 +37,7 @@ HTMLWidgets.widget({
         scales.update(data);
 
         tokens = new PATokens(el, data, scales);
+        activities = new PAActivities(el, data, scales);
 
         // Render process map
         if (data.processmap_renderer === "map") {
@@ -50,6 +52,7 @@ HTMLWidgets.widget({
           if (data.tokens.case !== undefined) {
             // Generate tokens and animations
             tokenGroup = tokens.insertTokens(svg);
+            activities.insertActivityAnimation(svg);
           }
           tokens.attachEventListeners(svg, tokenGroup);
 

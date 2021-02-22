@@ -3,9 +3,11 @@ dependencies:
     version: 1.0.3
     src: "htmlwidgets/lib/modules"
     script:
+      - animation_activities.js
       - animation_playback_control.js
       - animation_scales.js
       - animation_tokens.js
+      - animation_activities.js
       - animation_renderer_graphviz.js
       - animation_renderer_leaflet.js
     all_files: FALSE

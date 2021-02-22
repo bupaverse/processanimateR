@@ -23,7 +23,7 @@ token_scale(
 \item{range}{The range of the D3 scale function. Should be a vector of two or more numerical values.}
 }
 \value{
-A scale to be used with `token_mapping`
+A scale to be used with `mapping`
 }
 \description{
 Creates a `list` of parameters suitable to be used as token scale in (\code{\link{token_aes}}) for mapping values to certain aesthetics of the tokens in a process map animation.

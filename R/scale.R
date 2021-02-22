@@ -1,3 +1,37 @@
+
+#' @title Activity scale mapping values to aesthetics
+#'
+#' @description Creates a `list` of parameters suitable to be used as activity scale in (\code{\link{activity_aes}}) for mapping values to certain aesthetics of the activity in a process map animation.
+#'  Refer to the d3-scale documentation (https://github.com/d3/d3-scale) for more information about how to set `domain` and `range` properly.
+#'
+#' @param attribute This may be (1) the name of the event attribute to be used as values,
+#' (2) a data frame with three columns (act, time, value) in which the values in the act column are matching the activity identifier of the supplied event log, or
+#' (3) a constant value that does not change over time.
+#' @param scale Which D3 scale function to be used out of `identity`, `linear`, `sqrt`, `log`, `quantize`, `ordinal`, or `time`.
+#' @param domain The domain of the D3 scale function. Can be left NULL in which case it will be automatically determined based on the values.
+#' @param range The range of the D3 scale function. Should be a vector of two or more numerical values.
+#'
+#' @return A scale to be used with `mapping_activity`
+#' @export
+#'
+#' @examples
+#' data(example_log)
+#'
+#'
+#' @seealso \code{\link{animate_process}}, \code{\link{activity_aes}}
+#'
+activity_scale <- function(attribute = NULL,
+                           scale = c("identity", "linear", "sqrt", "log", "quantize", "ordinal", "time"),
+                           domain = NULL,
+                           range = NULL) {
+
+  scale <- match.arg(scale)
+
+  return(c(as.list(environment())))
+
+}
+
+
 #' @title Token scale mapping values to aesthetics
 #'
 #' @description Creates a `list` of parameters suitable to be used as token scale in (\code{\link{token_aes}}) for mapping values to certain aesthetics of the tokens in a process map animation.
@@ -10,7 +44,7 @@
 #' @param domain The domain of the D3 scale function. Can be left NULL in which case it will be automatically determined based on the values.
 #' @param range The range of the D3 scale function. Should be a vector of two or more numerical values.
 #'
-#' @return A scale to be used with `token_mapping`
+#' @return A scale to be used with `mapping`
 #' @export
 #'
 #' @examples

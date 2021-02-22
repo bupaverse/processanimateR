@@ -1,5 +1,5 @@
 /*
-processanimateR 1.0.3
+processanimateR
 Copyright (c) 2019 Felix Mannhardt
 Licensed under MIT license
 */
@@ -8,8 +8,10 @@ function PAScales(el) {
   var legendSvg = null;
 
   this.colorScale = null;
+  this.actColorScale = null;
   this.sizeScale = null;
   this.opacityScale = null;
+  this.actOpacityScale = null;
   this.imageScale = null;
 
   this.update = function(data) {
@@ -34,6 +36,9 @@ function PAScales(el) {
     this.colorScale = buildScale(data.colors_scale,
                                  data.colors,
                                  "#FFFFFF");
+    this.actColorScale = buildScale(data.act_colors_scale,
+                                 data.act_colors,
+                                 "#FFFFFF");
 
     this.sizeScale = buildScale(data.sizes_scale,
                                 data.sizes,
@@ -42,6 +47,9 @@ function PAScales(el) {
     this.opacityScale = buildScale(data.opacities_scale,
                                 data.opacities,
                                 0.9);
+    this.actOpacityScale = buildScale(data.act_opacities_scale,
+                                    data.act_opacities,
+                                    0.9);
 
     this.imageScale = buildScale(data.images_scale,
                                 data.images,

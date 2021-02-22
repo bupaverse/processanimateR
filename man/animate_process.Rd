@@ -19,6 +19,7 @@ animate_process(
   repeat_delay = 0.5,
   epsilon_time = duration/1000,
   mapping = token_aes(),
+  mapping_activity = activity_aes(),
   token_callback_onclick = c("function(svg_root, svg_element, case_id) {", "}"),
   token_callback_select = token_select_decoration(),
   activity_callback_onclick = c("function(svg_root, svg_element, activity_id) {", "}"),

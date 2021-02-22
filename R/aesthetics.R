@@ -1,3 +1,29 @@
+#' @title Activity aesthetics mapping
+#'
+#' @param color The scale used for the activity color,
+#' @param opacity The scale used for the activity opacity.
+#' @param attributes A list of additional (fixed - non changing) SVG attributes to be added to each activity.
+#'
+#' @return An aesthetics mapping for `animate_process`.
+#' @export
+#'
+#' @examples
+#' data(example_log)
+#'
+#' \donttest{
+#' }
+#'
+#' @seealso \code{\link{animate_process}}, \code{\link{activity_scale}}
+#'
+activity_aes <- function(color = activity_scale(),
+                         opacity = activity_scale(),
+                         attributes = list()) {
+
+  return(c(as.list(environment())))
+
+}
+
+
 #' @title Tokens aesthetics mapping
 #'
 #' @param size The scale used for the token size.
