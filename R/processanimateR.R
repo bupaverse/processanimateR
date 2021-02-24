@@ -24,6 +24,8 @@
 #' @param epsilon_time A (small) time to be added to every animation to ensure that tokens are visible.
 #' @param mapping A list of aesthetic mappings from event log attributes to certain visual parameters of the tokens.
 #'  Use \code{\link{token_aes}} to create a suitable mapping list.
+#' @param mapping_activity A list of aesthetic mappings from event log attributes to certain visual parameters of the activities
+#'  Use \code{\link{activity_aes}} to create a suitable mapping list.
 #' @param token_callback_onclick A JavaScript function that is called when a token is clicked.
 #'  The function is parsed by \code{\link{JS}} and received three parameters: `svg_root`, 'svg_element', and 'case_id'.
 #' @param token_callback_select A JavaScript callback function called when token selection changes.
