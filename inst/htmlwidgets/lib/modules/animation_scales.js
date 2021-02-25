@@ -74,7 +74,7 @@ function PAScales(el) {
 
       legendSvg.append("defs")
         // text background box and arrow marker
-        .html('<filter x="-0.125" y="-0.05" width="1.25" height="1.1" id="box"> \
+        .html('<filter x="-0.125" y="-0.05" width="1.25" height="1.1" id="' + el.id + '-box"> \
                 <feFlood flood-color="white" flood-opacity="0.8"/> \
                 <feComposite in="SourceGraphic" /> \
               </filter>');
@@ -82,7 +82,7 @@ function PAScales(el) {
       var legendGroup = legendSvg.append("g")
         .attr("class", "processanimater-legend")
         .attr("style", "outline: thin solid black;")
-        .attr("filter", "url(#box)")
+        .attr("filter", "url(#" + el.id + "-box)")
         .attr("transform", "translate(20,20)");
 
       switch(data.legend) {
