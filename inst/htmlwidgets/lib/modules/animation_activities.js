@@ -53,19 +53,23 @@ function PAActivities(el, data, scales) {
       };
 
 
-      if (isSingle(customAttrs.colors)) {
-        if (!isNullValue(customAttrs.colors)) {
-          // Improve the rendering performance by avoiding animations if not necessary
-          act_path.attr("fill", colorScale(customAttrs.colors[0].value));
+      if (!isNullValue(customAttrs.colors)) {
+        if (isSingle(customAttrs.colors)) {
+            // Improve the rendering performance by avoiding animations if not necessary
+            act_path.attr("fill", colorScale(customAttrs.colors[0].value));
+        } else {
+          customAttrs.colors.forEach(function(d){
+            act_path.append('set')
+              .attr("attributeName", "fill")
+              .attr("to", colorScale(d.value) )
+              .attr("begin", safeNumber(d.time) + "s" )
+              .attr("fill", "freeze");
+          });
         }
-      } else {
-        customAttrs.colors.forEach(function(d){
-          act_path.append('set')
-            .attr("attributeName", "fill")
-            .attr("to", colorScale(d.value) )
-            .attr("begin", safeNumber(d.time) + "s" )
-            .attr("fill", "freeze");
-        });
+        d3.select(svg)
+          .selectAll(".node text")
+          .style("mix-blend-mode", "difference")
+          .style("fill", "white");
       }
 
       if (isSingle(customAttrs.opacities)) {
