@@ -194,6 +194,9 @@ animate_process <- function(eventlog,
     act_colors <- generate_activity_animation_attribute(eventlog, mapping_activity$color$attribute, NA_character_)
     act_colors <- transform_activity_time(act_colors, mode, a_factor, timeline_start, timeline_end)
 
+    act_linecolors <- generate_activity_animation_attribute(eventlog, mapping_activity$linecolor$attribute, NA_character_)
+    act_linecolors <- transform_activity_time(act_linecolors, mode, a_factor, timeline_start, timeline_end)
+
     act_opacities <- generate_activity_animation_attribute(eventlog, mapping_activity$opacity$attribute, NA_real_)
     act_opacities <- transform_activity_time(act_opacities, mode, a_factor, timeline_start, timeline_end)
 
@@ -206,6 +209,7 @@ animate_process <- function(eventlog,
     tokens <- data.frame()
 
     act_colors <- data.frame()
+    act_linecolors <- data.frame()
     act_opacities <- data.frame()
 
     timeline_start <- 0
@@ -248,11 +252,17 @@ animate_process <- function(eventlog,
     opacities_scale = mapping$opacity,
     images = images,
     images_scale = mapping$image,
-    shape = mapping$shape, #TODO see if this can be a scale too
+
+    #TODO see if this can be a scale too
+    shape = mapping$shape,
     attributes = mapping$attributes,
 
     act_colors = act_colors,
     act_colors_scale = mapping_activity$color,
+
+    act_linecolors = act_linecolors,
+    act_linecolors_scale = mapping_activity$linecolor,
+
     act_opacities = act_opacities,
     act_opacities_scale = mapping_activity$opacity,
 
