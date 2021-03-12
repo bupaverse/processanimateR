@@ -34,7 +34,7 @@ animate_process(patients,
                 legend = "act_color",
                 duration = 300,
                 mapping_activity = activity_aes(color = activity_scale("employee", scale = "ordinal", range = c("red", "green", "blue", "yellow")),
-                                                linecolor = activity_scale("black"),
+                                                linecolor = activity_scale("time", scale = "time", range = c("white", "black")),
                                                 opacity = activity_scale("time", scale = "time", range = c(0.3, 1.0))))
 
 
