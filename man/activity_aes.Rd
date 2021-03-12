@@ -28,14 +28,17 @@ Activity aesthetics mapping
 }
 \examples{
 data(example_log)
-
+library(eventdataR)
 animate_process(patients,
                 mode = "absolute",
                 legend = "act_color",
                 duration = 300,
-                mapping_activity = activity_aes(color = activity_scale("employee", scale = "ordinal", range = c("red", "green", "blue", "yellow")),
-                                                linecolor = activity_scale("time", scale = "time", range = c("white", "black")),
-                                                opacity = activity_scale("time", scale = "time", range = c(0.3, 1.0))))
+                mapping_activity =
+                   activity_aes(color = activity_scale("employee", scale = "ordinal",
+                                                       range = c("red", "green", "blue", "yellow")),
+                                linecolor = activity_scale("time", scale = "time",
+                                                           range = c("white", "black")),
+                                opacity = activity_scale("time", scale = "time", range = c(0.3, 1.0))))
 
 
 }

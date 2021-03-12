@@ -146,7 +146,7 @@ generate_activity_animation_attribute <- function(eventlog, value, default) {
 
 transform_activity_time <- function(data, mode, a_factor, timeline_start, timeline_end) {
 
-  .order <- time <- case <- log_start <- case_start <- value <- NULL
+  .order <- time <- case <- log_start <- case_start <- value <- act <- NULL
 
   data <- data %>%
     group_by(act) %>%
