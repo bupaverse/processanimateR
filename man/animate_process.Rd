@@ -19,6 +19,7 @@ animate_process(
   repeat_delay = 0.5,
   epsilon_time = duration/1000,
   mapping = token_aes(),
+  mapping_activity = activity_aes(),
   token_callback_onclick = c("function(svg_root, svg_element, case_id) {", "}"),
   token_callback_select = token_select_decoration(),
   activity_callback_onclick = c("function(svg_root, svg_element, activity_id) {", "}"),
@@ -65,6 +66,9 @@ Adding jitter can help to disambiguate tokens drawn on top of each other.}
 
 \item{mapping}{A list of aesthetic mappings from event log attributes to certain visual parameters of the tokens.
 Use \code{\link{token_aes}} to create a suitable mapping list.}
+
+\item{mapping_activity}{A list of aesthetic mappings from event log attributes to certain visual parameters of the activities
+Use \code{\link{activity_aes}} to create a suitable mapping list.}
 
 \item{token_callback_onclick}{A JavaScript function that is called when a token is clicked.
 The function is parsed by \code{\link{JS}} and received three parameters: `svg_root`, 'svg_element', and 'case_id'.}

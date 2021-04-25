@@ -1,5 +1,5 @@
 /*
-processanimateR 1.0.3
+processanimateR
 Copyright (c) 2019 Felix Mannhardt
 Licensed under MIT license
 */
@@ -8,8 +8,11 @@ function PAScales(el) {
   var legendSvg = null;
 
   this.colorScale = null;
+  this.actColorScale = null;
+  this.actLinecolorScale = null;
   this.sizeScale = null;
   this.opacityScale = null;
+  this.actOpacityScale = null;
   this.imageScale = null;
 
   this.update = function(data) {
@@ -31,6 +34,7 @@ function PAScales(el) {
       data.images.value = data.images.value.map(function(x) { return moment(x).toDate(); });
     }
 
+
     this.colorScale = buildScale(data.colors_scale,
                                  data.colors,
                                  "#FFFFFF");
@@ -47,6 +51,30 @@ function PAScales(el) {
                                 data.images,
                                 "");
 
+    if (data.act_colors_scale.scale === "time") {
+      data.act_colors.value = data.act_colors.value.map(function(x) { return moment(x).toDate(); });
+    }
+
+    if (data.act_linecolors_scale.scale === "time") {
+      data.act_linecolors.value = data.act_linecolors.value.map(function(x) { return moment(x).toDate(); });
+    }
+
+    if (data.act_opacities_scale.scale === "time") {
+      data.act_opacities.value = data.act_opacities.value.map(function(x) { return moment(x).toDate(); });
+    }
+
+    this.actColorScale = buildScale(data.act_colors_scale,
+                                 data.act_colors,
+                                 "#FFFFFF");
+
+    this.actLinecolorScale = buildScale(data.act_linecolors_scale,
+                                 data.act_linecolors,
+                                 "#FFFFFF");
+
+    this.actOpacityScale = buildScale(data.act_opacities_scale,
+                                    data.act_opacities,
+                                    0.9);
+
   };
 
   this.renderLegend = function(data, svg, width, height) {
@@ -58,6 +86,7 @@ function PAScales(el) {
 
     if (data.legend && data.tokens.case !== undefined &&
                        !(data.colors_scale === "time" ||
+                         data.act_colors_scale === "time" ||
                          data.sizes_scale === "time")) {
 
       if (!legendSvg) {
@@ -80,6 +109,9 @@ function PAScales(el) {
       switch(data.legend) {
         case "color":
           legendGroup.call(d3.legendColor().scale(this.colorScale).shape("circle").shapeRadius(6));
+        break;
+        case "act_color":
+          legendGroup.call(d3.legendColor().scale(this.actColorScale).shape("circle").shapeRadius(6));
         break;
         case "size":
           legendGroup.call(d3.legendSize().scale(this.sizeScale).shape("circle"));

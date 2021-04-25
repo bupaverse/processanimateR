@@ -1,5 +1,5 @@
 ---
-title: "Use processanimateR and Shiny"
+title: "Use processanimateR in Shiny"
 author: "Felix Mannhardt"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette

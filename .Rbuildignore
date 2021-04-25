@@ -10,3 +10,4 @@
 ^inst/htmlwidgets/lib/d3/node_modules/
 ^inst/htmlwidgets/lib/leaflet/node_modules/
 ^cran-comments\.md$
+^\.github$

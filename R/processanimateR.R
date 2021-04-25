@@ -24,6 +24,8 @@
 #' @param epsilon_time A (small) time to be added to every animation to ensure that tokens are visible.
 #' @param mapping A list of aesthetic mappings from event log attributes to certain visual parameters of the tokens.
 #'  Use \code{\link{token_aes}} to create a suitable mapping list.
+#' @param mapping_activity A list of aesthetic mappings from event log attributes to certain visual parameters of the activities
+#'  Use \code{\link{activity_aes}} to create a suitable mapping list.
 #' @param token_callback_onclick A JavaScript function that is called when a token is clicked.
 #'  The function is parsed by \code{\link{JS}} and received three parameters: `svg_root`, 'svg_element', and 'case_id'.
 #' @param token_callback_select A JavaScript callback function called when token selection changes.
@@ -73,6 +75,7 @@ animate_process <- function(eventlog,
                             repeat_delay = 0.5,
                             epsilon_time = duration / 1000,
                             mapping = token_aes(),
+                            mapping_activity = activity_aes(),
                             token_callback_onclick = c("function(svg_root, svg_element, case_id) {","}"),
                             token_callback_select = token_select_decoration(),
                             activity_callback_onclick = c("function(svg_root, svg_element, activity_id) {","}"),
@@ -153,6 +156,10 @@ animate_process <- function(eventlog,
       a_factor =  timeline_end / duration
     }
 
+    #
+    # Token animation
+    #
+
     tokens <- generate_tokens(cases, precedence, processmap, mode, a_factor,
                               timeline_start, timeline_end, epsilon_time)
 
@@ -164,21 +171,37 @@ animate_process <- function(eventlog,
              activity_duration = activity_duration / adjust) %>%
       select(-token_end)
 
-    sizes <- generate_animation_attribute(eventlog, mapping$size$attribute, 6)
-    sizes <- transform_time(sizes, cases, mode, a_factor, timeline_start, timeline_end)
+    sizes <- generate_token_animation_attribute(eventlog, mapping$size$attribute, 6)
+    sizes <- transform_token_time(sizes, cases, mode, a_factor, timeline_start, timeline_end)
 
-    colors <- generate_animation_attribute(eventlog, mapping$color$attribute, "white")
-    colors <- transform_time(colors, cases, mode, a_factor, timeline_start, timeline_end)
+    colors <- generate_token_animation_attribute(eventlog, mapping$color$attribute, "white")
+    colors <- transform_token_time(colors, cases, mode, a_factor, timeline_start, timeline_end)
 
-    images <- generate_animation_attribute(eventlog, mapping$image$attribute, NA)
-    images <- transform_time(images, cases, mode, a_factor, timeline_start, timeline_end)
+    images <- generate_token_animation_attribute(eventlog, mapping$image$attribute, NA)
+    images <- transform_token_time(images, cases, mode, a_factor, timeline_start, timeline_end)
 
     if (mapping$shape == "image" && nrow(images) == 0) {
       stop("Need to supply image URLs in parameter 'mapping' to use shape 'image'.");
     }
 
-    opacities <- generate_animation_attribute(eventlog, mapping$opacity$attribute, 0.9)
-    opacities <- transform_time(opacities, cases, mode, a_factor, timeline_start, timeline_end)
+    opacities <- generate_token_animation_attribute(eventlog, mapping$opacity$attribute, 0.9)
+    opacities <- transform_token_time(opacities, cases, mode, a_factor, timeline_start, timeline_end)
+
+    #
+    # Activity animation
+    #
+
+    act_colors <- generate_activity_animation_attribute(eventlog, mapping_activity$color$attribute, NA_character_)
+    act_colors <- transform_activity_time(act_colors, mode, a_factor, timeline_start, timeline_end)
+
+    act_linecolors <- generate_activity_animation_attribute(eventlog, mapping_activity$linecolor$attribute, NA_character_)
+    act_linecolors <- transform_activity_time(act_linecolors, mode, a_factor, timeline_start, timeline_end)
+
+    act_opacities <- generate_activity_animation_attribute(eventlog, mapping_activity$opacity$attribute, NA_real_)
+    act_opacities <- transform_activity_time(act_opacities, mode, a_factor, timeline_start, timeline_end)
+
+    act_labels <- generate_activity_animation_attribute(eventlog, mapping_activity$label$attribute, NA_real_)
+    act_labels <- transform_activity_time(act_labels, mode, a_factor, timeline_start, timeline_end)
 
   } else {
     # No animation mode, for using activity selection features only
@@ -187,6 +210,11 @@ animate_process <- function(eventlog,
     images <- data.frame()
     opacities <- data.frame()
     tokens <- data.frame()
+
+    act_colors <- data.frame()
+    act_linecolors <- data.frame()
+    act_opacities <- data.frame()
+
     timeline_start <- 0
     timeline_end <- 0
     timeline <- FALSE
@@ -194,15 +222,20 @@ animate_process <- function(eventlog,
   }
 
   if ("weight" %in% colnames(processmap$edges_df)) {
-	  	# hack to add 'weight' attribute to the graph
-		  processmap$edges_df %>%
-			  mutate(len = weight) -> processmap$edges_df
+    # hack to add 'weight' attribute to the graph
+    processmap$edges_df %>%
+      mutate(len = weight) -> processmap$edges_df
   }
 
   if ("constraint" %in% colnames(processmap$edges_df)) {
-	  	# hack to add 'weight' attribute to the graph
-		  processmap$edges_df %>%
-			  mutate(decorate = constraint) -> processmap$edges_df
+    # hack to add 'weight' attribute to the graph
+    processmap$edges_df %>%
+      mutate(decorate = constraint) -> processmap$edges_df
+  }
+
+  if (any(!is.na(act_labels$value))) {
+    processmap$nodes_df %>% #
+      mutate(label = if_else(label == "Start" | label == "End", label, paste0(label, '\n '))) -> processmap$nodes_df
   }
 
   # actually render the process map
@@ -210,8 +243,15 @@ animate_process <- function(eventlog,
 
   x <- list(
     rendered_process = rendered_process,
+
     activities = activities,
+    start_activity = start_activity,
+    end_activity = end_activity,
+
+    # Tokens and their timing
     tokens = tokens,
+
+    # Additional token aesthetics
     sizes = sizes,
     sizes_scale = mapping$size,
     colors = colors,
@@ -220,22 +260,38 @@ animate_process <- function(eventlog,
     opacities_scale = mapping$opacity,
     images = images,
     images_scale = mapping$image,
-    shape = mapping$shape, #TODO see if this can be a scale too
+
+    #TODO see if this can be a scale too
+    shape = mapping$shape,
     attributes = mapping$attributes,
-    start_activity = start_activity,
-    end_activity = end_activity,
+
+    act_colors = act_colors,
+    act_colors_scale = mapping_activity$color,
+
+    act_linecolors = act_linecolors,
+    act_linecolors_scale = mapping_activity$linecolor,
+
+    act_opacities = act_opacities,
+    act_opacities_scale = mapping_activity$opacity,
+
+    act_labels = act_labels,
+
     duration = duration,
     timeline = timeline,
     mode = mode,
+
     initial_state = initial_state,
     initial_time = initial_time,
     repeat_count = repeat_count,
     repeat_delay = repeat_delay,
     jitter = jitter,
     factor = a_factor * 1000,
+
     legend = legend,
+
     timeline_start = timeline_start * 1000,
     timeline_end = timeline_end * 1000,
+
     onclick_token_callback = htmlwidgets::JS(token_callback_onclick),
     onclick_token_select = htmlwidgets::JS(token_callback_select),
     onclick_activity_callback = htmlwidgets::JS(activity_callback_onclick),
@@ -280,119 +336,3 @@ renderProcessanimater <- function(expr, env = parent.frame(), quoted = FALSE) {
   if (!quoted) { expr <- substitute(expr) } # force quoted
   htmlwidgets::shinyRenderWidget(expr, processanimaterOutput, env, quoted = TRUE)
 }
-
-#
-# Private helper functions
-#
-
-generate_tokens <- function(cases, precedence, processmap, mode, a_factor,
-                            timeline_start, timeline_end, epsilon) {
-
-  case <- end_time <- start_time <- next_end_time <- next_start_time <- case_start <- token_duration <- NULL
-  min_order <- token_start <- activity_duration <- token_end <- from_id <- to_id <- case_duration <- NULL
-
-  tokens <- precedence %>%
-    left_join(cases, by = c("case")) %>%
-    left_join(processmap$edges_df, by = c("from_id" = "from", "to_id" = "to")) %>%
-    filter(!is.na(id) & !is.na(case))
-
-  if (mode == "absolute") {
-    tokens <- mutate(tokens,
-                     token_start = (end_time - timeline_start) / a_factor,
-                     token_duration = (next_start_time - end_time) / a_factor,
-                     activity_duration = pmax(0, (next_end_time - next_start_time) / a_factor))
-  } else {
-    tokens <- mutate(tokens,
-                     token_start = (end_time - case_start) / a_factor,
-                     token_duration = (next_start_time - end_time) / a_factor,
-                     activity_duration = pmax(0, (next_end_time - next_start_time) / a_factor))
-  }
-
-  tokens <- tokens %>%
-    # TODO improve handling of parallelism
-    # Filter all negative durations caused by parallelism
-    filter(token_duration >= 0, activity_duration >= 0) %>%
-    # SVG animations seem to not like events starting at the same time caused by 0s durations
-    mutate(token_duration = epsilon + token_duration,
-           activity_duration = epsilon + activity_duration) %>%
-    arrange(case, start_time, min_order) %>%
-    group_by(case) %>%
-    # Ensure start times are not overlapping SMIL does not fancy this
-    mutate(token_start = token_start + ((row_number(token_start) - min_rank(token_start)) * epsilon)) %>%
-    # Ensure consecutive start times, this epsilon just needs to be small
-    mutate(token_end = min(token_start) + cumsum(token_duration + activity_duration) + 0.000001) %>%
-    mutate(token_start = lag(token_end, default = min(token_start))) %>%
-    ungroup()
-
-  tokens %>%
-    select(case,
-           edge_id = id,
-           token_start,
-           token_duration,
-           activity_duration,
-           token_end)
-
-}
-
-generate_animation_attribute <- function(eventlog, value, default) {
-  attribute <- rlang::sym("value")
-  if (is.null(value)) {
-    # use fixed default value
-    eventlog %>%
-      as.data.frame() %>%
-      group_by(!!case_id_(eventlog)) %>%
-      summarise(time = min(!!timestamp_(eventlog))) %>%
-      mutate(!!attribute := default) %>%
-      rename(case = !!case_id_(eventlog))
-  } else if (is.data.frame(value)) {
-    # check data present
-    stopifnot(c("case", "time", "value") %in% colnames(value))
-    value
-  } else if (value %in% colnames(eventlog)) {
-    # use existing value from event log
-    eventlog %>%
-      as.data.frame() %>%
-      mutate(!!attribute := !!rlang::sym(value)) %>%
-      select(case = !!case_id_(eventlog),
-             time = !!timestamp_(eventlog),
-             !!attribute)
-
-  } else {
-    # set to a fixed value
-    eventlog %>%
-      as.data.frame() %>%
-      mutate(!!attribute := value) %>%
-      select(case = !!case_id_(eventlog),
-             time = !!timestamp_(eventlog),
-             !!attribute)
-  }
-}
-
-transform_time <- function(data, cases, mode, a_factor, timeline_start, timeline_end) {
-
-  .order <- time <- case <- log_start <- case_start <- value <- NULL
-
-  if (nrow(data) != nrow(cases)) {
-    data <- data %>%
-      group_by(case) %>%
-      filter(row_number() == 1 | lag(value) != value) # only keep changes in value
-  }
-
-  data <- data %>%
-    left_join(cases, by = "case")
-
-  if (mode == "absolute") {
-    data <- mutate(data, time = as.numeric(time - timeline_start, units = "secs"))
-  } else {
-    data <- mutate(data, time = as.numeric(time - case_start, units = "secs"))
-  }
-
-  data %>%
-    mutate(time = time / a_factor) %>%
-    select(case, time, value)
-}
-
-# Utility functions
-# https://github.com/gertjanssenswillen/processmapR/blob/master/R/utils.R
-case_id_ <- function(eventlog) rlang::sym(bupaR::case_id(eventlog))
-timestamp_ <- function(eventlog) rlang::sym(bupaR::timestamp(eventlog))

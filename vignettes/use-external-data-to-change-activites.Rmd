@@ -1,0 +1,58 @@
+---
+title: "Use external data (process context) to change activity aesthetics"
+author: "Felix Mannhardt"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Use external data (process context) to change activity aesthetics}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+It is possible to use a secondary data frame to determine the aesthetics of *activities* irregardless of the times at which activities actually occurred. This can be useful to show system level behavior that happens across several cases on the activities. For example, the number of currently active cases, or an average of a measurement over a certain time period. 
+
+For example, here the 30 minute average of the latest lactic acid measurements from cases in which a certain activity is performed in the `sepsis` event log is used: 
+```{r echo = TRUE, message = FALSE}
+library(processanimateR)
+library(dplyr)
+library(bupaR)
+
+# Extract only the lacticacid measurements
+lactic <- sepsis %>%
+  mutate(lacticacid = as.numeric(lacticacid)) %>%
+  arrange(case_id, timestamp) %>% 
+  as.data.frame() %>%
+  bupaR::fill(lacticacid, .direction = "up") %>% 
+  mutate("act" = activity,
+         value = lacticacid) %>% 
+  as.data.frame() %>%
+  mutate(time = lubridate::floor_date(timestamp, "30 mins")) %>% 
+  group_by(act, time) %>% 
+  summarise(value = mean(value), .groups = "drop") %>% 
+  select(act,
+         time,
+         value) # format needs to be 'act,time,value'
+
+lacticLabel <- lactic %>% 
+  mutate(value = paste0(value, " mmol/L"))
+
+# Remove the measurement events from the sepsis log
+sepsisBase <- sepsis %>%
+  filter_activity(c("LacticAcid", "CRP", "Leucocytes", "Return ER",
+                    "IV Liquid", "IV Antibiotics"), reverse = T) %>%
+  filter_trace_frequency(percentage = 0.95)
+
+# Animate activity aesthetics with the secondary data frame `lactic`
+animate_process(sepsisBase, 
+                mode = "absolute", 
+                duration = 300,
+                mapping_activity = activity_aes(label = activity_scale(lacticLabel, scale = "identity"),
+                                                color = activity_scale(lactic, scale = "linear", range = c("#fff5eb","#7f2704"))))
+```
