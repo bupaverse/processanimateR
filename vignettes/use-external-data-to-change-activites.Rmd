@@ -40,6 +40,9 @@ lactic <- sepsis %>%
          time,
          value) # format needs to be 'act,time,value'
 
+lacticLabel <- lactic %>% 
+  mutate(value = paste0(value, " mmol/L"))
+
 # Remove the measurement events from the sepsis log
 sepsisBase <- sepsis %>%
   filter_activity(c("LacticAcid", "CRP", "Leucocytes", "Return ER",
@@ -50,9 +53,6 @@ sepsisBase <- sepsis %>%
 animate_process(sepsisBase, 
                 mode = "absolute", 
                 duration = 300,
-                mapping_activity = activity_aes(color = 
-                                                  activity_scale(lactic, 
-                                                                 scale = "linear", 
-                                                                 range = c("#fff5eb","#7f2704"))))
-
+                mapping_activity = activity_aes(label = activity_scale(lacticLabel, scale = "identity"),
+                                                color = activity_scale(lactic, scale = "linear", range = c("#fff5eb","#7f2704"))))
 ```
