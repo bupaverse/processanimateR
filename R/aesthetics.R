@@ -3,6 +3,7 @@
 #' @param color The scale used for the activity color,
 #' @param linecolor The scale used for the activity color,
 #' @param opacity The scale used for the activity opacity.
+#' @param label The scale used for the additional activity label. Usually an `identity` scale makes sense here.
 #' @param attributes A list of additional (fixed - non changing) SVG attributes to be added to each activity.
 #'
 #' @return An aesthetics mapping for `animate_process`.
@@ -20,7 +21,8 @@
 #'                                                        range = c("red", "green", "blue", "yellow")),
 #'                                 linecolor = activity_scale("time", scale = "time",
 #'                                                            range = c("white", "black")),
-#'                                 opacity = activity_scale("time", scale = "time", range = c(0.3, 1.0))))
+#'                                 opacity = activity_scale("time", scale = "time", range = c(0.3, 1.0)),
+#'                                 label = activity_scale("employee", scale = "identity")))
 #'
 #'
 #' @seealso \code{\link{animate_process}}, \code{\link{activity_scale}}
@@ -28,6 +30,7 @@
 activity_aes <- function(color = activity_scale(),
                          linecolor = activity_scale(),
                          opacity = activity_scale(),
+                         label = activity_scale(),
                          attributes = list()) {
 
   return(c(as.list(environment())))

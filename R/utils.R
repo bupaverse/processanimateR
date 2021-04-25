@@ -161,6 +161,7 @@ transform_activity_time <- function(data, mode, a_factor, timeline_start, timeli
 
   data %>%
     mutate(time = time / a_factor) %>%
+    arrange(act, time) %>%
     select(act, time, value)
 }
 

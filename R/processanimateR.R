@@ -200,6 +200,9 @@ animate_process <- function(eventlog,
     act_opacities <- generate_activity_animation_attribute(eventlog, mapping_activity$opacity$attribute, NA_real_)
     act_opacities <- transform_activity_time(act_opacities, mode, a_factor, timeline_start, timeline_end)
 
+    act_labels <- generate_activity_animation_attribute(eventlog, mapping_activity$label$attribute, NA_real_)
+    act_labels <- transform_activity_time(act_labels, mode, a_factor, timeline_start, timeline_end)
+
   } else {
     # No animation mode, for using activity selection features only
     sizes <- data.frame()
@@ -228,6 +231,11 @@ animate_process <- function(eventlog,
     # hack to add 'weight' attribute to the graph
     processmap$edges_df %>%
       mutate(decorate = constraint) -> processmap$edges_df
+  }
+
+  if (any(!is.na(act_labels$value))) {
+    processmap$nodes_df %>% #
+      mutate(label = if_else(label == "Start" | label == "End", label, paste0(label, '\n '))) -> processmap$nodes_df
   }
 
   # actually render the process map
@@ -265,6 +273,8 @@ animate_process <- function(eventlog,
 
     act_opacities = act_opacities,
     act_opacities_scale = mapping_activity$opacity,
+
+    act_labels = act_labels,
 
     duration = duration,
     timeline = timeline,

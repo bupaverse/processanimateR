@@ -9,6 +9,8 @@ function PAActivities(el, data, scales) {
   var linecolorScale = scales.actLinecolorScale;
   var opacityScale = scales.actOpacityScale;
 
+  var animateTextLoop = null;
+
   function safeNumber(x) {
     return (parseFloat(x) || 0).toFixed(6);
   }
@@ -66,6 +68,12 @@ function PAActivities(el, data, scales) {
 
   this.insertActivityAnimation = function(svg) {
 
+    if (animateTextLoop) {
+      animateTextLoop.forEach(function(animateLoop) {
+        window.cancelAnimationFrame(animateLoop);
+      })
+    }
+
     var nodeElements = d3.select(svg)
       .selectAll(".node")
       .filter(function() {
@@ -75,6 +83,7 @@ function PAActivities(el, data, scales) {
     var colors = HTMLWidgets.dataframeToD3(data.act_colors);
     var linecolors = HTMLWidgets.dataframeToD3(data.act_linecolors);
     var opacities = HTMLWidgets.dataframeToD3(data.act_opacities);
+    var labels = HTMLWidgets.dataframeToD3(data.act_labels);
 
     nodeElements.each(function(d, i) {
 
@@ -92,7 +101,8 @@ function PAActivities(el, data, scales) {
       var customAttrs = {
         colors: colors.filter(sameActivity),
         linecolors: linecolors.filter(sameActivity),
-        opacities: opacities.filter(sameActivity)
+        opacities: opacities.filter(sameActivity),
+        labels: labels.filter(sameActivity)
       };
 
       if (!isNullValue(customAttrs.colors)) {
@@ -148,6 +158,46 @@ function PAActivities(el, data, scales) {
       if (data.act_attributes) {
         act_path.attrs(data.act_attributes);
       }
+
+      // Text
+
+      if (!isNullValue(customAttrs.labels)) {
+        var textEl = d3.select(this).select("a > text:nth-child(4)");
+        textEl.text(customAttrs.labels[0].value);
+        if (!isSingle(customAttrs.labels)) {
+          // Single text does not make sense
+          if (!animateTextLoop) {
+            animateTextLoop = new Array(nodeElements.length);
+          }
+
+          animateText(svg, data, i, textEl, customAttrs.labels);
+        }
+      }
+
+      // Text
+      function animateText(svg, data, actIdx, textEl, textAttr) {
+        var lastTime = 0;
+        var throttleDelta = 1000 / 18;
+        (function(timestamp){
+            if (timestamp - lastTime > throttleDelta) {
+              var time = svg.getCurrentTime();
+              if (time > 0 && time <= data.duration && !svg.animationsPaused()) {
+
+                var textEntry = textAttr.find(function(d) {
+                  return d.time >= time;
+                })
+
+                if (textEntry) {
+                  textEl.text(textEntry.value);
+                }
+
+              }
+              lastTime = timestamp;
+            }
+            animateTextLoop[actIdx] = window.requestAnimationFrame(arguments.callee);
+        })();
+      }
+
 
     });
 

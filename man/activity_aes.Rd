@@ -8,6 +8,7 @@ activity_aes(
   color = activity_scale(),
   linecolor = activity_scale(),
   opacity = activity_scale(),
+  label = activity_scale(),
   attributes = list()
 )
 }
@@ -17,6 +18,8 @@ activity_aes(
 \item{linecolor}{The scale used for the activity color,}
 
 \item{opacity}{The scale used for the activity opacity.}
+
+\item{label}{The scale used for the additional activity label. Usually an `identity` scale makes sense here.}
 
 \item{attributes}{A list of additional (fixed - non changing) SVG attributes to be added to each activity.}
 }
@@ -38,7 +41,8 @@ animate_process(patients,
                                                        range = c("red", "green", "blue", "yellow")),
                                 linecolor = activity_scale("time", scale = "time",
                                                            range = c("white", "black")),
-                                opacity = activity_scale("time", scale = "time", range = c(0.3, 1.0))))
+                                opacity = activity_scale("time", scale = "time", range = c(0.3, 1.0)),
+                                label = activity_scale("employee", scale = "identity")))
 
 
 }
