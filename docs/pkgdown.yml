@@ -1,5 +1,5 @@
-pandoc: 2.7.2
-pkgdown: 1.4.1
+pandoc: 2.11.4
+pkgdown: 1.6.1
 pkgdown_sha: ~
 articles:
   use-external-data-to-change-tokens: use-external-data-to-change-tokens.html
@@ -7,4 +7,5 @@ articles:
   use-timestamp-change-token-aes: use-timestamp-change-token-aes.html
   use-token_scales: use-token_scales.html
   use-with-shiny: use-with-shiny.html
+last_built: 2021-10-11T15:32Z
 

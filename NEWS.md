@@ -1,3 +1,7 @@
+## processanimateR 1.0.4
+
+* Change of maintainer e-mail to new affiliation
+
 ## processanimateR 1.0.3
 
 * Fix for update in `processmapR`
