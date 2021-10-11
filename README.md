@@ -4,14 +4,14 @@
 
 [![](https://cranlogs.r-pkg.org/badges/processanimateR)](https://cran.r-project.org/package=processanimateR)
 [![CRAN\_Status\_Badge](https://www.r-pkg.org/badges/version/processanimateR)](https://cran.r-project.org/package=processanimateR)
-[![lifecycle](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://www.tidyverse.org/lifecycle/#maturing)
+[![lifecycle](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://lifecycle.r-lib.org/articles/stages.html#maturing)
 [![Travis-CI Build Status](https://travis-ci.org/bupaverse/processanimateR.svg?branch=master)](https://travis-ci.org/bupaverse/processanimateR)
 
 [![processanimateR example](man/figures/processanimateR-banner.png)](https://bupaverse.github.io/processanimateR/example/processanimateR-banner.html)
 
 Flexible token replay animation for process maps created through the [processmapR](https://github.com/gertjanssenswillen/processmapR/) package from the [bupaR](http://www.bupar.net) suite, which uses [DiagrammeR](https://github.com/rich-iannone/DiagrammeR/) and [viz.js](https://github.com/mdaines/viz.js) library to render process maps using GraphViz. As alternative renderer [Leaflet](https://leafletjs.com/) with fixed coordinates for activities is also supported.
 
-ProcessanimateR provides a [htmlwidget](https://www.htmlwidgets.org/) using SVG animations ([SMIL](https://www.w3.org/standards/techs/smil#w3c_all)) to create the animation. Sizes, colors, and many more aspects of the token shapes are customizable based on trace, event attributes, or a secondary data frame if an attribute does not change according to the original event log.
+ProcessanimateR provides a [htmlwidget](https://www.htmlwidgets.org/) using SVG animations ([SMIL](https://www.w3.org/TR/2008/REC-SMIL3-20081201/)) to create the animation. Sizes, colors, and many more aspects of the token shapes are customizable based on trace, event attributes, or a secondary data frame if an attribute does not change according to the original event log.
 
 ## Getting Started
 
@@ -88,13 +88,13 @@ This package makes use of the following libraries:
 * [d3](https://d3js.org), for SVG management;
 * [d3-legend](https://github.com/susielu/d3-legend), to render D3 scales;
 * [fakesmil](https://github.com/FakeSmile/FakeSmile), to provide SMIL support in most browsers;
-* [svg-pan-zoom](https://github.com/ariutta/svg-pan-zoom), for the panning/zooming option;
+* [svg-pan-zoom](https://github.com/bumbu/svg-pan-zoom), for the panning/zooming option;
 * [MomentJS](https://github.com/moment/moment), for parsing and formatting times and durations;
 * [Leaflet](https://leafletjs.com/), for rendering process maps on geographical maps.
 
 ## Versioning
 
-We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/bupaverse/processanimateR/tags). 
+We use [SemVer](https://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/bupaverse/processanimateR/tags). 
 
 ## License
 
@@ -102,4 +102,4 @@ This software is licensed under the MIT License - see the [LICENSE](https://gith
 
 ## Acknowledgments
 
-This software was partly supported by the [HUMAN project](http://www.humanmanufacturing.eu/), which has received funding from the European Union's Horizon 2020 research and innovation programme under grant agreement no. 723737 (HUMAN)
+This software was partly supported by the [HUMAN project](http://humanmanufacturing.eu/), which has received funding from the European Union's Horizon 2020 research and innovation programme under grant agreement no. 723737 (HUMAN)
