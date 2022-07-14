@@ -1,18 +1,41 @@
 Package: processanimateR
 Type: Package
-Title: Process Map Animation
-Version: 0.1.0
-Authors@R: person("Felix","Mannhardt", email = "felix.mannhardt@sintef.no", 
-    role = c("aut","cre"))
-Description: Token replay animation for process maps created with 
-    processmapR by using SVG animations (SMIL) and the htmlwidget package.
+Title: Process Map Token Replay Animation
+Version: 1.0.4
+Authors@R: c(person("Felix","Mannhardt", email = "f.mannhardt@tue.nl", role = c("aut","cre")),
+  person("Gert","Janssenswillen",email = "gert.janssenswillen@uhasselt.be", role = c("ctb")))
+Description: Provides animated process maps based on the 'procesmapR' package.
+  Cases stored in event logs created with with 'bupaR' S3 class eventlog() are
+  rendered as tokens (SVG shapes) and animated according to their occurrence 
+  times on top of the process map. For rendering SVG animations ('SMIL') and the
+  'htmlwidget' package are used.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
-Depends: bupaR, processmapR
+Depends:
+  R (>= 2.10)
 Imports: 
-    rlang, magrittr, dplyr, shiny, tidyr, htmlwidgets, DiagrammeR, 
-    DiagrammeRsvg, RColorBrewer, zoo, scales, shinycssloaders
-RoxygenNote: 6.0.1
-URL: https://github.com/fmannhardt/processanimateR/
-BugReports: https://github.com/fmannhardt/processanimateR/issues
+  bupaR, 
+  processmapR (>= 0.3.1),
+  rlang,
+  magrittr, 
+  dplyr,
+  tidyr,
+  htmlwidgets, 
+  DiagrammeR (>= 1.0.0),
+  grDevices,
+  stringr,
+  htmltools
+Suggests: 
+  eventdataR,
+  edeaR,
+  testthat,
+  knitr,
+  rmarkdown,
+  shiny,
+  RColorBrewer,
+  lubridate
+RoxygenNote: 7.1.2
+URL: https://github.com/bupaverse/processanimateR/
+BugReports: https://github.com/bupaverse/processanimateR/issues
+VignetteBuilder: knitr

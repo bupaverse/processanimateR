@@ -1,0 +1,78 @@
+---
+title: "User defined bins for time to change token aesthetics"
+author: "Dominic Rowney"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette 
+vignette: >
+  %\VignetteIndexEntry{User defined bins for time to change token aesthetics}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+It is possible to change the aesthetics of tokens based on the timestamp of the animation
+
+For example, the number of days a 'patient' has been in the system
+
+```{r echo = TRUE, message = FALSE}
+# Libraries ---------------------------------------------------------------
+library(dplyr)            ##pipes
+library(tidyr)            ##tidy data, partcularly the crossing() function
+library(lubridate)        ##date time manipulation
+library(bupaR)            ##buisness process analytics
+library(processanimateR)  ##animates process
+
+# Create performance time flags ------------------------------------------------
+my_flags <- data.frame(value = c(0,2,4,8,16)) %>% 
+            mutate(day = days(value)) #convert numeric value into days
+
+```
+
+This will change the colour of the token at 0, 2, 4, 8, and 16 days.
+
+The `crossing()` function joins the cases of 'patients' to 'my_flags' and creates all possible combinations.
+
+```{r echo = TRUE, message = FALSE}
+# Create timestamps of flags ----------------------------------------------
+
+my_timeflags <- patients %>% 
+                cases %>%
+                crossing(my_flags) %>% ##similar to a SQL outer join
+                mutate(time = start_timestamp + day) %>% 
+                filter(time <= complete_timestamp) %>% 
+                select("case" = patient,time,value) ##must be case, time, value
+```
+
+
+The data for the `token_scale()` function must have the column headings 'case, time, value'.
+
+Without the `domain = my_flags$value` argument the flags follow alphabetic order (e.g. 
+ 0, 16, 2, 4, 8) rather than the numeric order we wants. See [d3-legend](https://github.com/susielu/d3-legend) for further information.
+
+```{r echo = TRUE, message = FALSE}
+# Animate process ---------------------------------------------------------
+
+patients %>%
+  animate_process(mode ="absolute",
+                  jitter=10,
+                  legend = "color", 
+                  mapping = token_aes(
+                    color = token_scale(my_timeflags
+                                        , scale = "ordinal"
+                                        , domain = my_flags$value
+                                        , range = rev(RColorBrewer::brewer.pal(5,"Spectral"))
+                    )))
+
+```
+
+The colors can be modified through the `range` argument. In this case the scale is reversed with `rev()` to go from blue to red. See `RColorBrewer::brewer.pal.info` for all options:
+
+*Acknowledgement*
+
+Thanks to [Dominic Rowney](https://github.com/DomRowney/) for this nice example of advanced processanimateR usage. The original example code can be found [here](https://github.com/DomRowney/ProcessAnimateR_vignette).

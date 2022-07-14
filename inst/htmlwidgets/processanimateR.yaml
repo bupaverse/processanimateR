@@ -1,17 +1,39 @@
 dependencies:
+  - name: processanimater-libs
+    version: 1.0.3
+    src: "htmlwidgets/lib/modules"
+    script:
+      - animation_playback_control.js
+      - animation_scales.js
+      - animation_tokens.js
+      - animation_renderer_graphviz.js
+      - animation_renderer_leaflet.js
+    all_files: FALSE
   - name: d3
-    version: 5.0.0
+    version: 5.7.0
     src: "htmlwidgets/lib/d3"
-    script: d3.min.js
+    script: d3-custom.min.js
+    all_files: FALSE
   - name: fakesmil
     version: 0.3.0
     src: "htmlwidgets/lib/fakesmil"
     script: smil.user.js
+    all_files: FALSE
   - name: svg-pan-zoom
-    version: 3.5.2
+    version: 3.6.0
     src: "htmlwidgets/lib/svg-pan-zoom"
     script: svg-pan-zoom.min.js
-  - name: viz
-    version: 1.8.1
-    src: htmlwidgets/lib/viz
-    script: viz.js
+    all_files: FALSE
+  - name: momentjs
+    version: 0.2.22.1
+    src: "htmlwidgets/lib/momentjs"
+    script: moment.min.js
+    all_files: FALSE
+  - name: es6-promise
+    version: 4.2.5
+    src: "htmlwidgets/lib/es6-promise"
+    script: es6-promise.auto.min.js
+  - name: hammerjs
+    version: 2.0.8
+    src: "htmlwidgets/lib/hammerjs"
+    script: hammer.min.js

@@ -1,0 +1,54 @@
+---
+title: "Use token scales"
+author: "Felix Mannhardt"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Use token scales}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+Several aesthetics of tokens (`color`, `size`, `opacity`, `image`) can be dynamically determined based on event log attributes using D3 scales.
+
+### ordinal scales
+```{r echo = TRUE, message = FALSE}
+library(processanimateR)
+library(eventdataR)
+library(RColorBrewer)
+animate_process(patients, 
+                legend = "color", 
+                mapping = token_aes(color = token_scale("employee", 
+                                                        scale = "ordinal", 
+                                                        range = RColorBrewer::brewer.pal(8, "Paired"))))
+```
+
+### linear scales
+```{r echo = TRUE, message = FALSE}
+library(processanimateR)
+library(dplyr)
+library(bupaR)
+animate_process(sample_n(traffic_fines, 1000) %>% filter_trace_frequency(percentage = 0.95),
+                mode = "relative",
+                legend = "color", 
+                mapping = token_aes(color = token_scale("amount", 
+                                                        scale = "linear", 
+                                                        range = c("yellow","red"))))
+```
+
+### time scales
+```{r echo = TRUE, message = FALSE}
+library(processanimateR)
+library(eventdataR)
+animate_process(patients, 
+                mapping = token_aes(color = token_scale("time", 
+                                                        scale = "time", 
+                                                        range = c("blue","red"))))
+```

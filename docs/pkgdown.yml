@@ -1,5 +1,11 @@
-pandoc: 1.19.2.1
-pkgdown: 0.1.0.9000
-pkgdown_sha: a7aa75eeb866e0e0c891785d8d7bc0c0d2294c36
-articles: []
+pandoc: 2.11.4
+pkgdown: 1.6.1
+pkgdown_sha: ~
+articles:
+  use-external-data-to-change-tokens: use-external-data-to-change-tokens.html
+  use-shiny-selections: use-shiny-selections.html
+  use-timestamp-change-token-aes: use-timestamp-change-token-aes.html
+  use-token_scales: use-token_scales.html
+  use-with-shiny: use-with-shiny.html
+last_built: 2021-10-11T15:32Z
 
