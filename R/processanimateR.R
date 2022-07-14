@@ -101,13 +101,9 @@ animate_process <- function(eventlog,
   token_start <- token_end <- activity_duration <- token_duration <- NULL
   constraint <- weight <- NULL
 
-<<<<<<< HEAD
-  precedence <- attr(processmap, "base_precedence") %>%
-    mutate_at(vars(start_time, end_time, next_start_time, next_end_time), as.numeric, units = "secs")
-=======
+
   mode <- match.arg(mode)
   initial_state <- match.arg(initial_state)
->>>>>>> 0205236634df51d522c368aed472521b222260b7
 
   if (initial_time > duration) {
     stop("The 'initial_time' parameter should be less or equal than the specified 'duration'.")
@@ -400,13 +396,10 @@ transform_time <- function(data, cases, mode, a_factor, timeline_start, timeline
 # Utility functions
 # https://github.com/gertjanssenswillen/processmapR/blob/master/R/utils.R
 
-case_id_ <- function(eventlog) rlang::sym(case_id(eventlog))
-activity_id_ <- function(eventlog) rlang::sym(activity_id(eventlog))
-activity_instance_id_ <- function(eventlog) rlang::sym(activity_instance_id(eventlog))
-resource_id_ <- function(eventlog) rlang::sym(resource_id(eventlog))
-timestamp_ <- function(eventlog) rlang::sym(timestamp(eventlog))
-lifecycle_id_ <- function(eventlog) rlang::sym(lifecycle_id(eventlog))
-
-
 case_id_ <- function(eventlog) rlang::sym(bupaR::case_id(eventlog))
+activity_id_ <- function(eventlog) rlang::sym(bupaR::activity_id(eventlog))
+activity_instance_id_ <- function(eventlog) rlang::sym(bupaR::activity_instance_id(eventlog))
+resource_id_ <- function(eventlog) rlang::sym(bupaR::resource_id(eventlog))
 timestamp_ <- function(eventlog) rlang::sym(bupaR::timestamp(eventlog))
+lifecycle_id_ <- function(eventlog) rlang::sym(bupaR::lifecycle_id(eventlog))
+

@@ -19,6 +19,8 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -31,23 +33,17 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">processanimateR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.5</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
 <li>
-  <a href="../index.html">
-    <span class="fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
-<li>
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -76,7 +72,7 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/bupaverse/processanimateR/">
+  <a href="https://github.com/bupaverse/processanimateR/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
      
   </a>
@@ -91,142 +87,148 @@
 
       
 
-      </header><script src="use-with-shiny_files/header-attrs-2.11/header-attrs.js"></script><div class="row">
+      </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Use processanimateR in Shiny</h1>
-                        <h4 class="author">Felix Mannhardt</h4>
+                        <h4 data-toc-skip class="author">Felix
+Mannhardt</h4>
             
-            <h4 class="date">2021-10-11</h4>
+            <h4 data-toc-skip class="date">2022-07-14</h4>
       
-      <small class="dont-index">Source: <a href="https://github.com/bupaverse/processanimateR/blob/master/vignettes/use-with-shiny.Rmd"><code>vignettes/use-with-shiny.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/bupaverse/processanimateR/blob/HEAD/vignettes/use-with-shiny.Rmd" class="external-link"><code>vignettes/use-with-shiny.Rmd</code></a></small>
       <div class="hidden name"><code>use-with-shiny.Rmd</code></div>
 
     </div>
 
     
     
-<p>ProcessanimateR animation can be also used interactively as part of a (<a href="https://shiny.rstudio.com">Shiny</a>) web-application. Here, an example application that expects attributes are of an appropriate data type and automatically chooses appropriate color scales is given. We first define a function <code>ianimate_process</code> that defines our Shiny application as follows:</p>
+<p>ProcessanimateR animation can be also used interactively as part of a
+(<a href="https://shiny.rstudio.com" class="external-link">Shiny</a>) web-application. Here,
+an example application that expects attributes are of an appropriate
+data type and automatically chooses appropriate color scales is given.
+We first define a function <code>ianimate_process</code> that defines
+our Shiny application as follows:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/bupaverse/processanimateR/">processanimateR</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://shiny.rstudio.com/">shiny</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">shinycssloaders</span><span class="op">)</span>
-<span class="va">ianimate_process</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">eventlog</span>, <span class="va">min.time</span> <span class="op">=</span> <span class="fl">30</span>, <span class="va">max.time</span> <span class="op">=</span> <span class="fl">600</span>, <span class="va">default.time</span> <span class="op">=</span> <span class="fl">60</span><span class="op">)</span> <span class="op">{</span>
-
-  <span class="va">ui</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">request</span><span class="op">)</span> <span class="op">{</span>
-    <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/fluidPage.html">fluidPage</a></span><span class="op">(</span>
-      <span class="va">tags</span><span class="op">$</span><span class="fu">head</span><span class="op">(</span><span class="va">tags</span><span class="op">$</span><span class="fu">style</span><span class="op">(</span><span class="st">"#process{height:90vh !important;}"</span><span class="op">)</span><span class="op">)</span>,
-      <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/titlePanel.html">titlePanel</a></span><span class="op">(</span><span class="st">"Hello processanimateR!"</span><span class="op">)</span>,
-
-      <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/sidebarLayout.html">sidebarLayout</a></span><span class="op">(</span>
-
-        <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/sidebarLayout.html">sidebarPanel</a></span><span class="op">(</span>
-          width <span class="op">=</span> <span class="fl">2</span>,
-          <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/sliderInput.html">sliderInput</a></span><span class="op">(</span><span class="st">"duration"</span>, <span class="st">"Animation duration"</span>, <span class="va">min.time</span>, <span class="va">max.time</span>, <span class="va">default.time</span><span class="op">)</span>,
-          <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/selectInput.html">selectInput</a></span><span class="op">(</span><span class="st">"type"</span>, <span class="st">"Animation type"</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"relative"</span>, <span class="st">"absolute"</span><span class="op">)</span>, <span class="st">"relative"</span><span class="op">)</span>,
-          <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/selectInput.html">selectInput</a></span><span class="op">(</span><span class="st">"sizeAttribute"</span>, <span class="st">"Size attribute"</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"none"</span>, <span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span><span class="op">(</span><span class="va">eventlog</span><span class="op">)</span><span class="op">)</span>, <span class="st">"none"</span><span class="op">)</span>,
-          <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/selectInput.html">selectInput</a></span><span class="op">(</span><span class="st">"colorAttribute"</span>, <span class="st">"Color attribute"</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"none"</span>, <span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span><span class="op">(</span><span class="va">eventlog</span><span class="op">)</span><span class="op">)</span>, <span class="st">"none"</span><span class="op">)</span>,
-          <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/selectInput.html">selectInput</a></span><span class="op">(</span><span class="st">"orientation"</span>, <span class="st">"Orientation"</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"horizontal"</span><span class="op">=</span><span class="st">"LR"</span>, <span class="st">"vertical"</span><span class="op">=</span><span class="st">"TB"</span><span class="op">)</span>, <span class="st">"horizontal"</span><span class="op">)</span>,
-          <span class="fu"><a href="https://rdrr.io/pkg/htmltools/man/builder.html">h4</a></span><span class="op">(</span><span class="st">"Selected cases"</span><span class="op">)</span>,
-          <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/textOutput.html">textOutput</a></span><span class="op">(</span><span class="st">"token_selection"</span><span class="op">)</span>,
-          <span class="fu"><a href="https://rdrr.io/pkg/htmltools/man/builder.html">h4</a></span><span class="op">(</span><span class="st">"Selected activities"</span><span class="op">)</span>,
-          <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/textOutput.html">textOutput</a></span><span class="op">(</span><span class="st">"activity_selection"</span><span class="op">)</span>
-        <span class="op">)</span>,
-
-        <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/sidebarLayout.html">mainPanel</a></span><span class="op">(</span>
-          width <span class="op">=</span> <span class="fl">10</span>,
-          <span class="fu">shinycssloaders</span><span class="fu">::</span><span class="fu">withSpinner</span><span class="op">(</span><span class="fu"><a href="../reference/processanimaterOutput.html">processanimaterOutput</a></span><span class="op">(</span><span class="st">"process"</span><span class="op">)</span><span class="op">)</span>
-        <span class="op">)</span>
-      <span class="op">)</span>
-    <span class="op">)</span>
-  <span class="op">}</span>
-
-  <span class="va">server</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">session</span>, <span class="va">input</span>, <span class="va">output</span><span class="op">)</span> <span class="op">{</span>
-
-    <span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/reactive.html">reactive</a></span><span class="op">(</span><span class="op">{</span>
-
-      <span class="kw">if</span> <span class="op">(</span><span class="va">input</span><span class="op">$</span><span class="va">colorAttribute</span> <span class="op">!=</span> <span class="st">"none"</span><span class="op">)</span> <span class="op">{</span>
-        <span class="va">attr</span> <span class="op">&lt;-</span> <span class="fu">rlang</span><span class="fu">::</span><span class="fu"><a href="https://rlang.r-lib.org/reference/sym.html">sym</a></span><span class="op">(</span><span class="va">input</span><span class="op">$</span><span class="va">colorAttribute</span><span class="op">)</span>
-        <span class="va">val</span> <span class="op">&lt;-</span> <span class="va">eventlog</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/pull.html">pull</a></span><span class="op">(</span><span class="op">!</span><span class="op">!</span><span class="va">attr</span><span class="op">)</span>
-        <span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/character.html">is.character</a></span><span class="op">(</span><span class="va">val</span><span class="op">)</span> <span class="op">||</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">is.factor</a></span><span class="op">(</span><span class="va">val</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span>
-          <span class="kw"><a href="https://rdrr.io/r/base/warning.html">warning</a></span><span class="op">(</span><span class="st">"Trying to use a numeric attribute for the token color!"</span><span class="op">)</span>
-        <span class="op">}</span>
-      <span class="op">}</span>
-
-      <span class="kw">if</span> <span class="op">(</span><span class="va">input</span><span class="op">$</span><span class="va">sizeAttribute</span> <span class="op">!=</span> <span class="st">"none"</span><span class="op">)</span> <span class="op">{</span>
-        <span class="co"># This only works for numeric attributes</span>
-        <span class="va">attr</span> <span class="op">&lt;-</span> <span class="fu">rlang</span><span class="fu">::</span><span class="fu"><a href="https://rlang.r-lib.org/reference/sym.html">sym</a></span><span class="op">(</span><span class="va">input</span><span class="op">$</span><span class="va">sizeAttribute</span><span class="op">)</span>
-        <span class="va">val</span> <span class="op">&lt;-</span> <span class="va">eventlog</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/pull.html">pull</a></span><span class="op">(</span><span class="op">!</span><span class="op">!</span><span class="va">attr</span><span class="op">)</span>
-        <span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/numeric.html">is.numeric</a></span><span class="op">(</span><span class="va">val</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span>
-          <span class="kw"><a href="https://rdrr.io/r/base/warning.html">warning</a></span><span class="op">(</span><span class="st">"Trying to use a non-numeric attribute for the token size!"</span><span class="op">)</span>
-        <span class="op">}</span>
-      <span class="op">}</span>
-
-      <span class="va">eventlog</span>
-
-    <span class="op">}</span><span class="op">)</span>
-
-    <span class="va">output</span><span class="op">$</span><span class="va">token_selection</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/renderPrint.html">renderText</a></span><span class="op">(</span><span class="op">{</span>
-
-      <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="va">input</span><span class="op">$</span><span class="va">process_tokens</span>, <span class="st">","</span><span class="op">)</span>
-
-    <span class="op">}</span><span class="op">)</span>
-
-    <span class="va">output</span><span class="op">$</span><span class="va">activity_selection</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/renderPrint.html">renderText</a></span><span class="op">(</span><span class="op">{</span>
-
-      <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="va">input</span><span class="op">$</span><span class="va">process_activities</span>, <span class="st">","</span><span class="op">)</span>
-
-    <span class="op">}</span><span class="op">)</span>
-
-    <span class="va">output</span><span class="op">$</span><span class="va">process</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/renderProcessanimater.html">renderProcessanimater</a></span><span class="op">(</span>expr <span class="op">=</span> <span class="op">{</span>
-      <span class="va">graph</span> <span class="op">&lt;-</span> <span class="fu">processmapR</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/processmapR/man/process_map.html">process_map</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="op">)</span>, render <span class="op">=</span> <span class="cn">F</span><span class="op">)</span>
-      <span class="va">model</span> <span class="op">&lt;-</span> <span class="fu">DiagrammeR</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/DiagrammeR/man/add_global_graph_attrs.html">add_global_graph_attrs</a></span><span class="op">(</span><span class="va">graph</span>, attr <span class="op">=</span> <span class="st">"rankdir"</span>, value <span class="op">=</span> <span class="va">input</span><span class="op">$</span><span class="va">orientation</span>, attr_type <span class="op">=</span> <span class="st">"graph"</span><span class="op">)</span>
-      <span class="kw">if</span> <span class="op">(</span><span class="va">input</span><span class="op">$</span><span class="va">sizeAttribute</span> <span class="op">!=</span> <span class="st">"none"</span> <span class="op">&amp;&amp;</span> <span class="va">input</span><span class="op">$</span><span class="va">colorAttribute</span> <span class="op">!=</span> <span class="st">"none"</span><span class="op">)</span> <span class="op">{</span>
-        <span class="fu"><a href="../reference/animate_process.html">animate_process</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="op">)</span>, <span class="va">model</span>,
-                        mode <span class="op">=</span> <span class="va">input</span><span class="op">$</span><span class="va">type</span>,
-                        legend <span class="op">=</span> <span class="st">"color"</span>,
-                        mapping <span class="op">=</span> <span class="fu"><a href="../reference/token_aes.html">token_aes</a></span><span class="op">(</span>color <span class="op">=</span> <span class="fu"><a href="../reference/token_scale.html">token_scale</a></span><span class="op">(</span><span class="va">input</span><span class="op">$</span><span class="va">colorAttribute</span>, scale <span class="op">=</span> <span class="st">"ordinal"</span>, 
-                                                                range <span class="op">=</span> <span class="fu">RColorBrewer</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/RColorBrewer/man/ColorBrewer.html">brewer.pal</a></span><span class="op">(</span><span class="fl">5</span>, <span class="st">"YlOrBr"</span><span class="op">)</span><span class="op">)</span>,
-                                            size <span class="op">=</span> <span class="fu"><a href="../reference/token_scale.html">token_scale</a></span><span class="op">(</span><span class="va">input</span><span class="op">$</span><span class="va">sizeAttribute</span>, scale <span class="op">=</span> <span class="st">"linear"</span>, range <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">6</span>,<span class="fl">10</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,
-                        duration <span class="op">=</span> <span class="va">input</span><span class="op">$</span><span class="va">duration</span><span class="op">)</span>
-      <span class="op">}</span> <span class="kw">else</span> <span class="kw">if</span> <span class="op">(</span><span class="va">input</span><span class="op">$</span><span class="va">sizeAttribute</span> <span class="op">!=</span> <span class="st">"none"</span><span class="op">)</span> <span class="op">{</span>
-        <span class="fu"><a href="../reference/animate_process.html">animate_process</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="op">)</span>, <span class="va">model</span>,
-                        mode <span class="op">=</span> <span class="va">input</span><span class="op">$</span><span class="va">type</span>,
-                        legend <span class="op">=</span> <span class="st">"size"</span>,
-                        mapping <span class="op">=</span> <span class="fu"><a href="../reference/token_aes.html">token_aes</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fu"><a href="../reference/token_scale.html">token_scale</a></span><span class="op">(</span><span class="va">input</span><span class="op">$</span><span class="va">sizeAttribute</span>, scale <span class="op">=</span> <span class="st">"linear"</span>, range <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">6</span>,<span class="fl">10</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,
-                        duration <span class="op">=</span> <span class="va">input</span><span class="op">$</span><span class="va">duration</span><span class="op">)</span>
-
-      <span class="op">}</span> <span class="kw">else</span> <span class="kw">if</span> <span class="op">(</span><span class="va">input</span><span class="op">$</span><span class="va">colorAttribute</span> <span class="op">!=</span> <span class="st">"none"</span><span class="op">)</span> <span class="op">{</span>
-        <span class="fu"><a href="../reference/animate_process.html">animate_process</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="op">)</span>, <span class="va">model</span>,
-                        mode <span class="op">=</span> <span class="va">input</span><span class="op">$</span><span class="va">type</span>,
-                        legend <span class="op">=</span> <span class="st">"color"</span>,
-                        mapping <span class="op">=</span> <span class="fu"><a href="../reference/token_aes.html">token_aes</a></span><span class="op">(</span>color <span class="op">=</span> <span class="fu"><a href="../reference/token_scale.html">token_scale</a></span><span class="op">(</span><span class="va">input</span><span class="op">$</span><span class="va">colorAttribute</span>, scale <span class="op">=</span> <span class="st">"ordinal"</span>, range <span class="op">=</span> <span class="fu">RColorBrewer</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/RColorBrewer/man/ColorBrewer.html">brewer.pal</a></span><span class="op">(</span><span class="fl">5</span>, <span class="st">"YlOrBr"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,
-                        duration <span class="op">=</span> <span class="va">input</span><span class="op">$</span><span class="va">duration</span><span class="op">)</span>
-      <span class="op">}</span> <span class="kw">else</span> <span class="op">{</span>
-        <span class="fu"><a href="../reference/animate_process.html">animate_process</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="op">)</span>, <span class="va">model</span>,
-                        mode <span class="op">=</span> <span class="va">input</span><span class="op">$</span><span class="va">type</span>,
-                        duration <span class="op">=</span> <span class="va">input</span><span class="op">$</span><span class="va">duration</span><span class="op">)</span>
-      <span class="op">}</span>
-
-    <span class="op">}</span><span class="op">)</span>
-
-  <span class="op">}</span>
-
-  <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/shinyApp.html">shinyApp</a></span><span class="op">(</span><span class="va">ui</span>, <span class="va">server</span>, options <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>height <span class="op">=</span> <span class="fl">500</span><span class="op">)</span><span class="op">)</span>
-
-<span class="op">}</span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/bupaverse/processanimateR/" class="external-link">processanimateR</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://shiny.rstudio.com/" class="external-link">shiny</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/daattali/shinycssloaders" class="external-link">shinycssloaders</a></span><span class="op">)</span></span>
+<span><span class="va">ianimate_process</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">eventlog</span>, <span class="va">min.time</span> <span class="op">=</span> <span class="fl">30</span>, <span class="va">max.time</span> <span class="op">=</span> <span class="fl">600</span>, <span class="va">default.time</span> <span class="op">=</span> <span class="fl">60</span><span class="op">)</span> <span class="op">{</span></span>
+<span></span>
+<span>  <span class="va">ui</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">request</span><span class="op">)</span> <span class="op">{</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/fluidPage.html" class="external-link">fluidPage</a></span><span class="op">(</span></span>
+<span>      <span class="va">tags</span><span class="op">$</span><span class="fu">head</span><span class="op">(</span><span class="va">tags</span><span class="op">$</span><span class="fu">style</span><span class="op">(</span><span class="st">"#process{height:90vh !important;}"</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>      <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/titlePanel.html" class="external-link">titlePanel</a></span><span class="op">(</span><span class="st">"Hello processanimateR!"</span><span class="op">)</span>,</span>
+<span></span>
+<span>      <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/sidebarLayout.html" class="external-link">sidebarLayout</a></span><span class="op">(</span></span>
+<span></span>
+<span>        <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/sidebarLayout.html" class="external-link">sidebarPanel</a></span><span class="op">(</span></span>
+<span>          width <span class="op">=</span> <span class="fl">2</span>,</span>
+<span>          <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/sliderInput.html" class="external-link">sliderInput</a></span><span class="op">(</span><span class="st">"duration"</span>, <span class="st">"Animation duration"</span>, <span class="va">min.time</span>, <span class="va">max.time</span>, <span class="va">default.time</span><span class="op">)</span>,</span>
+<span>          <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/selectInput.html" class="external-link">selectInput</a></span><span class="op">(</span><span class="st">"type"</span>, <span class="st">"Animation type"</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"relative"</span>, <span class="st">"absolute"</span><span class="op">)</span>, <span class="st">"relative"</span><span class="op">)</span>,</span>
+<span>          <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/selectInput.html" class="external-link">selectInput</a></span><span class="op">(</span><span class="st">"sizeAttribute"</span>, <span class="st">"Size attribute"</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"none"</span>, <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">eventlog</span><span class="op">)</span><span class="op">)</span>, <span class="st">"none"</span><span class="op">)</span>,</span>
+<span>          <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/selectInput.html" class="external-link">selectInput</a></span><span class="op">(</span><span class="st">"colorAttribute"</span>, <span class="st">"Color attribute"</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"none"</span>, <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">eventlog</span><span class="op">)</span><span class="op">)</span>, <span class="st">"none"</span><span class="op">)</span>,</span>
+<span>          <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/selectInput.html" class="external-link">selectInput</a></span><span class="op">(</span><span class="st">"orientation"</span>, <span class="st">"Orientation"</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"horizontal"</span><span class="op">=</span><span class="st">"LR"</span>, <span class="st">"vertical"</span><span class="op">=</span><span class="st">"TB"</span><span class="op">)</span>, <span class="st">"horizontal"</span><span class="op">)</span>,</span>
+<span>          <span class="fu"><a href="https://rdrr.io/pkg/htmltools/man/builder.html" class="external-link">h4</a></span><span class="op">(</span><span class="st">"Selected cases"</span><span class="op">)</span>,</span>
+<span>          <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/textOutput.html" class="external-link">textOutput</a></span><span class="op">(</span><span class="st">"token_selection"</span><span class="op">)</span>,</span>
+<span>          <span class="fu"><a href="https://rdrr.io/pkg/htmltools/man/builder.html" class="external-link">h4</a></span><span class="op">(</span><span class="st">"Selected activities"</span><span class="op">)</span>,</span>
+<span>          <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/textOutput.html" class="external-link">textOutput</a></span><span class="op">(</span><span class="st">"activity_selection"</span><span class="op">)</span></span>
+<span>        <span class="op">)</span>,</span>
+<span></span>
+<span>        <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/sidebarLayout.html" class="external-link">mainPanel</a></span><span class="op">(</span></span>
+<span>          width <span class="op">=</span> <span class="fl">10</span>,</span>
+<span>          <span class="fu">shinycssloaders</span><span class="fu">::</span><span class="fu">withSpinner</span><span class="op">(</span><span class="fu"><a href="../reference/processanimaterOutput.html">processanimaterOutput</a></span><span class="op">(</span><span class="st">"process"</span><span class="op">)</span><span class="op">)</span></span>
+<span>        <span class="op">)</span></span>
+<span>      <span class="op">)</span></span>
+<span>    <span class="op">)</span></span>
+<span>  <span class="op">}</span></span>
+<span></span>
+<span>  <span class="va">server</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">session</span>, <span class="va">input</span>, <span class="va">output</span><span class="op">)</span> <span class="op">{</span></span>
+<span></span>
+<span>    <span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/reactive.html" class="external-link">reactive</a></span><span class="op">(</span><span class="op">{</span></span>
+<span></span>
+<span>      <span class="kw">if</span> <span class="op">(</span><span class="va">input</span><span class="op">$</span><span class="va">colorAttribute</span> <span class="op">!=</span> <span class="st">"none"</span><span class="op">)</span> <span class="op">{</span></span>
+<span>        <span class="va">attr</span> <span class="op">&lt;-</span> <span class="fu">rlang</span><span class="fu">::</span><span class="fu"><a href="https://rlang.r-lib.org/reference/sym.html" class="external-link">sym</a></span><span class="op">(</span><span class="va">input</span><span class="op">$</span><span class="va">colorAttribute</span><span class="op">)</span></span>
+<span>        <span class="va">val</span> <span class="op">&lt;-</span> <span class="va">eventlog</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/pull.html" class="external-link">pull</a></span><span class="op">(</span><span class="op">!</span><span class="op">!</span><span class="va">attr</span><span class="op">)</span></span>
+<span>        <span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">is.character</a></span><span class="op">(</span><span class="va">val</span><span class="op">)</span> <span class="op">||</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">is.factor</a></span><span class="op">(</span><span class="va">val</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span>          <span class="kw"><a href="https://rdrr.io/r/base/warning.html" class="external-link">warning</a></span><span class="op">(</span><span class="st">"Trying to use a numeric attribute for the token color!"</span><span class="op">)</span></span>
+<span>        <span class="op">}</span></span>
+<span>      <span class="op">}</span></span>
+<span></span>
+<span>      <span class="kw">if</span> <span class="op">(</span><span class="va">input</span><span class="op">$</span><span class="va">sizeAttribute</span> <span class="op">!=</span> <span class="st">"none"</span><span class="op">)</span> <span class="op">{</span></span>
+<span>        <span class="co"># This only works for numeric attributes</span></span>
+<span>        <span class="va">attr</span> <span class="op">&lt;-</span> <span class="fu">rlang</span><span class="fu">::</span><span class="fu"><a href="https://rlang.r-lib.org/reference/sym.html" class="external-link">sym</a></span><span class="op">(</span><span class="va">input</span><span class="op">$</span><span class="va">sizeAttribute</span><span class="op">)</span></span>
+<span>        <span class="va">val</span> <span class="op">&lt;-</span> <span class="va">eventlog</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/pull.html" class="external-link">pull</a></span><span class="op">(</span><span class="op">!</span><span class="op">!</span><span class="va">attr</span><span class="op">)</span></span>
+<span>        <span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">is.numeric</a></span><span class="op">(</span><span class="va">val</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span>          <span class="kw"><a href="https://rdrr.io/r/base/warning.html" class="external-link">warning</a></span><span class="op">(</span><span class="st">"Trying to use a non-numeric attribute for the token size!"</span><span class="op">)</span></span>
+<span>        <span class="op">}</span></span>
+<span>      <span class="op">}</span></span>
+<span></span>
+<span>      <span class="va">eventlog</span></span>
+<span></span>
+<span>    <span class="op">}</span><span class="op">)</span></span>
+<span></span>
+<span>    <span class="va">output</span><span class="op">$</span><span class="va">token_selection</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/renderPrint.html" class="external-link">renderText</a></span><span class="op">(</span><span class="op">{</span></span>
+<span></span>
+<span>      <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">input</span><span class="op">$</span><span class="va">process_tokens</span>, <span class="st">","</span><span class="op">)</span></span>
+<span></span>
+<span>    <span class="op">}</span><span class="op">)</span></span>
+<span></span>
+<span>    <span class="va">output</span><span class="op">$</span><span class="va">activity_selection</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/renderPrint.html" class="external-link">renderText</a></span><span class="op">(</span><span class="op">{</span></span>
+<span></span>
+<span>      <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">input</span><span class="op">$</span><span class="va">process_activities</span>, <span class="st">","</span><span class="op">)</span></span>
+<span></span>
+<span>    <span class="op">}</span><span class="op">)</span></span>
+<span></span>
+<span>    <span class="va">output</span><span class="op">$</span><span class="va">process</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/renderProcessanimater.html">renderProcessanimater</a></span><span class="op">(</span>expr <span class="op">=</span> <span class="op">{</span></span>
+<span>      <span class="va">graph</span> <span class="op">&lt;-</span> <span class="fu">processmapR</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/processmapR/man/process_map.html" class="external-link">process_map</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="op">)</span>, render <span class="op">=</span> <span class="cn">F</span><span class="op">)</span></span>
+<span>      <span class="va">model</span> <span class="op">&lt;-</span> <span class="fu">DiagrammeR</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/DiagrammeR/man/add_global_graph_attrs.html" class="external-link">add_global_graph_attrs</a></span><span class="op">(</span><span class="va">graph</span>, attr <span class="op">=</span> <span class="st">"rankdir"</span>, value <span class="op">=</span> <span class="va">input</span><span class="op">$</span><span class="va">orientation</span>, attr_type <span class="op">=</span> <span class="st">"graph"</span><span class="op">)</span></span>
+<span>      <span class="kw">if</span> <span class="op">(</span><span class="va">input</span><span class="op">$</span><span class="va">sizeAttribute</span> <span class="op">!=</span> <span class="st">"none"</span> <span class="op">&amp;&amp;</span> <span class="va">input</span><span class="op">$</span><span class="va">colorAttribute</span> <span class="op">!=</span> <span class="st">"none"</span><span class="op">)</span> <span class="op">{</span></span>
+<span>        <span class="fu"><a href="../reference/animate_process.html">animate_process</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="op">)</span>, <span class="va">model</span>,</span>
+<span>                        mode <span class="op">=</span> <span class="va">input</span><span class="op">$</span><span class="va">type</span>,</span>
+<span>                        legend <span class="op">=</span> <span class="st">"color"</span>,</span>
+<span>                        mapping <span class="op">=</span> <span class="fu"><a href="../reference/token_aes.html">token_aes</a></span><span class="op">(</span>color <span class="op">=</span> <span class="fu"><a href="../reference/token_scale.html">token_scale</a></span><span class="op">(</span><span class="va">input</span><span class="op">$</span><span class="va">colorAttribute</span>, scale <span class="op">=</span> <span class="st">"ordinal"</span>, </span>
+<span>                                                                range <span class="op">=</span> <span class="fu">RColorBrewer</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/RColorBrewer/man/ColorBrewer.html" class="external-link">brewer.pal</a></span><span class="op">(</span><span class="fl">5</span>, <span class="st">"YlOrBr"</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>                                            size <span class="op">=</span> <span class="fu"><a href="../reference/token_scale.html">token_scale</a></span><span class="op">(</span><span class="va">input</span><span class="op">$</span><span class="va">sizeAttribute</span>, scale <span class="op">=</span> <span class="st">"linear"</span>, range <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">6</span>,<span class="fl">10</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>                        duration <span class="op">=</span> <span class="va">input</span><span class="op">$</span><span class="va">duration</span><span class="op">)</span></span>
+<span>      <span class="op">}</span> <span class="kw">else</span> <span class="kw">if</span> <span class="op">(</span><span class="va">input</span><span class="op">$</span><span class="va">sizeAttribute</span> <span class="op">!=</span> <span class="st">"none"</span><span class="op">)</span> <span class="op">{</span></span>
+<span>        <span class="fu"><a href="../reference/animate_process.html">animate_process</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="op">)</span>, <span class="va">model</span>,</span>
+<span>                        mode <span class="op">=</span> <span class="va">input</span><span class="op">$</span><span class="va">type</span>,</span>
+<span>                        legend <span class="op">=</span> <span class="st">"size"</span>,</span>
+<span>                        mapping <span class="op">=</span> <span class="fu"><a href="../reference/token_aes.html">token_aes</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fu"><a href="../reference/token_scale.html">token_scale</a></span><span class="op">(</span><span class="va">input</span><span class="op">$</span><span class="va">sizeAttribute</span>, scale <span class="op">=</span> <span class="st">"linear"</span>, range <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">6</span>,<span class="fl">10</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>                        duration <span class="op">=</span> <span class="va">input</span><span class="op">$</span><span class="va">duration</span><span class="op">)</span></span>
+<span></span>
+<span>      <span class="op">}</span> <span class="kw">else</span> <span class="kw">if</span> <span class="op">(</span><span class="va">input</span><span class="op">$</span><span class="va">colorAttribute</span> <span class="op">!=</span> <span class="st">"none"</span><span class="op">)</span> <span class="op">{</span></span>
+<span>        <span class="fu"><a href="../reference/animate_process.html">animate_process</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="op">)</span>, <span class="va">model</span>,</span>
+<span>                        mode <span class="op">=</span> <span class="va">input</span><span class="op">$</span><span class="va">type</span>,</span>
+<span>                        legend <span class="op">=</span> <span class="st">"color"</span>,</span>
+<span>                        mapping <span class="op">=</span> <span class="fu"><a href="../reference/token_aes.html">token_aes</a></span><span class="op">(</span>color <span class="op">=</span> <span class="fu"><a href="../reference/token_scale.html">token_scale</a></span><span class="op">(</span><span class="va">input</span><span class="op">$</span><span class="va">colorAttribute</span>, scale <span class="op">=</span> <span class="st">"ordinal"</span>, range <span class="op">=</span> <span class="fu">RColorBrewer</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/RColorBrewer/man/ColorBrewer.html" class="external-link">brewer.pal</a></span><span class="op">(</span><span class="fl">5</span>, <span class="st">"YlOrBr"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>                        duration <span class="op">=</span> <span class="va">input</span><span class="op">$</span><span class="va">duration</span><span class="op">)</span></span>
+<span>      <span class="op">}</span> <span class="kw">else</span> <span class="op">{</span></span>
+<span>        <span class="fu"><a href="../reference/animate_process.html">animate_process</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="op">)</span>, <span class="va">model</span>,</span>
+<span>                        mode <span class="op">=</span> <span class="va">input</span><span class="op">$</span><span class="va">type</span>,</span>
+<span>                        duration <span class="op">=</span> <span class="va">input</span><span class="op">$</span><span class="va">duration</span><span class="op">)</span></span>
+<span>      <span class="op">}</span></span>
+<span></span>
+<span>    <span class="op">}</span><span class="op">)</span></span>
+<span></span>
+<span>  <span class="op">}</span></span>
+<span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/shinyApp.html" class="external-link">shinyApp</a></span><span class="op">(</span><span class="va">ui</span>, <span class="va">server</span>, options <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>height <span class="op">=</span> <span class="fl">500</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="op">}</span></span></code></pre></div>
 <p>Then, the application can be, for example, launched by calling:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://www.bupar.net">eventdataR</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://www.bupar.net">edeaR</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org">dplyr</a></span><span class="op">)</span>
-<span class="fu">ianimate_process</span><span class="op">(</span><span class="va">sepsis</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="https://rdrr.io/pkg/edeaR/man/filter_trace_frequency.html">filter_trace_frequency</a></span><span class="op">(</span>percentage <span class="op">=</span> <span class="fl">0.2</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="https://rdrr.io/pkg/edeaR/man/filter_activity.html">filter_activity</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Return ER"</span><span class="op">)</span>, reverse <span class="op">=</span> <span class="cn">T</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="co"># we fix the datatype of some of the attributes to allow proper rendering of the token color</span>
-  <span class="co"># the token size option currently only support numeric attributes</span>
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate_all.html">mutate_at</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"lacticacid"</span>, <span class="st">"leucocytes"</span>, <span class="st">"crp"</span>, <span class="st">"age"</span><span class="op">)</span>, <span class="va">as.numeric</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate_all.html">mutate_at</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"disfuncorg"</span>, <span class="st">"sirscriteria2ormore"</span>, <span class="st">"infectionsuspected"</span><span class="op">)</span>, <span class="va">as.logical</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://bupar.net/" class="external-link">eventdataR</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://www.bupar.net" class="external-link">edeaR</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
+<span><span class="fu">ianimate_process</span><span class="op">(</span><span class="va">sepsis</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/edeaR/man/filter_trace_frequency.html" class="external-link">filter_trace_frequency</a></span><span class="op">(</span>percentage <span class="op">=</span> <span class="fl">0.2</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/edeaR/man/filter_activity.html" class="external-link">filter_activity</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Return ER"</span><span class="op">)</span>, reverse <span class="op">=</span> <span class="cn">T</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="co"># we fix the datatype of some of the attributes to allow proper rendering of the token color</span></span>
+<span>  <span class="co"># the token size option currently only support numeric attributes</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate_all.html" class="external-link">mutate_at</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"lacticacid"</span>, <span class="st">"leucocytes"</span>, <span class="st">"crp"</span>, <span class="st">"age"</span><span class="op">)</span>, <span class="va">as.numeric</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate_all.html" class="external-link">mutate_at</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"disfuncorg"</span>, <span class="st">"sirscriteria2ormore"</span>, <span class="st">"infectionsuspected"</span><span class="op">)</span>, <span class="va">as.logical</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
@@ -238,11 +240,13 @@
 
 
       <footer><div class="copyright">
-  <p>Developed by Felix Mannhardt.</p>
+  <p></p>
+<p>Developed by Felix Mannhardt.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer>
@@ -250,6 +254,8 @@
 
   
 
+
+  
 
   </body>
 </html>

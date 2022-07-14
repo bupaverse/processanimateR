@@ -2,9 +2,7 @@
 % Please edit documentation in R/renderer.R
 \name{renderer_graphviz}
 \alias{renderer_graphviz}
-\title{Render as a plain graph
-
-This renderer uses viz.js to render the process map using the DOT layout.}
+\title{Render as a plain graph}
 \usage{
 renderer_graphviz(
   svg_fit = TRUE,
@@ -29,8 +27,6 @@ renderer_graphviz(
 A rendering function to be used with \code{\link{animate_process}}
 }
 \description{
-Render as a plain graph
-
 This renderer uses viz.js to render the process map using the DOT layout.
 }
 \examples{
