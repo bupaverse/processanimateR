@@ -9,7 +9,7 @@
 
 [![processanimateR example](man/figures/processanimateR-banner.png)](https://bupaverse.github.io/processanimateR/example/processanimateR-banner.html)
 
-Flexible token replay animation for process maps created through the [processmapR](https://github.com/gertjanssenswillen/processmapR/) package from the [bupaR](http://www.bupar.net) suite, which uses [DiagrammeR](https://github.com/rich-iannone/DiagrammeR/) and [viz.js](https://github.com/mdaines/viz.js) library to render process maps using GraphViz. As alternative renderer [Leaflet](https://leafletjs.com/) with fixed coordinates for activities is also supported.
+Flexible token replay animation for process maps created through the [processmapR](https://github.com/gertjanssenswillen/processmapR/) package from the [bupaR](https://www.bupar.net) suite, which uses [DiagrammeR](https://github.com/rich-iannone/DiagrammeR/) and [viz.js](https://github.com/mdaines/viz.js) library to render process maps using GraphViz. As alternative renderer [Leaflet](https://leafletjs.com/) with fixed coordinates for activities is also supported.
 
 ProcessanimateR provides a [htmlwidget](https://www.htmlwidgets.org/) using SVG animations ([SMIL](https://www.w3.org/TR/2008/REC-SMIL3-20081201/)) to create the animation. Sizes, colors, and many more aspects of the token shapes are customizable based on trace, event attributes, or a secondary data frame if an attribute does not change according to the original event log.
 
