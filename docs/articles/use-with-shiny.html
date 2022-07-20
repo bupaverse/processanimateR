@@ -94,7 +94,7 @@
                         <h4 data-toc-skip class="author">Felix
 Mannhardt</h4>
             
-            <h4 data-toc-skip class="date">2022-07-14</h4>
+            <h4 data-toc-skip class="date">2022-07-20</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/bupaverse/processanimateR/blob/HEAD/vignettes/use-with-shiny.Rmd" class="external-link"><code>vignettes/use-with-shiny.Rmd</code></a></small>
       <div class="hidden name"><code>use-with-shiny.Rmd</code></div>
@@ -137,7 +137,7 @@ our Shiny application as follows:</p>
 <span></span>
 <span>        <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/sidebarLayout.html" class="external-link">mainPanel</a></span><span class="op">(</span></span>
 <span>          width <span class="op">=</span> <span class="fl">10</span>,</span>
-<span>          <span class="fu">shinycssloaders</span><span class="fu">::</span><span class="fu">withSpinner</span><span class="op">(</span><span class="fu"><a href="../reference/processanimaterOutput.html">processanimaterOutput</a></span><span class="op">(</span><span class="st">"process"</span><span class="op">)</span><span class="op">)</span></span>
+<span>          <span class="fu">shinycssloaders</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/shinycssloaders/man/withSpinner.html" class="external-link">withSpinner</a></span><span class="op">(</span><span class="fu"><a href="../reference/processanimaterOutput.html">processanimaterOutput</a></span><span class="op">(</span><span class="st">"process"</span><span class="op">)</span><span class="op">)</span></span>
 <span>        <span class="op">)</span></span>
 <span>      <span class="op">)</span></span>
 <span>    <span class="op">)</span></span>
@@ -220,7 +220,7 @@ our Shiny application as follows:</p>
 <p>Then, the application can be, for example, launched by calling:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://bupar.net/" class="external-link">eventdataR</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://www.bupar.net" class="external-link">edeaR</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://bupar.net/" class="external-link">edeaR</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
 <span><span class="fu">ianimate_process</span><span class="op">(</span><span class="va">sepsis</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/pkg/edeaR/man/filter_trace_frequency.html" class="external-link">filter_trace_frequency</a></span><span class="op">(</span>percentage <span class="op">=</span> <span class="fl">0.2</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
@@ -246,7 +246,7 @@ our Shiny application as follows:</p>
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer>

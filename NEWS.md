@@ -1,3 +1,7 @@
+## processanimateR 1.0.5
+
+* Fix compatibility issue with bupaR 0.5.0
+
 ## processanimateR 1.0.4
 
 * Change of maintainer e-mail to new affiliation
