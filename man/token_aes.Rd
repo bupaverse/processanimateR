@@ -49,7 +49,7 @@ animate_process(example_log, mapping = token_aes(opacity = token_scale("0.2")))
 animate_process(example_log,
    mapping = token_aes(shape = "image",
     size = token_scale(10),
-    image = token_scale("https://upload.wikimedia.org/wikipedia/en/5/5f/Pacman.gif")))
+    image = token_scale("https://upload.wikimedia.org/wikipedia/commons/5/5f/Pacman.gif")))
 
 # A more elaborate example with a secondary data frame
 library(eventdataR)
