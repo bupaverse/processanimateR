@@ -75,7 +75,7 @@ Tokens can also be assigned images, for example:
 animate_process(example_log,
    mapping = token_aes(shape = "image",
     size = token_scale(10),
-    image = token_scale("https://upload.wikimedia.org/wikipedia/en/5/5f/Pacman.gif")))
+    image = token_scale("https://upload.wikimedia.org/wikipedia/commons/5/5f/Pacman.gif")))
 ```
 
 More advanced usage examples can be found [here](https://bupaverse.github.io/processanimateR/articles/).
