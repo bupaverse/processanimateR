@@ -31,8 +31,8 @@ renderer_graphviz <- function(svg_fit = TRUE,
 
     # hack to add 'weight' attribute to the graph (see same approach in processmapR)
     diagram %>%
-      stringr::str_replace_all("len", "weight") %>%
-      stringr::str_replace_all("decorate", "constraint")
+      stringr::str_replace_all(", len = ", ", weight = ") %>%
+      stringr::str_replace_all(", decorate = ", ", constraint = ")
   }
 
   attr(render, "name") <- "graph"
